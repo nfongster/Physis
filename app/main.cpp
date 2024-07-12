@@ -1,4 +1,6 @@
 #include <iostream>
+#include "SystemConfig.h"
+#include "System.h"
 
 int main()
 {
@@ -24,8 +26,11 @@ int main()
         << "\n\ta:\t" << a
         << "\n\tt:\t" << t << '\n';
 
-    float xf = x0 + v0 * t + 0.5 * a * t * t;
-    float vf = v0 + a * t;
+    SystemConfig config = SystemConfig(x0, v0, a);
+    System system = System(config);
+
+    float xf = system.step_x(t);
+    float vf = system.step_v(t);
     float dx = xf - x0;
     float dv = vf - v0;
     float vAvg = dv / t;
