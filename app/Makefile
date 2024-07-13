@@ -7,13 +7,13 @@ main: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 main.o: main.cpp System.h SystemConfig.h
-	$(CXX) $(CXXFLAGS) -c main.cpp -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 System.o: System.cpp System.h SystemConfig.h
-	$(CXX) $(CXXFLAGS) -c System.cpp -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 SystemConfig.o: SystemConfig.cpp SystemConfig.h
-	$(CXX) $(CXXFLAGS) -c SystemConfig.cpp -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f main $(OBJS)
