@@ -6,13 +6,7 @@ OBJS = main.o System.o SystemConfig.o
 main: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
-
-System.o: System.cpp
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
-
-SystemConfig.o: SystemConfig.cpp
+$(OBJS): %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 clean:
