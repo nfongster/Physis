@@ -17,4 +17,4 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 clean:
-	rm -f $(BUILD_DIR)/main $(OBJS)
+	rm -rf $(BUILD_DIR)
