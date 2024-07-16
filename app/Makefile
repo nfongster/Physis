@@ -1,15 +1,19 @@
+EXE_NAME = main
+
 CXX = g++
 CXXFLAGS = -Wall
 
 SRC_DIR = ./src
 BUILD_DIR = ./build
-OBJS = main.o System.o SystemConfig.o
 
-$(BUILD_DIR)/main: $(OBJS)
+SRCS = $(shell find $(SRC_DIR) -name '*.cpp')
+OBJS = $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
+
+$(BUILD_DIR)/$(EXE_NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(OBJS): %.o: $(SRC_DIR)/%.cpp
-	mkdir -p $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.cpp
+	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 clean:
