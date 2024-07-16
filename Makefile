@@ -9,7 +9,7 @@ BUILD_DIR = ./build
 SRCS = $(shell find $(SRC_DIR) -name '*.cpp')
 OBJS = $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
-$(BUILD_DIR)/$(EXE_NAME): $(OBJS)
+$(EXE_NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
@@ -17,4 +17,4 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(EXE_NAME)
