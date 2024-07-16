@@ -1,6 +1,6 @@
 #include <iostream>
-#include "SystemConfig.h"
-#include "System.h"
+#include "ParticleConfig.h"
+#include "Particle.h"
 
 int main()
 {
@@ -26,11 +26,11 @@ int main()
         << "\n\ta:\t" << a
         << "\n\tt:\t" << t << '\n';
 
-    SystemConfig config = SystemConfig(x0, v0, a);
-    System system = System(config);
+    ParticleConfig config = ParticleConfig(x0, v0, a);
+    Particle particle = Particle(config);
 
-    float xf = system.step_x(t);
-    float vf = system.step_v(t);
+    float xf = particle.step_x(t);
+    float vf = particle.step_v(t);
     float dx = xf - x0;
     float dv = vf - v0;
     float vAvg = dv / t;
