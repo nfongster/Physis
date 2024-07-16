@@ -7,7 +7,7 @@ int main()
     std::cout << "Welcome to the physics simulator.\n";
     std::cout << "Please provide the starting parameters when prompted to do so.\n";
     
-    float x0, v0, a, t;
+    float x0, v0, a0, dt;
     std::cout << "(1) Initial position (x):\t";
     std::cin >> x0;
 
@@ -15,25 +15,25 @@ int main()
     std::cin >> v0;
 
     std::cout << "(3) Acceleration (constant, x):\t";
-    std::cin >> a;
+    std::cin >> a0;
 
     std::cout << "(5) Time (s):\t\t\t";
-    std::cin >> t;
+    std::cin >> dt;
 
     std::cout << "\nYou entered:"
         << "\n\tx0:\t" << x0
         << "\n\tv0:\t" << v0
-        << "\n\ta:\t" << a
-        << "\n\tt:\t" << t << '\n';
+        << "\n\ta0:\t" << a0
+        << "\n\tdt:\t" << dt << '\n';
 
-    ParticleConfig config = ParticleConfig(x0, v0, a);
+    ParticleConfig config = ParticleConfig(x0, v0, a0);
     Particle particle = Particle(config);
 
-    float xf = particle.step_x(t);
-    float vf = particle.step_v(t);
+    float xf = particle.step_x(dt);
+    float vf = particle.step_v(dt);
     float dx = xf - x0;
     float dv = vf - v0;
-    float vAvg = dv / t;
+    float vAvg = dv / dt;
 
     std::cout << "\nFinal system parameters:"
         << "\n\txf:\t" << xf
