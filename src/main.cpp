@@ -28,25 +28,19 @@ int main()
         << "\n\tx0:\t" << x0
         << "\n\tv0:\t" << v0
         << "\n\ta0:\t" << a0
-        << "\n\tt:\t" << t_total
+        << "\n\tt:\t"  << t_total
         << "\n\tdt:\t" << dt << '\n';
 
     ParticleConfig config = ParticleConfig(x0, v0, a0);
     ParticleSystem* system = new ParticleSystem(config, t_total, dt);
     system->Execute();
 
-    float xf = system->get_x();
-    float vf = system->get_v();
-    float dx = system->displacement(x0);
-    float dv = system->delta_v(v0);
-    float vAvg = system->average_v(x0);
-
     std::cout << "\nFinal system parameters:"
-        << "\n\txf:\t" << xf
-        << "\n\tvf:\t" << vf
-        << "\n\tdx:\t" << dx
-        << "\n\tdv:\t" << dv
-        << "\n\tvAvg:\t" << vAvg << '\n';
+        << "\n\txf:\t" << system->get_x()
+        << "\n\tvf:\t" << system->get_v()
+        << "\n\tdx:\t" << system->displacement(x0)
+        << "\n\tdv:\t" << system->delta_v(v0)
+        << "\n\tvAvg:\t" << system->average_v(x0) << '\n';
 
     delete system;
 }
