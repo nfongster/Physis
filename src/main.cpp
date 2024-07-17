@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include "ParticleConfig.h"
 #include "Particle.h"
 #include "ParticleSystem.h"
@@ -33,7 +34,14 @@ int main()
 
     ParticleConfig config = ParticleConfig(x0, v0, a0);
     ParticleSystem* system = new ParticleSystem(config, t_total, dt);
-    system->Execute();
+
+    std::cout << "\nExecuting particle system on a separate thread...\n";
+    std::thread worker([&]() 
+                { 
+                    system->Execute();
+                });
+    worker.join();
+    std::cout << "Execution complete.\n";
 
     std::cout << "\nFinal system parameters:"
         << "\n\txf:\t" << system->get_x()

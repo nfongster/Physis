@@ -11,11 +11,16 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::Execute()
 {
-    while (this->t_current <= this->t_total)
+    while (this->is_running())
     {
         this->particle->step(this->dt);
         this->t_current += this->dt;
     }
+}
+
+bool ParticleSystem::is_running()
+{
+    return this->t_current <= this->t_total;
 }
 
 float ParticleSystem::get_x()

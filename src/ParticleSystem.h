@@ -14,6 +14,7 @@ public:
     ParticleSystem(ParticleConfig config, float t_total, float dt);
     ~ParticleSystem();
     void Execute();
+    bool is_running();
     float get_x();
     float get_v();
     float get_a();
