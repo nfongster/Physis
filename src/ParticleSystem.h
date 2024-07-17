@@ -7,10 +7,11 @@ class ParticleSystem
 private:
     float t_total;
     float t_current;
+    float dt;
     Particle* particle;
 
 public:
-    ParticleSystem(ParticleConfig config, float t);
+    ParticleSystem(ParticleConfig config, float t_total, float dt);
     ~ParticleSystem();
     void Execute();
     float get_x();
