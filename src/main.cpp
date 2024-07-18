@@ -1,8 +1,8 @@
 #include <iostream>
 #include <thread>
-#include "ParticleConfig.h"
-#include "Particle.h"
-#include "ParticleSystem.h"
+#include "../include/ParticleConfig.h"
+#include "../include/Particle.h"
+#include "../include/ParticleSystem.h"
 
 int main()
 {

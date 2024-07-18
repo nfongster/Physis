@@ -1,4 +1,4 @@
-#include "ParticleSystem.h"
+#include "../include/ParticleSystem.h"
 
 ParticleSystem::ParticleSystem(ParticleConfig config, float t_total, float dt)
     : particle(new Particle(config)), t_total(t_total), t_current(0.0), dt(dt) 

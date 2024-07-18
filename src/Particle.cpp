@@ -1,4 +1,4 @@
-#include "Particle.h"
+#include "../include/Particle.h"
 
 Particle::Particle(ParticleConfig config) 
     : m_x(config.x0), m_v(config.v0), m_a(config.a0) 
