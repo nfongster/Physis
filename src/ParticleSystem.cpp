@@ -1,20 +1,31 @@
+#include <iostream>
 #include "../include/ParticleSystem.h"
 
 ParticleSystem::ParticleSystem(ParticleConfig config, float t_total, float dt)
-    : particle(new Particle(config)), t_total(t_total), t_current(0.0), dt(dt) 
-    { }
+    : particle(new Particle(config)), t_total(t_total), t_current(0.0), dt(dt)
+{
+    this->x_buffer = new float[int(t_total / dt) + 1];
+    this->v_buffer = new float[int(t_total / dt) + 1];
+}
 
 ParticleSystem::~ParticleSystem()
 {
     delete this->particle;
+    delete[] this->x_buffer;
+    delete[] this->v_buffer;
 }
 
 void ParticleSystem::Execute()
 {
+    float* px = x_buffer;
+    float* pv = v_buffer;
     while (this->is_running())
     {
         this->particle->step(this->dt);
         this->t_current += this->dt;
+        *px = this->particle->get_x();
+        *pv = this->particle->get_v();
+        px++, pv++;
     }
 }
 

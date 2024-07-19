@@ -11,6 +11,10 @@ private:
     Particle* particle;
 
 public:
+    float* x_buffer;
+    float* v_buffer;
+
+public:
     ParticleSystem(ParticleConfig config, float t_total, float dt);
     ~ParticleSystem();
     void Execute();

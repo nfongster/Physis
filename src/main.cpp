@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <thread>
 #include "../include/ParticleConfig.h"
 #include "../include/Particle.h"
@@ -7,7 +8,7 @@
 int main()
 {
     std::cout << "Welcome to the physics simulator.\n";
-    std::cout << "Please provide the starting parameters when prompted to do so.\n";
+    std::cout << "Please provide the starting parameters for the system:\n";
     
     float x0, v0, a0, t_total, dt;
     std::cout << "(1) Initial position (x):\t";
@@ -25,15 +26,10 @@ int main()
     std::cout << "(6) Time Step (s):\t\t";
     std::cin >> dt;
 
-    std::cout << "\nYou entered:"
-        << "\n\tx0:\t" << x0
-        << "\n\tv0:\t" << v0
-        << "\n\ta0:\t" << a0
-        << "\n\tt:\t"  << t_total
-        << "\n\tdt:\t" << dt << '\n';
-
     ParticleConfig config = ParticleConfig(x0, v0, a0);
     ParticleSystem* system = new ParticleSystem(config, t_total, dt);
+    float* px = system->x_buffer;
+    float* pv = system->v_buffer;
 
     std::cout << "\nExecuting particle system on a separate thread...\n";
     std::thread worker([&]() 
@@ -50,5 +46,11 @@ int main()
         << "\n\tdv:\t" << system->delta_v(v0)
         << "\n\tvAvg:\t" << system->average_v(x0) << '\n';
 
+    std::cout << "\nSystem log (t, x, v):\n\n";
+    for (float t = 0; t < t_total; t += dt)
+    {
+        std::cout << "\t" << t << "\t" << *px << "\t" << *pv << "\n";
+        px++, pv++;
+    }
     delete system;
 }
