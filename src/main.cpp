@@ -34,7 +34,7 @@ int main()
     std::cout << "\nExecuting particle system on a separate thread...\n";
     std::thread worker([&]() 
                 { 
-                    system->Execute();
+                    system->execute();
                 });
     worker.join();
     std::cout << "Execution complete.\n";

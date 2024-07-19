@@ -15,7 +15,7 @@ ParticleSystem::~ParticleSystem()
     delete[] this->v_buffer;
 }
 
-void ParticleSystem::Execute()
+void ParticleSystem::execute()
 {
     float* px = x_buffer;
     float* pv = v_buffer;

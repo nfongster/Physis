@@ -5,10 +5,10 @@
 class ParticleSystem
 {
 private:
+    Particle* particle;
     float t_total;
     float t_current;
     float dt;
-    Particle* particle;
 
 public:
     float* x_buffer;
@@ -17,8 +17,10 @@ public:
 public:
     ParticleSystem(ParticleConfig config, float t_total, float dt);
     ~ParticleSystem();
-    void Execute();
+
+    void execute();
     bool is_running();
+
     float get_x();
     float get_v();
     float get_a();
