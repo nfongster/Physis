@@ -2,17 +2,22 @@ SRC_DIR = ./src
 BUILD_DIR = ./build
 APP_DIR = ./apps
 INC_DIR = ./include
-CONSOLE_DIR = $(APP_DIR)/console
 
 CXX = g++
 CXXFLAGS = -Wall -I$(INC_DIR)
 
-EXE_NAME = main
+CONSOLE_EXE = main
+GUI_EXE = gui
 
-SRCS = $(shell find $(SRC_DIR) $(APP_DIR) -name '*.cpp')
+SRCS = $(shell find $(SRC_DIR) -name '*.cpp')
 OBJS = $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
-$(EXE_NAME): $(OBJS)
+all: $(CONSOLE_EXE) $(GUI_EXE)
+
+$(CONSOLE_EXE): $(APP_DIR)/console/main.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(GUI_EXE): $(APP_DIR)/gui/gui.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
@@ -20,4 +25,4 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(EXE_NAME)
+	rm -rf $(BUILD_DIR) $(CONSOLE_EXE) $(GUI_EXE)
