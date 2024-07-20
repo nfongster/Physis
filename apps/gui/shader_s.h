@@ -57,33 +57,21 @@ public:
 
         // 2) CREATE THE FRAGMENT SHADER
         // Do the same thing as for the vertex shader.
-        unsigned int triforceFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(triforceFragmentShader, 1, &triforceFragmentShaderCode, NULL);
-        glCompileShader(triforceFragmentShader);
-        checkCompileErrors(triforceFragmentShader, "TRIFORCEFRAGMENT");
-
-        // unsigned int redFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        // glShaderSource(redFragmentShader, 1, &redFragmentShaderSource, NULL);
-        // glCompileShader(redFragmentShader);
-        // checkCompileErrors(redFragmentShader, "REDFRAGMENT");
+        unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &triforceFragmentShaderCode, NULL);
+        glCompileShader(fragmentShader);
+        checkCompileErrors(fragmentShader, "FRAGMENT");
 
         // 3) LINK THE SHADER PROGRAM
         // Simply create a shader program object, attach our shaders to it, then link them.
         ID = glCreateProgram();
         glAttachShader(ID, vertexShader);
-        glAttachShader(ID, triforceFragmentShader);
+        glAttachShader(ID, fragmentShader);
         glLinkProgram(ID);
         checkLinkErrors(ID);
 
-        // unsigned int shaderProgramRed = glCreateProgram();
-        // glAttachShader(shaderProgramRed, vertexShader);
-        // glAttachShader(shaderProgramRed, redFragmentShader);
-        // glLinkProgram(shaderProgramRed);
-        // checkLinkErrors(shaderProgramRed);
-
         glDeleteShader(vertexShader);
-        glDeleteShader(triforceFragmentShader);
-        // glDeleteShader(redFragmentShader);
+        glDeleteShader(fragmentShader);
     }
     // use/activate the shader
     void use()
@@ -103,6 +91,10 @@ public:
     { 
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
     }   
+    // void setPos(const std::string &name, float x, float y) const
+    // {
+    //     glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, 0.0f);
+    // }
 
     void checkCompileErrors(unsigned int shaderId, const char* type)
     {

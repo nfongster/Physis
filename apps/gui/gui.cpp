@@ -36,16 +36,20 @@ int main()
         return -1;
     }
 
-    ParticleConfig config = ParticleConfig(-0.5, 1, 0);
-    ParticleSystem* system = new ParticleSystem(config, 100, 1);
-    system->execute();
+    // ParticleConfig config = ParticleConfig(-0.5, 1, 0);
+    // ParticleSystem* system = new ParticleSystem(config, 100, 1);
+    // system->execute();
 
     Shader shader("apps/gui/shaders/vShader.glsl", "apps/gui/shaders/fShader.glsl");
 
+    float xi_top = -0.50f;
+    float xi_lft = -0.51f;
+    float xi_rgt = -0.49f;
+    
     float vertices[] = {
-        -0.5f, 0.02f, 0.0f,    0.0f, 0.0f, 0.0f,  // Top
-        -0.51f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,  // Left
-        -0.49f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f   // Right
+        xi_top, 0.02f, 0.0f,    0.0f, 0.0f, 0.0f,  // Top
+        xi_lft, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,  // Left
+        xi_rgt, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f   // Right
     };
 
     // Generate VBOs (for storing batches of vertices on the GPU) and VAOs (for managing them)
@@ -60,10 +64,10 @@ int main()
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -71,6 +75,7 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     
+    float dx = 0.0005; // step size per frame
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -78,14 +83,27 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         shader.use();
 
+        // update locations
+        if (vertices[0] < 0.5)
+            vertices[0] += dx;
+        if (vertices[6] < 0.49)
+            vertices[6] += dx;
+        if (vertices[12] < 0.51)
+            vertices[12] += dx;
+        // shader.setPos("vertexTop", xi_top, 0.02f);
+        // shader.setPos("vertexLft", xi_lft, 0.00f);
+        // shader.setPos("vertexRgt", xi_rgt, 0.00f);
+
         glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     glfwTerminate();
-    delete system;
+    //delete system;
     return 0;
 }
 
