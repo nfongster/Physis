@@ -2,3 +2,4 @@
 build/
 main
 gui
+gui/glad.c
