@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader_s.h"
+#include "Particle.h"
+#include "ParticleConfig.h"
+#include "ParticleSystem.h"
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
@@ -33,15 +36,16 @@ int main()
         return -1;
     }
 
+    ParticleConfig config = ParticleConfig(-0.5, 1, 0);
+    ParticleSystem* system = new ParticleSystem(config, 100, 1);
+    system->execute();
+
     Shader shader("apps/gui/shaders/vShader.glsl", "apps/gui/shaders/fShader.glsl");
 
-    float triforceVertices[] = {
-        0.0f, 0.75f, 0.0f,      0.0f, 0.0f, 1.0f,      // Top
-        -0.375f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f,    // Left
-        0.375f, 0.0f, 0.0f,     1.0f, 0.0f, 0.0f,     // Right
-        -0.75f, -0.75f, 0.0f,   1.0f, 0.0f, 0.0f,   // Bottom-Left
-        0.0f, -0.75f, 0.0f,     0.0f, 0.0f, 1.0f,     // Bottom
-        0.75f, -0.75f, 0.0f,    0.0f, 1.0f, 0.0f,     // Bottom-Right
+    float vertices[] = {
+        -0.5f, 0.02f, 0.0f,    0.0f, 0.0f, 0.0f,  // Top
+        -0.51f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f,  // Left
+        -0.49f, 0.0f, 0.0f,    0.0f, 0.0f, 0.0f   // Right
     };
 
     // Generate VBOs (for storing batches of vertices on the GPU) and VAOs (for managing them)
@@ -51,14 +55,12 @@ int main()
     glGenBuffers(1, &EBO);
 
     unsigned int indices[] = {
-        0, 1, 2,    // Top Triangle
-        1, 3, 4,    // Left Triangle
-        2, 4, 5     // Right Triangle
+        0, 1, 2
     };
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triforceVertices), triforceVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -68,35 +70,6 @@ int main()
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    float verticesRed[] = {
-        -0.375f, 0.5f, 0.0f,  // left
-        -0.4f, 0.525f, 0.0f,
-        -0.35f, 0.525f, 0.0f,
-        0.375f, 0.5f, 0.0f,  // right
-        0.4f, 0.525f, 0.0f,
-        0.35f, 0.525f, 0.0f,
-    };
-   
-    unsigned int VBOred, VAOred, EBOred;
-    glGenVertexArrays(1, &VAOred);
-    glGenBuffers(1, &VBOred);
-    glGenBuffers(1, &EBOred);
-
-    unsigned int indicesRed[] = {
-        0, 1, 2,  // left
-        3, 4, 5   // right
-    };
-
-    glBindVertexArray(VAOred);
-    glBindBuffer(GL_ARRAY_BUFFER, VBOred);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesRed), verticesRed, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOred);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesRed), indicesRed, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
     
     while (!glfwWindowShouldClose(window))
     {
@@ -112,6 +85,7 @@ int main()
     }
 
     glfwTerminate();
+    delete system;
     return 0;
 }
 
