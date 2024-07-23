@@ -31,13 +31,19 @@ int main()
     float* px = system->x_buffer;
     float* pv = system->v_buffer;
 
-    std::cout << "\nExecuting particle system on a separate thread...\n";
-    std::thread worker([&]() 
-                { 
-                    system->execute();
-                });
-    worker.join();
-    std::cout << "Execution complete.\n";
+    // std::cout << "\nExecuting particle system on a separate thread...\n";
+    // std::thread worker([&]() 
+    //             { 
+    //                 system->execute();
+    //             });
+    // worker.join();
+    // std::cout << "Execution complete.\n";
+
+    std::cout << "\nBeginning system execution...\n";
+    while (system->is_running())
+    {
+        system->step();
+    }
 
     std::cout << "\nFinal system parameters:"
         << "\n\txf:\t" << system->get_x()

@@ -36,9 +36,10 @@ int main()
         return -1;
     }
 
-    // ParticleConfig config = ParticleConfig(-0.5, 1, 0);
+    // float x0 = -0.5;
+    // float v0 = 1;
+    // ParticleConfig config = ParticleConfig(x0, v0, 0);
     // ParticleSystem* system = new ParticleSystem(config, 100, 1);
-    // system->execute();
 
     Shader shader("apps/gui/shaders/vShader.glsl", "apps/gui/shaders/fShader.glsl");
 
@@ -103,7 +104,7 @@ int main()
     }
 
     glfwTerminate();
-    //delete system;
+    // delete system;
     return 0;
 }
 

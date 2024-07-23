@@ -6,6 +6,8 @@ ParticleSystem::ParticleSystem(ParticleConfig config, float t_total, float dt)
 {
     this->x_buffer = new float[int(t_total / dt) + 1];
     this->v_buffer = new float[int(t_total / dt) + 1];
+    px = x_buffer;
+    pv = v_buffer;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -27,6 +29,15 @@ void ParticleSystem::execute()
         *pv = this->particle->get_v();
         px++, pv++;
     }
+}
+
+void ParticleSystem::step()
+{
+    this->particle->step(this->dt);
+    this->t_current += this->dt;
+    *px = this->particle->get_x();
+    *pv = this->particle->get_v();
+    px++, pv++;
 }
 
 bool ParticleSystem::is_running()

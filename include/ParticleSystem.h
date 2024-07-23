@@ -10,6 +10,9 @@ private:
     float t_current;
     float dt;
 
+    float* px;
+    float* pv;
+
 public:
     float* x_buffer;
     float* v_buffer;
@@ -19,6 +22,7 @@ public:
     ~ParticleSystem();
 
     void execute();
+    void step();
     bool is_running();
 
     float get_x();
