@@ -9,11 +9,38 @@
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
 
+const float xi_top = -0.50f;
+const float xi_lft = -0.51f;
+const float xi_rgt = -0.49f;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 int main()
 {
+    float v0;
+    float a0;
+    float dt;
+    float t_total;
+
+    std::cout << "Welcome to the physics simulator.\n";
+    std::cout << "Please provide the starting parameters for the system:\n";
+
+    std::cout << "(2) Initial velocity (x):\t";
+    std::cin >> v0;  // suggested: 1.0
+
+    std::cout << "(3) Acceleration (constant, x):\t";
+    std::cin >> a0;  // suggested: 200
+
+    std::cout << "(5) Total Time (s):\t\t";
+    std::cin >> t_total;  // suggested: 100
+
+    std::cout << "(6) Time Step (s):\t\t";
+    std::cin >> dt;  // suggested: 0.0005
+
+    ParticleConfig config = ParticleConfig(xi_top, v0, a0);
+    ParticleSystem* system = new ParticleSystem(config, t_total, dt);
+
     int success = glfwInit();
     
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -36,16 +63,7 @@ int main()
         return -1;
     }
 
-    // float x0 = -0.5;
-    // float v0 = 1;
-    // ParticleConfig config = ParticleConfig(x0, v0, 0);
-    // ParticleSystem* system = new ParticleSystem(config, 100, 1);
-
     Shader shader("apps/gui/shaders/vShader.glsl", "apps/gui/shaders/fShader.glsl");
-
-    float xi_top = -0.50f;
-    float xi_lft = -0.51f;
-    float xi_rgt = -0.49f;
     
     float vertices[] = {
         xi_top, 0.02f, 0.0f,    0.0f, 0.0f, 0.0f,  // Top
@@ -76,7 +94,6 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     
-    float dx = 0.0005; // step size per frame
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -84,13 +101,16 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         shader.use();
 
-        // update locations
-        if (vertices[0] < 0.5)
-            vertices[0] += dx;
-        if (vertices[6] < 0.49)
-            vertices[6] += dx;
-        if (vertices[12] < 0.51)
-            vertices[12] += dx;
+        // step and update locations
+        if (system->is_running())
+        {
+            system->step();
+            float x = system->get_x();
+            vertices[0] = x;
+            vertices[6] = x - 0.01f;
+            vertices[12] = x + 0.01f;
+        }
+        
         // shader.setPos("vertexTop", xi_top, 0.02f);
         // shader.setPos("vertexLft", xi_lft, 0.00f);
         // shader.setPos("vertexRgt", xi_rgt, 0.00f);
@@ -104,7 +124,7 @@ int main()
     }
 
     glfwTerminate();
-    // delete system;
+    delete system;
     return 0;
 }
 
