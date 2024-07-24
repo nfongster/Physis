@@ -22,7 +22,7 @@ public:
     ~ParticleSystem();
 
     void execute();
-    void step();
+    void step(const float timeStep);
     bool is_running();
 
     float get_x();

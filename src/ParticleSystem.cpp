@@ -31,7 +31,7 @@ void ParticleSystem::execute()
     }
 }
 
-void ParticleSystem::step()
+void ParticleSystem::step(const float dt)
 {
     this->particle->step(this->dt);
     this->t_current += this->dt;

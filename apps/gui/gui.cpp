@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <algorithm>
+#include <chrono>
 #include <iostream>
 #include "shader_s.h"
 #include "Particle.h"
@@ -94,6 +96,7 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     
+    auto start = std::chrono::system_clock::now();
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -102,13 +105,24 @@ int main()
         shader.use();
 
         // step and update locations
+        auto end = std::chrono::system_clock::now();
+        //std::cout << (end - start).count() * 1e-9 << '\n';
+        float frameTime = (end - start).count() * 1e-9f;  // in seconds
+        start = end;
         if (system->is_running())
         {
-            system->step();
-            float x = system->get_x();
-            vertices[0] = x;
-            vertices[6] = x - 0.01f;
-            vertices[12] = x + 0.01f;
+            while (frameTime > 0.0)
+            {
+                float timeStep = std::min(frameTime, dt);
+
+                system->step(timeStep);
+                float x = system->get_x();
+                vertices[0] = x;
+                vertices[6] = x - 0.01f;
+                vertices[12] = x + 0.01f;
+
+                frameTime -= timeStep;
+            }
         }
         
         // shader.setPos("vertexTop", xi_top, 0.02f);

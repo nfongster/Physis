@@ -42,7 +42,7 @@ int main()
     std::cout << "\nBeginning system execution...\n";
     while (system->is_running())
     {
-        system->step();
+        system->step(dt);
     }
 
     std::cout << "\nFinal system parameters:"
