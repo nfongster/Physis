@@ -97,6 +97,10 @@ int main()
     glEnableVertexAttribArray(1);
     
     auto start = std::chrono::system_clock::now();
+
+    // Accumulator tracks leftover simulation time that must carry over to the next frame
+    // (i.e., if that leftover time is < dt)
+    float accumulator = 0.0f;
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -106,22 +110,21 @@ int main()
 
         // step and update locations
         auto end = std::chrono::system_clock::now();
-        //std::cout << (end - start).count() * 1e-9 << '\n';
         float frameTime = (end - start).count() * 1e-9f;  // in seconds
         start = end;
+        accumulator += frameTime;
+
         if (system->is_running())
         {
-            while (frameTime > 0.0)
+            while (accumulator >= dt)
             {
-                float timeStep = std::min(frameTime, dt);
-
-                system->step(timeStep);
+                system->step(dt);
                 float x = system->get_x();
                 vertices[0] = x;
                 vertices[6] = x - 0.01f;
                 vertices[12] = x + 0.01f;
 
-                frameTime -= timeStep;
+                accumulator -= dt;
             }
         }
         
