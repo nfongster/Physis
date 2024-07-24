@@ -1,5 +1,4 @@
 .vscode
 build/
 main
-gui
-gui/glad.c
+glad.c
