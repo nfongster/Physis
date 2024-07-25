@@ -29,16 +29,16 @@ int main()
     std::cout << "Please provide the starting parameters for the system:\n";
 
     std::cout << "(2) Initial velocity (x):\t";
-    std::cin >> v0;  // suggested: 1.0
+    std::cin >> v0;  // suggested: 0
 
     std::cout << "(3) Acceleration (constant, x):\t";
-    std::cin >> a0;  // suggested: 200
+    std::cin >> a0;  // suggested: 0.08
 
     std::cout << "(5) Total Time (s):\t\t";
-    std::cin >> t_total;  // suggested: 100
+    std::cin >> t_total;  // suggested: 5
 
     std::cout << "(6) Time Step (s):\t\t";
-    std::cin >> dt;  // suggested: 0.0005
+    std::cin >> dt;  // suggested: < 0.03 (estimated framerate)
 
     ParticleConfig config = ParticleConfig(xi_top, v0, a0);
     ParticleSystem* system = new ParticleSystem(config, t_total, dt);
@@ -101,10 +101,10 @@ int main()
     // Accumulator tracks leftover simulation time that must carry over to the next frame
     // (i.e., if that leftover time is < dt)
     float accumulator = 0.0f;
+    glClearColor(0.42f, 0.41f, 0.37f, 1.0f);
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
-        glClearColor(0.42f, 0.41f, 0.37f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         shader.use();
 
@@ -116,16 +116,22 @@ int main()
 
         if (system->is_running())
         {
+            float x_prev = system->get_x();
             while (accumulator >= dt)
             {
+                x_prev = system->get_x();
                 system->step(dt);
-                float x = system->get_x();
-                vertices[0] = x;
-                vertices[6] = x - 0.01f;
-                vertices[12] = x + 0.01f;
-
                 accumulator -= dt;
             }
+
+            // blending factor for interpolation
+            const double alpha = accumulator / dt;
+
+            // update vertex locations
+            float x_interp = system->get_x() * alpha + x_prev * (1.0 - alpha);
+            vertices[0] = x_interp;
+            vertices[6] = x_interp - 0.01f;
+            vertices[12] = x_interp + 0.01f;
         }
         
         // shader.setPos("vertexTop", xi_top, 0.02f);
