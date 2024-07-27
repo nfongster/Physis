@@ -1,2 +1,2 @@
-# physica
+# Physis
 A general-purpose physics simulator.
