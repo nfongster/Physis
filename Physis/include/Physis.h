@@ -5,3 +5,5 @@
 #else
 #define PHYSIS_API __declspec(dllimport)
 #endif
+
+#include "Engine.h"
