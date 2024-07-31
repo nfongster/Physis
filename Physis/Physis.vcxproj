@@ -19,11 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\SystemState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Physis.h" />
     <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\SystemState.h" />
+    <ClInclude Include="include\Particle.h" />
+    <ClInclude Include="include\Vec.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
