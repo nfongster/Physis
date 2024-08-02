@@ -13,3 +13,8 @@ Particle* SystemState::GetParticle()
 {
 	return m_particle;
 }
+
+void SystemState::Step(double dt)
+{
+	m_particle->Step(dt);
+}

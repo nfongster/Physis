@@ -11,4 +11,5 @@ public:
 	~SystemState();
 
 	Particle* GetParticle();
+	void Step(double dt);
 };

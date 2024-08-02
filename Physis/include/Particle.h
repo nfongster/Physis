@@ -15,4 +15,6 @@ public:
 	Vec2 GetPosition();
 	Vec2 GetVelocity();
 	Vec2 GetAcceleration();
+
+	void Step(double dt);
 };
