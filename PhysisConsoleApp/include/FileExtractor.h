@@ -3,8 +3,9 @@
 #include <tuple>
 #include "InitialConditions.h"
 #include "SystemConfig.h"
+#include "Extractor.h"
 
-class FileExtractor
+class FileExtractor : public Extractor
 {
 private:
 	std::ifstream m_file;

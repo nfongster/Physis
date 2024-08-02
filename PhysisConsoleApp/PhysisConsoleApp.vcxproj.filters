@@ -41,6 +41,9 @@
     <ClInclude Include="include\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Extractor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resource\default_initial_conditions.txt" />

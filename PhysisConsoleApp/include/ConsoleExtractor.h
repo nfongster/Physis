@@ -1,9 +1,10 @@
 #pragma once
 #include <tuple>
+#include "Extractor.h"
 #include "InitialConditions.h"
 #include "SystemConfig.h"
 
-class ConsoleExtractor
+class ConsoleExtractor : public Extractor
 {
 public:
 	ConsoleExtractor();
