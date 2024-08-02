@@ -39,15 +39,6 @@ static T GetValueFromPrompt(const char* prompt)
 	return input;
 }
 
-enum DataType
-{
-	Position,
-	Velocity,
-	Acceleration, 
-	TotalTime,
-	DeltaTime
-};
-
 int main()
 {
 	std::cout << "Running the client test app..." << '\n';
@@ -58,6 +49,7 @@ int main()
 	std::cin >> arg;
 	if (arg == 'c' || arg == 'C')
 	{
+		//auto init_conditions = consoleExtractor.Execute();
 		std::cout << "Please enter the initial conditions:\n";
 
 		r0x = GetValueFromPrompt<double>("r0.x (m):\t");
@@ -74,59 +66,43 @@ int main()
 		std::string filepath = GetValueFromPrompt<std::string>("Please enter the filename:\n");
 		std::cout << "You entered: " << filepath << '\n';
 		std::ifstream file(filepath);
-		std::string data;
+		std::string line;
+		int index;
 
-		DataType state = DataType::Position;
-		std::string index;
-		while (std::getline(file, data, ','))
+		// Parse metadata
+		std::getline(file, line);
+		std::string token;
+		std::stringstream ss = std::stringstream(line);
+		while (std::getline(ss, token, ','))
 		{
-			index = atoi(data.c_str());
-			std::getline(file, data, ',');
-
-			if (data == "r0")
-				state = DataType::Position;
-			else if (data == "v0")
-				state = DataType::Velocity;
-			else if (data == "a0")
-				state = DataType::Acceleration;
-			else if (data == "t")
-				state = DataType::TotalTime;
-			else if (data == "dt")
-				state = DataType::DeltaTime;
-						
-			switch (state)
-			{
-				case DataType::Position:
-					std::getline(file, data, ',');
-					r0x = atof(data.c_str());
-					std::getline(file, data);
-					r0y = atof(data.c_str());
-					break;
-
-				case DataType::Velocity:
-					std::getline(file, data, ',');
-					v0x = atof(data.c_str());
-					std::getline(file, data);
-					v0y = atof(data.c_str());
-					break;
-
-				case DataType::Acceleration:
-					std::getline(file, data, ',');
-					a0x = atof(data.c_str());
-					std::getline(file, data);
-					a0y = atof(data.c_str());
-					break;
-
-				case DataType::TotalTime:
-					std::getline(file, data);
-					t_total = atof(data.c_str());
-					break;
-
-				case DataType::DeltaTime:
-					std::getline(file, data);
-					dt = atof(data.c_str());
-					break;
+			if (token == "t") {
+				std::getline(ss, token, ',');
+				t_total = atof(token.c_str());
 			}
+			else if (token == "dt") {
+				std::getline(ss, token, ',');
+				dt = atof(token.c_str());
+			}
+		}
+		std::getline(file, line);
+		// TODO: parse header if we want to support different format types
+		while (std::getline(file, line))
+		{
+			float* initial_conditions = new float[7];
+			int i = 0;
+			ss = std::stringstream(line);
+			while (std::getline(ss, token, ','))
+			{
+				initial_conditions[i++] = atof(token.c_str());
+			}
+			index = (int)initial_conditions[0];
+			r0x = initial_conditions[1];
+			r0y = initial_conditions[2];
+			v0x = initial_conditions[3];
+			v0y = initial_conditions[4];
+			a0x = initial_conditions[5];
+			a0y = initial_conditions[6];
+			delete[] initial_conditions;
 		}
 	}
 
