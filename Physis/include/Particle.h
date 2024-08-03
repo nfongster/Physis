@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Vec.h"
+#include "InitialConditions.h"
 
 class PHYSIS_API Particle
 {
@@ -12,6 +13,7 @@ private:
 
 public:
 	Particle();
+	Particle(InitialConditions ic);
 	~Particle();
 
 	Vec2 GetPosition();

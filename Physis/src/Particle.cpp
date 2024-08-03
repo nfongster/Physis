@@ -1,6 +1,12 @@
 #include "Particle.h"
 
-Particle::Particle() : m_pos(Vec2(0, 0)), m_vel(Vec2(0, 0)), m_acc(Vec2(0, 0))
+Particle::Particle() 
+	: m_pos(Vec2(0, 0)), m_vel(Vec2(0, 0)), m_acc(Vec2(0, 0))
+{
+}
+
+Particle::Particle(InitialConditions ic)
+	: m_pos(ic.r), m_vel(ic.v), m_acc(ic.a)
 {
 }
 
@@ -25,11 +31,11 @@ Vec2 Particle::GetAcceleration()
 
 void Particle::Step(double dt)
 {
-	m_pos.X = (m_vel.X * dt) + (0.5 * m_acc.X * dt * dt);
-	m_pos.Y = (m_vel.Y * dt) + (0.5 * m_acc.Y * dt * dt);
+	m_pos.X += (m_vel.X * dt) + (0.5 * m_acc.X * dt * dt);
+	m_pos.Y += (m_vel.Y * dt) + (0.5 * m_acc.Y * dt * dt);
 
-	m_vel.X = m_acc.X * dt;
-	m_vel.Y = m_acc.Y * dt;
+	m_vel.X += m_acc.X * dt;
+	m_vel.Y += m_acc.Y * dt;
 }
 
 //std::string Particle::PrintState()

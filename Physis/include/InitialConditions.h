@@ -1,5 +1,4 @@
 #pragma once
-#include <Physis.h>
 
 struct InitialConditions
 {
