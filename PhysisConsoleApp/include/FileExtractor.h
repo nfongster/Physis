@@ -1,6 +1,8 @@
 #pragma once
+
 #include <fstream>
 #include <tuple>
+#include <sstream>
 #include "InitialConditions.h"
 #include "SystemConfig.h"
 #include "Extractor.h"

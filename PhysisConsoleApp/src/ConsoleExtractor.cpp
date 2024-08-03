@@ -1,6 +1,4 @@
 #include "ConsoleExtractor.h"
-#include "Utility.h"
-#include <iostream>
 
 ConsoleExtractor::ConsoleExtractor()
 {

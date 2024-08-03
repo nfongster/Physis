@@ -1,7 +1,9 @@
 #pragma once
+
+#include "Core.h"
 #include "Vec.h"
 
-class Particle
+class PHYSIS_API Particle
 {
 private:
 	Vec2 m_pos;

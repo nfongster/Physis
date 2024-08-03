@@ -1,5 +1,4 @@
 #include "FileExtractor.h"
-#include <sstream>
 
 FileExtractor::FileExtractor(const char* filepath) 
 	: m_file(std::ifstream(filepath)) { }

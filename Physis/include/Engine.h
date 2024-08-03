@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Physis.h"
+#include <iostream>
+#include "Core.h"
 #include "SystemState.h"
 
 class PHYSIS_API Engine

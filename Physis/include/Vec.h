@@ -1,6 +1,8 @@
 #pragma once
 
-struct Vec1
+#include "Core.h"
+
+struct PHYSIS_API Vec1
 {
 public:
 	double X;
@@ -9,7 +11,7 @@ public:
 	Vec1(double x) : X(x) {};
 };
 
-struct Vec2
+struct PHYSIS_API Vec2
 {
 public:
 	double X;
@@ -19,7 +21,7 @@ public:
 	Vec2(double x, double y) : X(x), Y(y) {};
 };
 
-struct Vec3
+struct PHYSIS_API Vec3
 {
 public:
 	double X;

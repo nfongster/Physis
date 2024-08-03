@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Particle.h"
 
 Particle::Particle() : m_pos(Vec2(0, 0)), m_vel(Vec2(0, 0)), m_acc(Vec2(0, 0))

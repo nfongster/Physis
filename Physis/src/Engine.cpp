@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Engine.h"
 
 Engine::Engine() : m_system(new SystemState())
