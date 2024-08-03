@@ -1,6 +1,7 @@
 # Directories
 .vs/
 x64/
+thirdparty/
 
 # Files
 *.vcxproj.user
