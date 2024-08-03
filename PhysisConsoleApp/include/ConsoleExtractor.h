@@ -2,9 +2,8 @@
 
 #include <iostream>
 #include <tuple>
+#include <Physis.h>
 #include "Extractor.h"
-#include "InitialConditions.h"
-#include "SystemConfig.h"
 #include "Utility.h"
 
 class ConsoleExtractor : public Extractor

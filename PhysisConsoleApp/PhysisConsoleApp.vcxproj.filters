@@ -32,12 +32,6 @@
     <ClInclude Include="include\FileExtractor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\InitialConditions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SystemConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>

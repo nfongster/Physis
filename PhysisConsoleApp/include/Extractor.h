@@ -1,7 +1,6 @@
 #pragma once
 #include <tuple>
-#include "InitialConditions.h"
-#include "SystemConfig.h"
+#include <Physis.h>
 
 class Extractor
 {

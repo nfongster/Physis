@@ -41,7 +41,13 @@
     <ClInclude Include="include\Vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Physis.h">
+    <ClInclude Include="Physis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InitialConditions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SystemConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
