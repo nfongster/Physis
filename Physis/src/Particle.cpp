@@ -31,6 +31,9 @@ Vec2 Particle::GetAcceleration()
 
 void Particle::Step(double dt)
 {
+	if (dt < 0)
+		throw std::invalid_argument("Input value was negative!");
+
 	m_pos.X += (m_vel.X * dt) + (0.5 * m_acc.X * dt * dt);
 	m_pos.Y += (m_vel.Y * dt) + (0.5 * m_acc.Y * dt * dt);
 

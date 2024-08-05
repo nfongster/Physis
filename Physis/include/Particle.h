@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include "Core.h"
 #include "Vec.h"
 #include "InitialConditions.h"
