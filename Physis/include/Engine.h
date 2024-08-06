@@ -2,12 +2,12 @@
 
 #include <iostream>
 #include "Core.h"
-#include "SystemState.h"
+#include "ParticleSystem.h"
 
 class PHYSIS_API Engine
 {
 private:
-	SystemState* m_system;
+	ParticleSystem* m_system;
 
 public:
 	Engine();

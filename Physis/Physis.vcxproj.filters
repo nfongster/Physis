@@ -18,7 +18,7 @@
     <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SystemState.cpp">
+    <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Particle.cpp">
@@ -32,7 +32,7 @@
     <ClInclude Include="include\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SystemState.h">
+    <ClInclude Include="include\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Particle.h">

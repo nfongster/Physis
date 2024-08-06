@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-Engine::Engine() : m_system(new SystemState())
+Engine::Engine() : m_system(new ParticleSystem())
 {
 }
 

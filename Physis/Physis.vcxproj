@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\SystemState.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.h" />
@@ -29,7 +29,7 @@
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="Physis.h" />
     <ClInclude Include="include\SystemConfig.h" />
-    <ClInclude Include="include\SystemState.h" />
+    <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\Vec.h" />
   </ItemGroup>

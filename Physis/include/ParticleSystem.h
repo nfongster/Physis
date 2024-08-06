@@ -1,14 +1,14 @@
 #pragma once
 #include "Particle.h"
 
-class SystemState
+class ParticleSystem
 {
 private:
 	Particle* m_particle;
 
 public:
-	SystemState();
-	~SystemState();
+	ParticleSystem();
+	~ParticleSystem();
 
 	Particle* GetParticle();
 	void Step(double dt);
