@@ -1,20 +1,23 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem() : m_particle(new Particle())
+ParticleSystem::ParticleSystem() 
+	: m_particles(std::vector<Particle*>{ new Particle() })
 {
 }
 
 ParticleSystem::~ParticleSystem()
 {
-	delete m_particle;
+	for (Particle* p : m_particles)
+		delete p;
 }
 
-Particle* ParticleSystem::GetParticle()
+std::vector<Particle*> ParticleSystem::GetParticles()
 {
-	return m_particle;
+	return m_particles;
 }
 
 void ParticleSystem::Step(double dt)
 {
-	m_particle->Step(dt);
+	for (Particle* p : m_particles)
+		p->Step(dt);
 }

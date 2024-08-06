@@ -12,7 +12,7 @@ Engine::~Engine()
 void Engine::Run()
 {
 	std::cout << "Welcome to the Physis (f-EYE-sis) Engine." << '\n';
-	auto particle = m_system->GetParticle();
+	auto particle = m_system->GetParticles();
 
 	/*std::cout << "rx\try\tvx\tvy\tax\tay\n";
 	particle->PrintState();*/

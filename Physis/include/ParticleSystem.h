@@ -1,15 +1,16 @@
 #pragma once
 #include "Particle.h"
+#include <vector>
 
 class PHYSIS_API ParticleSystem
 {
 private:
-	Particle* m_particle;
+	std::vector<Particle*> m_particles;
 
 public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	Particle* GetParticle();
+	std::vector<Particle*> GetParticles();
 	void Step(double dt);
 };
