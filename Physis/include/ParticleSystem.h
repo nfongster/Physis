@@ -1,7 +1,7 @@
 #pragma once
 #include "Particle.h"
 
-class ParticleSystem
+class PHYSIS_API ParticleSystem
 {
 private:
 	Particle* m_particle;

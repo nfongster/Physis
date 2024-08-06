@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="test\ParticleSystemTest.cpp" />
     <ClCompile Include="test\_main.cpp" />
     <ClCompile Include="test\ParticleTest.cpp" />
     <ClCompile Include="test\VecTest.cpp" />
