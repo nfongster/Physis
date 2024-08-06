@@ -1,7 +1,6 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem() 
-	: m_particles(std::vector<Particle*>{ new Particle() })
+ParticleSystem::ParticleSystem() : m_particles(std::vector<Particle*>())
 {
 }
 
@@ -14,6 +13,11 @@ ParticleSystem::~ParticleSystem()
 std::vector<Particle*> ParticleSystem::GetParticles()
 {
 	return m_particles;
+}
+
+void ParticleSystem::Add(InitialConditions ic)
+{
+	m_particles.push_back(new Particle(ic));
 }
 
 void ParticleSystem::Step(double dt)

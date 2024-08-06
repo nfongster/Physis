@@ -48,3 +48,45 @@ TEST_CASE("Vec3 injected values are expected")
 	REQUIRE(v.Y == y);
 	REQUIRE(v.Z == z);
 }
+
+TEST_CASE("Two identical Vec1's are equal")
+{
+	Vec1 a = Vec1(3);
+	Vec1 b = Vec1(3);
+	REQUIRE(a == b);
+}
+
+TEST_CASE("Two identical Vec2's are equal")
+{
+	Vec2 a = Vec2(3, 4);
+	Vec2 b = Vec2(3, 4);
+	REQUIRE(a == b);
+}
+
+TEST_CASE("Two identical Vec3's are equal")
+{
+	Vec3 a = Vec3(3, 4, -8);
+	Vec3 b = Vec3(3, 4, -8);
+	REQUIRE(a == b);
+}
+
+TEST_CASE("Two different Vec1's are not equal")
+{
+	Vec1 a = Vec1(3);
+	Vec1 b = Vec1(2);
+	REQUIRE(a != b);
+}
+
+TEST_CASE("Two different Vec2's are not equal")
+{
+	Vec2 a = Vec2(3, 4);
+	Vec2 b = Vec2(3, 5);
+	REQUIRE(a != b);
+}
+
+TEST_CASE("Two different Vec3's are not equal")
+{
+	Vec3 a = Vec3(3, 4, -8);
+	Vec3 b = Vec3(3, 3, -8);
+	REQUIRE(a != b);
+}
