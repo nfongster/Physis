@@ -34,8 +34,8 @@ void Particle::Step(double dt)
 	if (dt < 0)
 		throw std::invalid_argument("Input value was negative!");
 
-	m_pos = m_pos + (m_vel * dt) + (m_acc * dt * dt * 0.5);
-	m_vel = m_vel + (m_acc * dt);
+	m_pos = Kinematics::UpdatePosition(m_pos, m_vel, m_acc, dt);
+	m_vel = Kinematics::UpdateVelocity(m_vel, m_acc, dt);
 }
 
 //std::string Particle::PrintState()

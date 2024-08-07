@@ -28,6 +28,7 @@
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\InitialConditions.h" />
+    <ClInclude Include="include\Kinematics.h" />
     <ClInclude Include="Physis.h" />
     <ClInclude Include="include\SystemConfig.h" />
     <ClInclude Include="include\ParticleSystem.h" />

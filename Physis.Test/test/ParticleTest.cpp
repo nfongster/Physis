@@ -51,13 +51,8 @@ TEST_CASE("If dt > 0, then particle state is correctly updated")
 	double dt = 1;
 	p.Step(dt);
 
-	Vec2 rf = r0 + (v0 * dt) + (a0 * dt * dt * 0.5);
-	REQUIRE(p.GetPosition() == rf);
-
-	Vec2 vf = v0 + (a0 * dt);
-	REQUIRE(p.GetVelocity() == vf);
-
-	// Constant acceleration
+	REQUIRE(p.GetPosition() == Kinematics::UpdatePosition(r0, v0, a0, dt));
+	REQUIRE(p.GetVelocity() == Kinematics::UpdateVelocity(v0, a0, dt));
 	REQUIRE(p.GetAcceleration() == a0);
 }
 

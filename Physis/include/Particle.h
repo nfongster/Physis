@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Vec.h"
 #include "InitialConditions.h"
+#include "Kinematics.h"
 
 class PHYSIS_API Particle
 {

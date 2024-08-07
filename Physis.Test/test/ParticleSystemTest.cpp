@@ -67,11 +67,8 @@ TEST_CASE("Particle system can step 1 particle")
 	double dt = 0.1;
 	ps.Step(dt);
 
-	Vec2 rExpected = r0 + (v0 * dt) + (a0 * dt * dt * 0.5);
-	Vec2 vExpected = v0 + (a0 * dt);
-
-	REQUIRE(ps.GetParticles()[0]->GetPosition() == rExpected);
-	REQUIRE(ps.GetParticles()[0]->GetVelocity() == vExpected);
+	REQUIRE(ps.GetParticles()[0]->GetPosition() == Kinematics::UpdatePosition(r0, v0, a0, dt));
+	REQUIRE(ps.GetParticles()[0]->GetVelocity() == Kinematics::UpdateVelocity(v0, a0, dt));
 	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a0);
 }
 
@@ -92,16 +89,11 @@ TEST_CASE("Particle system can step multiple particles")
 	double dt = 0.1;
 	ps.Step(dt);
 
-	Vec2 r1Expected = r01 + (v01 * dt) + (a01 * dt * dt * 0.5);
-	Vec2 v1Expected = v01 + (a01 * dt);
-	Vec2 r2Expected = r02 + (v02 * dt) + (a02 * dt * dt * 0.5);
-	Vec2 v2Expected = v02 + (a02 * dt);
-
-	REQUIRE(ps.GetParticles()[0]->GetPosition() == r1Expected);
-	REQUIRE(ps.GetParticles()[0]->GetVelocity() == v1Expected);
+	REQUIRE(ps.GetParticles()[0]->GetPosition() == Kinematics::UpdatePosition(r01, v01, a01, dt));
+	REQUIRE(ps.GetParticles()[0]->GetVelocity() == Kinematics::UpdateVelocity(v01, a01, dt));
 	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a01);
 
-	REQUIRE(ps.GetParticles()[1]->GetPosition() == r2Expected);
-	REQUIRE(ps.GetParticles()[1]->GetVelocity() == v2Expected);
+	REQUIRE(ps.GetParticles()[1]->GetPosition() == Kinematics::UpdatePosition(r02, v02, a02, dt));
+	REQUIRE(ps.GetParticles()[1]->GetVelocity() == Kinematics::UpdateVelocity(v02, a02, dt));
 	REQUIRE(ps.GetParticles()[1]->GetAcceleration() == a02);
 }
