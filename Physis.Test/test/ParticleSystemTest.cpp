@@ -54,3 +54,54 @@ TEST_CASE("Particle system reliably stores particles' states in order of additio
 	REQUIRE(p1->GetAcceleration() == a01);
 	REQUIRE(p2->GetAcceleration() == a02);
 }
+
+TEST_CASE("Particle system can step 1 particle")
+{
+	auto ps = ParticleSystem();
+
+	auto r0 = Vec2();
+	auto v0 = Vec2(1, 1);
+	auto a0 = Vec2(-1, 1);
+	ps.Add(InitialConditions(r0, v0, a0));
+
+	double dt = 0.1;
+	ps.Step(dt);
+
+	Vec2 rExpected = r0 + (v0 * dt) + (a0 * dt * dt * 0.5);
+	Vec2 vExpected = v0 + (a0 * dt);
+
+	REQUIRE(ps.GetParticles()[0]->GetPosition() == rExpected);
+	REQUIRE(ps.GetParticles()[0]->GetVelocity() == vExpected);
+	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a0);
+}
+
+TEST_CASE("Particle system can step multiple particles")
+{
+	auto ps = ParticleSystem();
+
+	auto r01 = Vec2();
+	auto v01 = Vec2(1, 1);
+	auto a01 = Vec2(-1, 1);
+	ps.Add(InitialConditions(r01, v01, a01));
+
+	auto r02 = Vec2(2, -3);
+	auto v02 = Vec2(9, 3);
+	auto a02 = Vec2(-7, 16);
+	ps.Add(InitialConditions(r02, v02, a02));
+
+	double dt = 0.1;
+	ps.Step(dt);
+
+	Vec2 r1Expected = r01 + (v01 * dt) + (a01 * dt * dt * 0.5);
+	Vec2 v1Expected = v01 + (a01 * dt);
+	Vec2 r2Expected = r02 + (v02 * dt) + (a02 * dt * dt * 0.5);
+	Vec2 v2Expected = v02 + (a02 * dt);
+
+	REQUIRE(ps.GetParticles()[0]->GetPosition() == r1Expected);
+	REQUIRE(ps.GetParticles()[0]->GetVelocity() == v1Expected);
+	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a01);
+
+	REQUIRE(ps.GetParticles()[1]->GetPosition() == r2Expected);
+	REQUIRE(ps.GetParticles()[1]->GetVelocity() == v2Expected);
+	REQUIRE(ps.GetParticles()[1]->GetAcceleration() == a02);
+}

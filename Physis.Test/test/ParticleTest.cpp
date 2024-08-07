@@ -51,15 +51,11 @@ TEST_CASE("If dt > 0, then particle state is correctly updated")
 	double dt = 1;
 	p.Step(dt);
 
-	// xf = x0 + v0 * dt + 0.5 * a * dt^2
-	double xf = r0.X + v0.X * dt + 0.5 * a0.X * dt * dt;
-	double yf = r0.Y + v0.Y * dt + 0.5 * a0.Y * dt * dt;
-	REQUIRE(p.GetPosition() == Vec2(xf, yf));
+	Vec2 rf = r0 + (v0 * dt) + (a0 * dt * dt * 0.5);
+	REQUIRE(p.GetPosition() == rf);
 
-	// vf = v0 + a * dt
-	double vxf = v0.X + a0.X * dt;
-	double vyf = v0.Y + a0.Y * dt;
-	REQUIRE(p.GetVelocity() == Vec2(vxf, vyf));
+	Vec2 vf = v0 + (a0 * dt);
+	REQUIRE(p.GetVelocity() == vf);
 
 	// Constant acceleration
 	REQUIRE(p.GetAcceleration() == a0);
