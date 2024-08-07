@@ -12,6 +12,9 @@ public:
 
 	bool operator==(const Vec1& other) const;
 	bool operator!=(const Vec1& other) const;
+	Vec1 operator+ (const Vec1& other) const;
+	Vec1 operator- (const Vec1& other) const;
+	Vec1 operator* (const double scalar) const;
 };
 
 struct PHYSIS_API Vec2
@@ -25,6 +28,9 @@ public:
 
 	bool operator==(const Vec2& other) const;
 	bool operator!=(const Vec2& other) const;
+	Vec2 operator+ (const Vec2& other) const;
+	Vec2 operator- (const Vec2& other) const;
+	Vec2 operator* (const double scalar) const;
 };
 
 struct PHYSIS_API Vec3
@@ -39,4 +45,7 @@ public:
 
 	bool operator==(const Vec3& other) const;
 	bool operator!=(const Vec3& other) const;
+	Vec3 operator+ (const Vec3& other) const;
+	Vec3 operator- (const Vec3& other) const;
+	Vec3 operator* (const double scalar) const;
 };

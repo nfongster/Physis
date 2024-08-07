@@ -90,3 +90,72 @@ TEST_CASE("Two different Vec3's are not equal")
 	Vec3 b = Vec3(3, 3, -8);
 	REQUIRE(a != b);
 }
+
+TEST_CASE("Two Vec1's can be added")
+{
+	Vec1 a = Vec1(1);
+	Vec1 b = Vec1(3);
+	Vec1 sum = Vec1(4);
+	REQUIRE(a + b == sum);
+}
+
+TEST_CASE("Two Vec2's can be added")
+{
+	Vec2 a = Vec2(1, -1);
+	Vec2 b = Vec2(3, -4);
+	Vec2 sum = Vec2(4, -5);
+	REQUIRE(a + b == sum);
+}
+
+TEST_CASE("Two Vec3's can be added")
+{
+	Vec3 a = Vec3(1, -1, 6);
+	Vec3 b = Vec3(3, -4, -2);
+	Vec3 sum = Vec3(4, -5, 4);
+	REQUIRE(a + b == sum);
+}
+
+TEST_CASE("Two Vec1's can be subtracted")
+{
+	Vec1 a = Vec1(1);
+	Vec1 b = Vec1(3);
+	Vec1 diff = Vec1(-2);
+	REQUIRE(a - b == diff);
+}
+
+TEST_CASE("Two Vec2's can be subtracted")
+{
+	Vec2 a = Vec2(1, -1);
+	Vec2 b = Vec2(3, -4);
+	Vec2 diff = Vec2(-2, 3);
+	REQUIRE(a - b == diff);
+}
+
+TEST_CASE("Two Vec3's can be subtracted")
+{
+	Vec3 a = Vec3(1, -1, 6);
+	Vec3 b = Vec3(3, -4, -2);
+	Vec3 diff = Vec3(-2, 3, 8);
+	REQUIRE(a - b == diff);
+}
+
+TEST_CASE("Vec1 can be scaled")
+{
+	Vec1 v = Vec1(5);
+	double scalar = 3;
+	REQUIRE(v * scalar == Vec1(15));
+}
+
+TEST_CASE("Vec2 can be scaled")
+{
+	Vec2 v = Vec2(5, 6);
+	double scalar = 3;
+	REQUIRE(v * scalar == Vec2(15, 18));
+}
+
+TEST_CASE("Vec3 can be scaled")
+{
+	Vec3 v = Vec3(5, 6, -7);
+	double scalar = 3;
+	REQUIRE(v * scalar == Vec3(15, 18, -21));
+}
