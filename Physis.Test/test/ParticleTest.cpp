@@ -7,9 +7,9 @@ TEST_CASE("Particle default values are 0")
 	auto r = p.GetPosition();
 	auto v = p.GetVelocity();
 	auto a = p.GetAcceleration();
-	REQUIRE(r == Vec2());
-	REQUIRE(v == Vec2());
-	REQUIRE(a == Vec2());
+	REQUIRE(r.Equals(Vec2()));
+	REQUIRE(v.Equals(Vec2()));
+	REQUIRE(a.Equals(Vec2()));
 }
 
 TEST_CASE("Particle injected values are expected")
@@ -20,9 +20,9 @@ TEST_CASE("Particle injected values are expected")
 	auto ic = InitialConditions(r0, v0, a0);
 	auto p = Particle(ic);
 
-	REQUIRE(p.GetPosition() == r0);
-	REQUIRE(p.GetVelocity() == v0);
-	REQUIRE(p.GetAcceleration() == a0);
+	REQUIRE(p.GetPosition().Equals(r0));
+	REQUIRE(p.GetVelocity().Equals(v0));
+	REQUIRE(p.GetAcceleration().Equals(a0));
 }
 
 TEST_CASE("If dt = 0, then particle state is unchanged")
@@ -35,9 +35,9 @@ TEST_CASE("If dt = 0, then particle state is unchanged")
 
 	p.Step(0);
 
-	REQUIRE(p.GetPosition() == r0);
-	REQUIRE(p.GetVelocity() == v0);
-	REQUIRE(p.GetAcceleration() == a0);
+	REQUIRE(p.GetPosition().Equals(r0));
+	REQUIRE(p.GetVelocity().Equals(v0));
+	REQUIRE(p.GetAcceleration().Equals(a0));
 }
 
 TEST_CASE("If dt > 0, then particle state is correctly updated")
@@ -51,9 +51,9 @@ TEST_CASE("If dt > 0, then particle state is correctly updated")
 	double dt = 1;
 	p.Step(dt);
 
-	REQUIRE(p.GetPosition() == Kinematics::UpdatePosition(r0, v0, a0, dt));
-	REQUIRE(p.GetVelocity() == Kinematics::UpdateVelocity(v0, a0, dt));
-	REQUIRE(p.GetAcceleration() == a0);
+	REQUIRE(p.GetPosition().Equals(Kinematics::UpdatePosition(r0, v0, a0, dt)));
+	REQUIRE(p.GetVelocity().Equals(Kinematics::UpdateVelocity(v0, a0, dt)));
+	REQUIRE(p.GetAcceleration().Equals(a0));
 }
 
 TEST_CASE("If dt < 0, then exception is thrown")

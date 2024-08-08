@@ -19,9 +19,9 @@ TEST_CASE("Particle system can be iterated with multiple particles")
 	REQUIRE(ps.GetParticles().size() == count);
 	for (Particle* p : ps.GetParticles())
 	{
-		REQUIRE(p->GetPosition() == Vec2());
-		REQUIRE(p->GetVelocity() == Vec2());
-		REQUIRE(p->GetAcceleration() == Vec2());
+		REQUIRE(p->GetPosition().Equals(Vec2()));
+		REQUIRE(p->GetVelocity().Equals(Vec2()));
+		REQUIRE(p->GetAcceleration().Equals(Vec2()));
 	}
 }
 
@@ -47,12 +47,12 @@ TEST_CASE("Particle system reliably stores particles' states in order of additio
 	auto p1 = particles[0];
 	auto p2 = particles[1];
 
-	REQUIRE(p1->GetPosition() == r01);
-	REQUIRE(p2->GetPosition() == r02);
-	REQUIRE(p1->GetVelocity() == v01);
-	REQUIRE(p2->GetVelocity() == v02);
-	REQUIRE(p1->GetAcceleration() == a01);
-	REQUIRE(p2->GetAcceleration() == a02);
+	REQUIRE(p1->GetPosition().Equals(r01));
+	REQUIRE(p2->GetPosition().Equals(r02));
+	REQUIRE(p1->GetVelocity().Equals(v01));
+	REQUIRE(p2->GetVelocity().Equals(v02));
+	REQUIRE(p1->GetAcceleration().Equals(a01));
+	REQUIRE(p2->GetAcceleration().Equals(a02));
 }
 
 TEST_CASE("Particle system can step 1 particle")
@@ -67,9 +67,12 @@ TEST_CASE("Particle system can step 1 particle")
 	double dt = 0.1;
 	ps.Step(dt);
 
-	REQUIRE(ps.GetParticles()[0]->GetPosition() == Kinematics::UpdatePosition(r0, v0, a0, dt));
-	REQUIRE(ps.GetParticles()[0]->GetVelocity() == Kinematics::UpdateVelocity(v0, a0, dt));
-	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a0);
+	REQUIRE(ps.GetParticles()[0]->GetPosition()
+		.Equals(Kinematics::UpdatePosition(r0, v0, a0, dt)));
+	REQUIRE(ps.GetParticles()[0]->GetVelocity()
+		.Equals(Kinematics::UpdateVelocity(v0, a0, dt)));
+	REQUIRE(ps.GetParticles()[0]->GetAcceleration()
+		.Equals(a0));
 }
 
 TEST_CASE("Particle system can step multiple particles")
@@ -89,11 +92,17 @@ TEST_CASE("Particle system can step multiple particles")
 	double dt = 0.1;
 	ps.Step(dt);
 
-	REQUIRE(ps.GetParticles()[0]->GetPosition() == Kinematics::UpdatePosition(r01, v01, a01, dt));
-	REQUIRE(ps.GetParticles()[0]->GetVelocity() == Kinematics::UpdateVelocity(v01, a01, dt));
-	REQUIRE(ps.GetParticles()[0]->GetAcceleration() == a01);
+	REQUIRE(ps.GetParticles()[0]->GetPosition()
+		.Equals(Kinematics::UpdatePosition(r01, v01, a01, dt)));
+	REQUIRE(ps.GetParticles()[0]->GetVelocity()
+		.Equals(Kinematics::UpdateVelocity(v01, a01, dt)));
+	REQUIRE(ps.GetParticles()[0]->GetAcceleration()
+		.Equals(a01));
 
-	REQUIRE(ps.GetParticles()[1]->GetPosition() == Kinematics::UpdatePosition(r02, v02, a02, dt));
-	REQUIRE(ps.GetParticles()[1]->GetVelocity() == Kinematics::UpdateVelocity(v02, a02, dt));
-	REQUIRE(ps.GetParticles()[1]->GetAcceleration() == a02);
+	REQUIRE(ps.GetParticles()[1]->GetPosition()
+		.Equals(Kinematics::UpdatePosition(r02, v02, a02, dt)));
+	REQUIRE(ps.GetParticles()[1]->GetVelocity()
+		.Equals(Kinematics::UpdateVelocity(v02, a02, dt)));
+	REQUIRE(ps.GetParticles()[1]->GetAcceleration()
+		.Equals(a02));
 }

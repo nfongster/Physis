@@ -53,42 +53,42 @@ TEST_CASE("Two identical Vec1's are equal")
 {
 	Vec1 a = Vec1(3);
 	Vec1 b = Vec1(3);
-	REQUIRE(a == b);
+	REQUIRE(a.Equals(b));
 }
 
 TEST_CASE("Two identical Vec2's are equal")
 {
 	Vec2 a = Vec2(3, 4);
 	Vec2 b = Vec2(3, 4);
-	REQUIRE(a == b);
+	REQUIRE(a.Equals(b));
 }
 
 TEST_CASE("Two identical Vec3's are equal")
 {
 	Vec3 a = Vec3(3, 4, -8);
 	Vec3 b = Vec3(3, 4, -8);
-	REQUIRE(a == b);
+	REQUIRE(a.Equals(b));
 }
 
 TEST_CASE("Two different Vec1's are not equal")
 {
 	Vec1 a = Vec1(3);
 	Vec1 b = Vec1(2);
-	REQUIRE(a != b);
+	REQUIRE(!a.Equals(b));
 }
 
 TEST_CASE("Two different Vec2's are not equal")
 {
 	Vec2 a = Vec2(3, 4);
 	Vec2 b = Vec2(3, 5);
-	REQUIRE(a != b);
+	REQUIRE(!a.Equals(b));
 }
 
 TEST_CASE("Two different Vec3's are not equal")
 {
 	Vec3 a = Vec3(3, 4, -8);
 	Vec3 b = Vec3(3, 3, -8);
-	REQUIRE(a != b);
+	REQUIRE(!a.Equals(b));
 }
 
 TEST_CASE("Two Vec1's can be added")
@@ -96,7 +96,7 @@ TEST_CASE("Two Vec1's can be added")
 	Vec1 a = Vec1(1);
 	Vec1 b = Vec1(3);
 	Vec1 sum = Vec1(4);
-	REQUIRE(a + b == sum);
+	REQUIRE((a + b).Equals(sum));
 }
 
 TEST_CASE("Two Vec2's can be added")
@@ -104,7 +104,7 @@ TEST_CASE("Two Vec2's can be added")
 	Vec2 a = Vec2(1, -1);
 	Vec2 b = Vec2(3, -4);
 	Vec2 sum = Vec2(4, -5);
-	REQUIRE(a + b == sum);
+	REQUIRE((a + b).Equals(sum));
 }
 
 TEST_CASE("Two Vec3's can be added")
@@ -112,7 +112,7 @@ TEST_CASE("Two Vec3's can be added")
 	Vec3 a = Vec3(1, -1, 6);
 	Vec3 b = Vec3(3, -4, -2);
 	Vec3 sum = Vec3(4, -5, 4);
-	REQUIRE(a + b == sum);
+	REQUIRE((a + b).Equals(sum));
 }
 
 TEST_CASE("Two Vec1's can be subtracted")
@@ -120,7 +120,7 @@ TEST_CASE("Two Vec1's can be subtracted")
 	Vec1 a = Vec1(1);
 	Vec1 b = Vec1(3);
 	Vec1 diff = Vec1(-2);
-	REQUIRE(a - b == diff);
+	REQUIRE((a - b).Equals(diff));
 }
 
 TEST_CASE("Two Vec2's can be subtracted")
@@ -128,7 +128,7 @@ TEST_CASE("Two Vec2's can be subtracted")
 	Vec2 a = Vec2(1, -1);
 	Vec2 b = Vec2(3, -4);
 	Vec2 diff = Vec2(-2, 3);
-	REQUIRE(a - b == diff);
+	REQUIRE((a - b).Equals(diff));
 }
 
 TEST_CASE("Two Vec3's can be subtracted")
@@ -136,26 +136,26 @@ TEST_CASE("Two Vec3's can be subtracted")
 	Vec3 a = Vec3(1, -1, 6);
 	Vec3 b = Vec3(3, -4, -2);
 	Vec3 diff = Vec3(-2, 3, 8);
-	REQUIRE(a - b == diff);
+	REQUIRE((a - b).Equals(diff));
 }
 
 TEST_CASE("Vec1 can be scaled")
 {
 	Vec1 v = Vec1(5);
 	double scalar = 3;
-	REQUIRE(v * scalar == Vec1(15));
+	REQUIRE((v * scalar).Equals(Vec1(15)));
 }
 
 TEST_CASE("Vec2 can be scaled")
 {
 	Vec2 v = Vec2(5, 6);
 	double scalar = 3;
-	REQUIRE(v * scalar == Vec2(15, 18));
+	REQUIRE((v * scalar).Equals(Vec2(15, 18)));
 }
 
 TEST_CASE("Vec3 can be scaled")
 {
 	Vec3 v = Vec3(5, 6, -7);
 	double scalar = 3;
-	REQUIRE(v * scalar == Vec3(15, 18, -21));
+	REQUIRE((v * scalar).Equals(Vec3(15, 18, -21)));
 }
