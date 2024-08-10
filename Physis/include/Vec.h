@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <corecrt_math.h>
+#include <iostream>
 #include "Core.h"
 
 const static double DEFAULT_TOLERANCE = 1e-10;
@@ -18,6 +19,7 @@ public:
 	Vec1 operator+ (const Vec1& other) const;
 	Vec1 operator- (const Vec1& other) const;
 	Vec1 operator* (const double& scalar) const;
+	PHYSIS_API friend std::ostream& operator<<(std::ostream& output, const Vec1& v);
 };
 
 struct PHYSIS_API Vec2
@@ -33,6 +35,7 @@ public:
 	Vec2 operator+ (const Vec2& other) const;
 	Vec2 operator- (const Vec2& other) const;
 	Vec2 operator* (const double& scalar) const;
+	PHYSIS_API friend std::ostream& operator<<(std::ostream& output, const Vec2& v);
 };
 
 struct PHYSIS_API Vec3
@@ -49,4 +52,5 @@ public:
 	Vec3 operator+ (const Vec3& other) const;
 	Vec3 operator- (const Vec3& other) const;
 	Vec3 operator* (const double& scalar) const;
+	PHYSIS_API friend std::ostream& operator<<(std::ostream& output, const Vec3& v);
 };
