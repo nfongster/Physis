@@ -42,7 +42,7 @@ TEST_CASE("If engine runs with 1 stationary particle, then the particle's final 
 	double total_time = 10;
 	double delta_time = 1;
 
-	Engine* engine = new Engine(SystemConfig(total_time, delta_time));
+	Engine* engine = new Engine(SystemConfig(total_time, delta_time, 1));
 	engine->AddParticle();
 	engine->Run();
 
@@ -66,7 +66,7 @@ TEST_CASE("If engine runs with 1 moving particle, then the particle's final cond
 	Vec2 rf = Kinematics::UpdatePosition(r0, v0, a0, total_time);
 	Vec2 vf = Kinematics::UpdateVelocity(v0, a0, total_time);
 
-	Engine* engine = new Engine(SystemConfig(total_time, delta_time));
+	Engine* engine = new Engine(SystemConfig(total_time, delta_time, 1));
 	engine->AddParticle(InitialConditions(r0, v0, a0));
 	engine->Run();
 

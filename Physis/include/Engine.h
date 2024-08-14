@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <thread>
+#include <chrono>
 #include "Core.h"
 #include "ParticleSystem.h"
 #include "SystemConfig.h"
@@ -15,6 +16,10 @@ private:
 public:
 	Engine(const SystemConfig& sc);
 	~Engine();
+
+	virtual void Update(const double& dt);
+	virtual void Render();
+	virtual void Interpolate(const double& factor);
 
 	void Run();
 	void Pause();
