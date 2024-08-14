@@ -23,15 +23,26 @@
 // - Handle user input robustly
 // - Option to read from file (save typing)
 // - Evolve system across t_total
+// - Add sequential patterns
+//   (1) Game Loop
+//       - Make engine abstract class with render/step virtual functions
+//       - Experiment with different parameter combinations
+//   (2) Double Buffer
 // - Show results in console
 // - Output results to log
+
+// Phase 2: Python app
+// - Research ways of linking C++ / Python (pybind11 or SWIG)
+// - Write Python script that plots actual trajectory vs. analytic solution
+// - Experiment with different parameters and write reports
+// - Resolve rounding errors (rf, vf actual != expected)
 
 static Extractor* GetExtractor(const char arg);
 
 int main()
 {
+	std::cout << "Welcome to the Physis (f-EYE-sis) Engine." << '\n';
 	std::cout << "Running the client test app..." << '\n';
-	auto engine = new Engine();
 
 	InitialConditions ic;
 	SystemConfig sc;
@@ -50,9 +61,11 @@ int main()
 	std::cout << "r0 (m):\t\t(" << ic.r.X << ", " << ic.r.Y << ")\n";
 	std::cout << "v0 (m/s):\t(" << ic.v.X << ", " << ic.v.Y << ")\n";
 	std::cout << "a0 (m/s^2):\t(" << ic.a.X << ", " << ic.a.Y << ")\n";
-	std::cout << "t_total (s):\t" << sc.total_time << '\n';
+	std::cout << "t_total (s):\t" << sc.total_time << '\n';  // TODO: Replace with sampling rate?
 	std::cout << "dt (s):\t\t" << sc.delta_time << '\n';
 
+	auto engine = new Engine(sc);
+	engine->AddParticle(ic);
 	engine->Run();
 	delete engine;
 }

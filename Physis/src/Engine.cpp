@@ -1,6 +1,7 @@
 #include "Engine.h"
 
-Engine::Engine() : m_system(new ParticleSystem())
+Engine::Engine(const SystemConfig& sc)
+	: m_config(sc), m_system(new ParticleSystem())
 {
 }
 
@@ -11,9 +12,35 @@ Engine::~Engine()
 
 void Engine::Run()
 {
-	std::cout << "Welcome to the Physis (f-EYE-sis) Engine." << '\n';
-	auto particle = m_system->GetParticles();
+	double t = 0;
+	while (t < this->m_config.total_time)
+	{
+		m_system->Step(this->m_config.delta_time);
+		t += this->m_config.delta_time;
+	}
+}
 
-	/*std::cout << "rx\try\tvx\tvy\tax\tay\n";
-	particle->PrintState();*/
+void Engine::Pause()
+{
+	// pause thread
+}
+
+void Engine::Resume()
+{
+	// resume thread
+}
+
+void Engine::AddParticle()
+{
+	m_system->Add(InitialConditions());
+}
+
+void Engine::AddParticle(const InitialConditions& ic)
+{
+	m_system->Add(ic);
+}
+
+std::vector<Particle*> Engine::Sample()
+{
+	return m_system->GetParticles();
 }

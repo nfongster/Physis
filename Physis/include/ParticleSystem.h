@@ -12,6 +12,6 @@ public:
 	~ParticleSystem();
 
 	std::vector<Particle*> GetParticles();
-	void Add(InitialConditions ic);
-	void Step(double dt);
+	void Add(const InitialConditions& ic);
+	void Step(const double& dt);
 };
