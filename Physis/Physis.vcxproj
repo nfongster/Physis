@@ -19,14 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Vec.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\EngineBase.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\Kinematics.h" />
     <ClInclude Include="Physis.h" />

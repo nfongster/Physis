@@ -48,7 +48,7 @@ void Engine::Run()
 			t += dt_s;
 			accumulator -= dt_s;
 		}
-		
+
 		this->Interpolate(accumulator / dt_s);
 		this->Render();
 	}

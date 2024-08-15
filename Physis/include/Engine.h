@@ -1,13 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include "Core.h"
-#include "ParticleSystem.h"
-#include "SystemConfig.h"
+#include "EngineBase.h"
 
-class PHYSIS_API Engine
+class PHYSIS_API Engine : public EngineBase
 {
 private:
 	SystemConfig m_config;
@@ -17,9 +12,9 @@ public:
 	Engine(const SystemConfig& sc);
 	~Engine();
 
-	virtual void Update(const double& dt);
-	virtual void Render();
-	virtual void Interpolate(const double& factor);
+	void Update(const double& dt);
+	void Render();
+	void Interpolate(const double& factor);
 
 	void Run();
 	void Pause();
