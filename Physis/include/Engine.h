@@ -5,8 +5,10 @@
 class PHYSIS_API Engine : public EngineBase
 {
 private:
-	SystemConfig m_config;
 	ParticleSystem* m_system;
+
+protected:
+	SystemConfig m_config;
 
 public:
 	Engine(const SystemConfig& sc);
@@ -15,10 +17,6 @@ public:
 	void Update(const double& dt);
 	void Render();
 	void Interpolate(const double& factor);
-
-	void Run();
-	void Pause();
-	void Resume();
 
 	void AddParticle();
 	void AddParticle(const InitialConditions& ic);

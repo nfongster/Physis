@@ -9,9 +9,15 @@
 
 class PHYSIS_API EngineBase
 {
-public:
+protected:
+	SystemConfig m_config;
 
+public:
 	virtual void Update(const double& dt) = 0;
 	virtual void Render() = 0;
 	virtual void Interpolate(const double& factor) = 0;
+
+	void Run();
+	void Pause();
+	void Resume();
 };

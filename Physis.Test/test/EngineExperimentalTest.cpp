@@ -4,5 +4,5 @@
 
 TEST_CASE("Engine can be constructed and run", "[engine]")
 {
-	std::cout << "hello there";
+	std::cout << "hello there\n";
 }
