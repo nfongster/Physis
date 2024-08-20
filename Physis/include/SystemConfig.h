@@ -9,6 +9,6 @@ struct SystemConfig
 	SystemConfig() :
 		total_time(0), delta_time(0), time_scalar(0) { }
 
-	SystemConfig(double t_total, double dt, double scalar) :
+	SystemConfig(const double& t_total, const double& dt, const double& scalar) :
 		total_time(t_total), delta_time(dt), time_scalar(scalar) { }
 };

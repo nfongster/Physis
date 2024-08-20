@@ -1,7 +1,7 @@
 #include "Engine.h"
 
 Engine::Engine(const SystemConfig& sc)
-	: m_config(sc), m_system(new ParticleSystem())
+	: EngineBase(sc)
 {
 }
 
@@ -17,7 +17,7 @@ void Engine::Update(const double& dt)
 
 void Engine::Render()
 {
-	// Pause
+	std::cout << "Rendering...\n";
 }
 
 void Engine::Interpolate(const double& factor)

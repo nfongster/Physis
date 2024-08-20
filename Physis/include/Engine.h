@@ -4,12 +4,6 @@
 
 class PHYSIS_API Engine : public EngineBase
 {
-private:
-	ParticleSystem* m_system;
-
-protected:
-	SystemConfig m_config;
-
 public:
 	Engine(const SystemConfig& sc);
 	~Engine();
