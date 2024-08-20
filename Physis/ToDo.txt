@@ -1,0 +1,31 @@
+Make a simple GUI that does the following:
+- Shows trajectory of particle in 2D under gravity
+- Allows user to specify initial position and velocity
+- Allows user to specify distance scale (e.g., window = 1 km across)
+- Shows current velocity, position, acceleration, and elapsed time
+
+Phases:
+1. Console app
+2. Python script (plot trajectory & compare w/ analytical sln)
+3. GUI (no rendering)
+4. OpenGL window
+5. GUI + OpenGL window
+
+Phase 1: Console app
+- User specified r0 (m), v0 (m/s), a0 (m/s^2), t_total (sec), dt (sec)
+- Handle user input robustly
+- Option to read from file (save typing)
+- Evolve system across t_total
+- Add sequential patterns
+  (1) Game Loop
+      - Make engine abstract class with render/step virtual functions
+      - Experiment with different parameter combinations
+  (2) Double Buffer
+- Show results in console
+- Output results to log
+
+Phase 2: Python app
+- Research ways of linking C++ / Python (pybind11 or SWIG)
+- Write Python script that plots actual trajectory vs. analytic solution
+- Experiment with different parameters and write reports
+- Resolve rounding errors (rf, vf actual != expected)

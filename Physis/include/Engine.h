@@ -1,17 +1,18 @@
 #pragma once
 
-#include <iostream>
-#include "Core.h"
-#include "ParticleSystem.h"
+#include "EngineBase.h"
 
-class PHYSIS_API Engine
+class PHYSIS_API Engine : public EngineBase
 {
-private:
-	ParticleSystem* m_system;
-
 public:
-	Engine();
+	Engine(const SystemConfig& sc);
 	~Engine();
 
-	void Run();
+	void Update(const double& dt);
+	void Render();
+	void Interpolate(const double& factor);
+
+	void AddParticle();
+	void AddParticle(const InitialConditions& ic);
+	std::vector<Particle*> Sample();
 };

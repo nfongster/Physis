@@ -30,5 +30,11 @@
     <ClCompile Include="test\KinematicsTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test\EngineTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test\EngineExperimentalTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

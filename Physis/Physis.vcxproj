@@ -19,14 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\EngineBase.cpp" />
     <ClCompile Include="src\Vec.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\EngineBase.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\Kinematics.h" />
     <ClInclude Include="Physis.h" />
@@ -34,6 +36,9 @@
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\Vec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ToDo.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

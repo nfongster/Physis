@@ -1,6 +1,7 @@
 #include "Engine.h"
 
-Engine::Engine() : m_system(new ParticleSystem())
+Engine::Engine(const SystemConfig& sc)
+	: EngineBase(sc)
 {
 }
 
@@ -9,11 +10,32 @@ Engine::~Engine()
 	delete m_system;
 }
 
-void Engine::Run()
+void Engine::Update(const double& dt)
 {
-	std::cout << "Welcome to the Physis (f-EYE-sis) Engine." << '\n';
-	auto particle = m_system->GetParticles();
+	m_system->Step(dt);
+}
 
-	/*std::cout << "rx\try\tvx\tvy\tax\tay\n";
-	particle->PrintState();*/
+void Engine::Render()
+{
+	std::cout << "Rendering...\n";
+}
+
+void Engine::Interpolate(const double& factor)
+{
+	// Interpolate remaining accumulator time
+}
+
+void Engine::AddParticle()
+{
+	m_system->Add(InitialConditions());
+}
+
+void Engine::AddParticle(const InitialConditions& ic)
+{
+	m_system->Add(ic);
+}
+
+std::vector<Particle*> Engine::Sample()
+{
+	return m_system->GetParticles();
 }

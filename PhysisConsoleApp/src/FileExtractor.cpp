@@ -56,6 +56,6 @@ std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 	return 
 	{
 		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		SystemConfig(t_total, dt)
+		SystemConfig(t_total, dt, 1)
 	};
 }
