@@ -12,7 +12,7 @@ TEST_CASE("Engine can be constructed and run", "[engine]")
 	double dt_sim = 0.05;
 	double scalar = 1.0;
 	auto sc = SystemConfig(t_total, dt_sim, scalar);
-	Engine* engine = new Engine(sc);
+	SampleEngine* engine = new SampleEngine(sc);
 	engine->AddParticle();
 
 	auto start = std::chrono::high_resolution_clock::now();

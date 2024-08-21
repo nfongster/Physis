@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\SampleEngine.cpp" />
     <ClCompile Include="src\EngineBase.cpp" />
     <ClCompile Include="src\Vec.cpp" />
     <ClCompile Include="src\Particle.cpp" />
@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.h" />
-    <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\SampleEngine.h" />
     <ClInclude Include="include\EngineBase.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\Kinematics.h" />

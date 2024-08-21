@@ -2,11 +2,11 @@
 
 #include "EngineBase.h"
 
-class PHYSIS_API Engine : public EngineBase
+class PHYSIS_API SampleEngine : public EngineBase
 {
 public:
-	Engine(const SystemConfig& sc);
-	~Engine();
+	SampleEngine(const SystemConfig& sc);
+	~SampleEngine();
 
 	void Update(const double& dt);
 	void Render();

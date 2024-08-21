@@ -35,7 +35,7 @@ int main()
 	std::cout << "t_total (s):\t" << sc.total_time << '\n';
 	std::cout << "dt (s):\t\t" << sc.delta_time << '\n';
 
-	auto engine = new SimpleEngine(sc, OutputPath, std::chrono::duration<double, std::milli>(100));
+	auto engine = new SimpleEngine(sc, OutputPath, RenderDelay);
 	engine->AddParticle(ic);
 	engine->Run();
 	delete engine;
