@@ -1,11 +1,14 @@
 #include <iostream>
 #include <Physis.h>
 #include "Utility.h"
+#include "SimpleEngine.h"
 #include "Extractor.h"
 #include "ConsoleExtractor.h"
 #include "FileExtractor.h"
 
 static Extractor* GetExtractor(const char arg);
+
+static std::string OutputPath = "C:\\Code\\Physis\\PhysisConsoleApp\\";
 
 int main()
 {
@@ -29,10 +32,10 @@ int main()
 	std::cout << "r0 (m):\t\t(" << ic.r.X << ", " << ic.r.Y << ")\n";
 	std::cout << "v0 (m/s):\t(" << ic.v.X << ", " << ic.v.Y << ")\n";
 	std::cout << "a0 (m/s^2):\t(" << ic.a.X << ", " << ic.a.Y << ")\n";
-	std::cout << "t_total (s):\t" << sc.total_time << '\n';  // TODO: Replace with sampling rate?
+	std::cout << "t_total (s):\t" << sc.total_time << '\n';
 	std::cout << "dt (s):\t\t" << sc.delta_time << '\n';
 
-	auto engine = new Engine(sc);
+	auto engine = new SimpleEngine(sc, OutputPath, std::chrono::duration<double, std::milli>(100));
 	engine->AddParticle(ic);
 	engine->Run();
 	delete engine;

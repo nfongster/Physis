@@ -10,7 +10,7 @@ FileExtractor::~FileExtractor()
 
 std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 {
-	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt;
+	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
 	std::string line;
 	int index;
 
@@ -29,6 +29,11 @@ std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 		{
 			std::getline(ss, token, ',');
 			dt = atof(token.c_str());
+		}
+		else if (token == "scale")
+		{
+			std::getline(ss, token, ',');
+			t_scale = atof(token.c_str());
 		}
 	}
 
@@ -56,6 +61,6 @@ std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 	return 
 	{
 		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		SystemConfig(t_total, dt, 1)
+		SystemConfig(t_total, dt, t_scale)
 	};
 }

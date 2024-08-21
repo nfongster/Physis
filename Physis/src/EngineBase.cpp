@@ -5,8 +5,20 @@ EngineBase::EngineBase(const SystemConfig& sc)
 {
 }
 
+void EngineBase::OnStartup()
+{
+	// Optional override
+}
+
+void EngineBase::OnCompletion()
+{
+	// Optional override
+}
+
 void EngineBase::Run()
 {
+	this->OnStartup();
+
 	double t = 0;
 	double accumulator = 0.0;
 	const double dt_s = this->m_config.delta_time;
@@ -18,8 +30,8 @@ void EngineBase::Run()
 	while (t < total_time)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> duration = end - start;
-		auto frameTime = duration.count() * 0.001 * time_scalar;
+		this->m_duration = end - start;
+		auto frameTime = this->m_duration.count() * 0.001 * time_scalar;
 		start = end;
 		accumulator += frameTime;
 
@@ -33,6 +45,10 @@ void EngineBase::Run()
 		this->Interpolate(accumulator / dt_s);
 		this->Render();
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	this->m_duration = end - start;
+
+	this->OnCompletion();
 }
 
 void EngineBase::Pause()
