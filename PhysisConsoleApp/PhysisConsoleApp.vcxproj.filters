@@ -24,7 +24,7 @@
     <ClCompile Include="src\FileExtractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SimpleEngine.cpp">
+    <ClCompile Include="src\BenchmarkEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="include\Extractor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SimpleEngine.h">
+    <ClInclude Include="include\BenchmarkEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

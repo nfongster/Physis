@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-class SimpleEngine : public EngineBase
+class BenchmarkEngine : public EngineBase
 {
 private:
 	const std::string m_outdir;
@@ -12,10 +12,10 @@ private:
 	std::vector<std::chrono::duration<double, std::milli>> m_durations;
 
 public:
-	SimpleEngine(const SystemConfig& sc, const std::string& outdir, 
+	BenchmarkEngine(const SystemConfig& sc, const std::string& outdir, 
 		const std::chrono::duration<double, std::milli>& render_time);
 
-	~SimpleEngine();
+	~BenchmarkEngine();
 
 	void OnCompletion();
 

@@ -1,23 +1,23 @@
-#include "SimpleEngine.h"
+#include "BenchmarkEngine.h"
 
 /// <summary>
 /// Simple engine for benchmarking.
 /// </summary>
-/// <param name="sc"></param>
-/// <param name="outdir"></param>
+/// <param name="sc">System configuration.</param>
+/// <param name="outdir">Directory to write results.</param>
 /// <param name="render_time">Time to pause (ms) during the render phase.</param>
-SimpleEngine::SimpleEngine(const SystemConfig& sc, const std::string& outdir, 
+BenchmarkEngine::BenchmarkEngine(const SystemConfig& sc, const std::string& outdir, 
 	const std::chrono::duration<double, std::milli>& render_time)
 	: EngineBase(sc), m_outdir(outdir), m_render_time(render_time)
 {
 }
 
-SimpleEngine::~SimpleEngine()
+BenchmarkEngine::~BenchmarkEngine()
 {
 	delete m_system;
 }
 
-void SimpleEngine::OnCompletion()
+void BenchmarkEngine::OnCompletion()
 {
 	this->m_durations.push_back(m_duration);
 
@@ -33,28 +33,29 @@ void SimpleEngine::OnCompletion()
 	file.close();
 }
 
-void SimpleEngine::Update(const double& dt)
+void BenchmarkEngine::Update(const double& dt)
 {
 	m_system->Step(dt);
 }
 
-void SimpleEngine::Render()
+void BenchmarkEngine::Render()
 {
+	// Multiple render time by num particles?
 	std::this_thread::sleep_for(m_render_time);
 	this->m_durations.push_back(m_duration);
 }
 
-void SimpleEngine::Interpolate(const double& factor)
+void BenchmarkEngine::Interpolate(const double& factor)
 {
 	// Interpolate remaining accumulator time
 }
 
-void SimpleEngine::AddParticle()
+void BenchmarkEngine::AddParticle()
 {
 	m_system->Add(InitialConditions());
 }
 
-void SimpleEngine::AddParticle(const InitialConditions& ic)
+void BenchmarkEngine::AddParticle(const InitialConditions& ic)
 {
 	m_system->Add(ic);
 }

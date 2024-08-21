@@ -1,7 +1,7 @@
 #include <iostream>
 #include <Physis.h>
 #include "Utility.h"
-#include "SimpleEngine.h"
+#include "BenchmarkEngine.h"
 #include "Extractor.h"
 #include "ConsoleExtractor.h"
 #include "FileExtractor.h"
@@ -9,6 +9,11 @@
 static Extractor* GetExtractor(const char arg);
 
 static std::string OutputPath = "C:\\Code\\Physis\\PhysisConsoleApp\\";
+
+static std::chrono::duration<double, std::milli> RenderDelay =
+	std::chrono::duration<double, std::milli>(10);
+
+static int NumParticles = 1;
 
 int main()
 {
@@ -34,9 +39,13 @@ int main()
 	std::cout << "a0 (m/s^2):\t(" << ic.a.X << ", " << ic.a.Y << ")\n";
 	std::cout << "t_total (s):\t" << sc.total_time << '\n';
 	std::cout << "dt (s):\t\t" << sc.delta_time << '\n';
+	std::cout << "t_scale (sim / comp time):\t\t" << sc.time_scalar << '\n';
 
-	auto engine = new SimpleEngine(sc, OutputPath, RenderDelay);
-	engine->AddParticle(ic);
+	auto engine = new BenchmarkEngine(sc, OutputPath, RenderDelay);
+
+	for (int i = 0; i < NumParticles; i++)
+		engine->AddParticle(ic);
+	
 	engine->Run();
 	delete engine;
 }
