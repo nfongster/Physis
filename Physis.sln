@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysisConsoleApp", "PhysisC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physis.Test", "Physis.Test\Physis.Test.vcxproj", "{FFC44E06-48BC-4A56-9A83-57F5091D9BDE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysisWindowApp", "PhysisWindowApp\PhysisWindowApp.vcxproj", "{AB4C9979-3ABD-417B-8332-A545B5F24895}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{FFC44E06-48BC-4A56-9A83-57F5091D9BDE}.Release|x64.Build.0 = Release|x64
 		{FFC44E06-48BC-4A56-9A83-57F5091D9BDE}.Release|x86.ActiveCfg = Release|Win32
 		{FFC44E06-48BC-4A56-9A83-57F5091D9BDE}.Release|x86.Build.0 = Release|Win32
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|Any CPU.Build.0 = Debug|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|x64.ActiveCfg = Debug|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|x64.Build.0 = Debug|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|x86.ActiveCfg = Debug|Win32
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Debug|x86.Build.0 = Debug|Win32
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|Any CPU.ActiveCfg = Release|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|Any CPU.Build.0 = Release|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|x64.ActiveCfg = Release|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|x64.Build.0 = Release|x64
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|x86.ActiveCfg = Release|Win32
+		{AB4C9979-3ABD-417B-8332-A545B5F24895}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
