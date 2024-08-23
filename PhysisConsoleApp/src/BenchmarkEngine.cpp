@@ -26,9 +26,22 @@ void BenchmarkEngine::OnCompletion()
 
 	std::ofstream file;
 	file.open(ss.str());
+	std::string buffer;
+	int reservedBytes = 1 * 1024 * 1024;
+	buffer.reserve(reservedBytes);
 
 	for (auto duration : this->m_durations)
-		file << duration.count() << '\n';
+	{
+		if (buffer.size() >= reservedBytes)
+		{
+			file.write(buffer.c_str(), buffer.size());
+			buffer.clear();
+		}
+		buffer.append(std::to_string(duration.count()));
+		buffer.append("\n");
+	}
+	if (!buffer.empty())
+		file.write(buffer.c_str(), buffer.size());
 	
 	file.close();
 }

@@ -12,6 +12,6 @@ public:
 	ConsoleExtractor();
 	~ConsoleExtractor();
 
-	std::tuple<InitialConditions, SystemConfig> Extract();
+	std::tuple<InitialConditions, SystemConfig, int> Extract();
 };
 

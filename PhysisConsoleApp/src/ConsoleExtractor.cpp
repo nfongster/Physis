@@ -8,10 +8,11 @@ ConsoleExtractor::~ConsoleExtractor()
 {
 }
 
-std::tuple<InitialConditions, SystemConfig> ConsoleExtractor::Extract()
+std::tuple<InitialConditions, SystemConfig, int> ConsoleExtractor::Extract()
 {
-	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt;
-
+	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
+	int num_particles;
+	// TODO: Support more than 1 particle (use while loop)
 	std::cout << "Please enter the initial conditions:\n";
 
 	r0x = GetValueFromPrompt<double>("r0.x (m):\t");
@@ -22,10 +23,13 @@ std::tuple<InitialConditions, SystemConfig> ConsoleExtractor::Extract()
 	a0y = GetValueFromPrompt<double>("a0.y (m/s^2):\t");
 	t_total = GetValueFromPrompt<double>("t_total (s):\t");
 	dt = GetValueFromPrompt<double>("dt (s):\t");
+	t_scale = GetValueFromPrompt<double>("t_scale (sim / comp time):\t");
+	num_particles = GetValueFromPrompt<double>("num_particles:\t");
 
 	return
 	{
 		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		SystemConfig(t_total, dt, 1)
+		SystemConfig(t_total, dt, t_scale),
+		num_particles
 	};
 }

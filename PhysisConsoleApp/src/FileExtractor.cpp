@@ -8,11 +8,12 @@ FileExtractor::~FileExtractor()
 	m_file.close();
 }
 
-std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
+std::tuple<InitialConditions, SystemConfig, int> FileExtractor::Extract()
 {
 	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
 	std::string line;
 	int index;
+	int num_particles = 1;
 
 	// Parse metadata
 	std::getline(m_file, line);
@@ -35,10 +36,16 @@ std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 			std::getline(ss, token, ',');
 			t_scale = atof(token.c_str());
 		}
+		else if (token == "nump")
+		{
+			std::getline(ss, token, ',');
+			num_particles = atof(token.c_str());
+		}
 	}
 
 	std::getline(m_file, line);
 	// TODO: parse header if we want to support different format types
+	// TODO: support multiple particle init conditions w/o conflicting with 'nump' token above
 	while (std::getline(m_file, line))
 	{
 		float* initial_conditions = new float[7];
@@ -61,6 +68,7 @@ std::tuple<InitialConditions, SystemConfig> FileExtractor::Extract()
 	return 
 	{
 		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		SystemConfig(t_total, dt, t_scale)
+		SystemConfig(t_total, dt, t_scale),
+		num_particles
 	};
 }

@@ -7,6 +7,6 @@ class Extractor
 public:
 	virtual ~Extractor() { }
 
-	virtual std::tuple<InitialConditions, SystemConfig> Extract() = 0;
+	virtual std::tuple<InitialConditions, SystemConfig, int> Extract() = 0;
 };
 
