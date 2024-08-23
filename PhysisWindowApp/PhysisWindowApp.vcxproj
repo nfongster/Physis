@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\OpenGL\GLEW\include\GL;$(SolutionDir)thirdparty\OpenGL\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\OpenGL\GLEW\include\GL;$(SolutionDir)thirdparty\OpenGL\include\GLFW;$(ProjectDir)include;$(SolutionDir)Physis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\OpenGL\GLEW\include\GL;$(SolutionDir)thirdparty\OpenGL\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\OpenGL\GLEW\include\GL;$(SolutionDir)thirdparty\OpenGL\include\GLFW;$(ProjectDir)include;$(SolutionDir)Physis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PhysisWindowApp.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\OpenGLEngine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\OpenGLEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
