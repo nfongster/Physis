@@ -6,9 +6,9 @@ Make a simple GUI that does the following:
 
 Phases:
 1. Console app
-2. Python script (plot trajectory & compare w/ analytical sln)
-3. GUI (no rendering)
-4. OpenGL window
+2. OpenGL window
+3. Python script (plot trajectory & compare w/ analytical sln)
+4. GUI (no rendering)
 5. GUI + OpenGL window
 
 Phase 1: Console app
@@ -24,7 +24,12 @@ Phase 1: Console app
 - Show results in console
 - Output results to log
 
-Phase 2: Python app
+Phase 2: OpenGL window
+- Create new OpenGL app
+- Create new OpenGL-specific engine
+- Normalize kinematic parameters to +/- 1
+
+Phase 3: Python app
 - Research ways of linking C++ / Python (pybind11 or SWIG)
 - Write Python script that plots actual trajectory vs. analytic solution
 - Experiment with different parameters and write reports

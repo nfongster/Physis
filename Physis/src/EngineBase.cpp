@@ -27,7 +27,7 @@ void EngineBase::Run()
 	auto start = std::chrono::high_resolution_clock::now();
 
 	// TODO: add quit/cancel token instead of total-time
-	while (t < total_time)
+	while (t < total_time)  // TODO: Replace w/ overridable method, "LoopCondition"
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		this->m_duration = end - start;

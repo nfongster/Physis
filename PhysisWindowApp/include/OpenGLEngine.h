@@ -1,4 +1,6 @@
 #pragma once
+#include <glew.h>
+#include <glfw3.h>
 #include "Physis.h"
 
 class OpenGLEngine : public EngineBase
@@ -6,6 +8,9 @@ class OpenGLEngine : public EngineBase
 public:
 	OpenGLEngine();
 	~OpenGLEngine();
+	
+	void OnStartup();
+	void OnCompletion();
 
 	void Update(const double& dt);
 	void Render();

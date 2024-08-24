@@ -154,11 +154,6 @@
     <ClCompile Include="src\Application.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Physis\Physis.vcxproj">
-      <Project>{2b65d755-5d0a-4eea-bf07-4d167e73d13f}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\Extractor.h" />
     <ClInclude Include="include\FileExtractor.h" />
     <ClInclude Include="include\ConsoleExtractor.h" />
@@ -167,6 +162,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="resource\default_initial_conditions.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Physis\Physis.vcxproj">
+      <Project>{2b65d755-5d0a-4eea-bf07-4d167e73d13f}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
