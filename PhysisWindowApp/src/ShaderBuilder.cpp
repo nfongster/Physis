@@ -1,5 +1,21 @@
 #include "ShaderBuilder.h"
 
+ShaderBuilder::ShaderBuilder(const std::string& directory)
+	: m_shader_folder(directory)
+{
+}
+
+unsigned int ShaderBuilder::Build()
+{
+    std::string vertexShaderSource = ParseShaderFile("VertexShader.shader");
+    std::string fragmentShaderSource = ParseShaderFile("FragmentShader.shader");
+
+    std::cout << vertexShaderSource << '\n';
+    std::cout << fragmentShaderSource << '\n';
+
+    return BuildShaderProgram(vertexShaderSource, fragmentShaderSource);
+}
+
 std::string ShaderBuilder::ParseShaderFile(const std::string& filename)
 {   // Shader parsing/compiling ideas taken from Yan Chernikov
     std::ifstream stream(m_shader_folder + filename);
@@ -10,6 +26,23 @@ std::string ShaderBuilder::ParseShaderFile(const std::string& filename)
         ss << line << '\n';
 
     return ss.str();
+}
+
+unsigned int ShaderBuilder::BuildShaderProgram(const std::string& vertexSource, const std::string& fragmentSource)
+{
+    unsigned int program = glCreateProgram();
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexSource);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+    return program;
 }
 
 unsigned int ShaderBuilder::CompileShader(unsigned int type, const std::string& source)
@@ -35,37 +68,4 @@ unsigned int ShaderBuilder::CompileShader(unsigned int type, const std::string& 
     }
 
     return id;
-}
-
-unsigned int ShaderBuilder::BuildShaderProgram(const std::string& vertexSource, const std::string& fragmentSource)
-{
-    unsigned int program = glCreateProgram();
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexSource);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
-
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-
-    return program;
-}
-
-ShaderBuilder::ShaderBuilder(const std::string& directory)
-	: m_shader_folder(directory)
-{
-}
-
-unsigned int ShaderBuilder::Build()
-{
-    std::string vertexShaderSource = ParseShaderFile("VertexShader.shader");
-    std::string fragmentShaderSource = ParseShaderFile("FragmentShader.shader");
-
-    std::cout << vertexShaderSource << '\n';
-    std::cout << fragmentShaderSource << '\n';
-
-    return BuildShaderProgram(vertexShaderSource, fragmentShaderSource);
 }
