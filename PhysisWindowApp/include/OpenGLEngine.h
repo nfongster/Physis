@@ -7,6 +7,11 @@ class OpenGLEngine : public EngineBase
 {
 private:
 	GLFWwindow* m_window;
+	unsigned int POS_COORDS = 2;
+	unsigned int NUM_VERTICES = 6;
+
+	unsigned int NUM_TRIANGLES = 4;
+	unsigned int NUM_TRIANGLE_CORNERS = 3;
 
 public:
 	OpenGLEngine(const SystemConfig& sc);
