@@ -13,11 +13,13 @@ protected:
 	SystemConfig m_config;
 	ParticleSystem* m_system;
 	std::chrono::duration<double, std::milli> m_duration;
+	double m_current_time;
 
 public:
 	EngineBase(const SystemConfig& sc);
 
 	virtual void OnStartup();
+	virtual bool ContinueLoop();
 	virtual void OnCompletion();
 
 	virtual void Update(const double& dt) = 0;

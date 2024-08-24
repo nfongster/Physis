@@ -10,6 +10,11 @@ void EngineBase::OnStartup()
 	// Optional override
 }
 
+bool EngineBase::ContinueLoop()
+{
+	return m_current_time < m_config.total_time;
+}
+
 void EngineBase::OnCompletion()
 {
 	// Optional override
@@ -19,15 +24,13 @@ void EngineBase::Run()
 {
 	this->OnStartup();
 
-	double t = 0;
+	m_current_time = 0;
 	double accumulator = 0.0;
 	const double dt_s = this->m_config.delta_time;
 	const double time_scalar = this->m_config.time_scalar;
-	const double total_time = this->m_config.total_time;
 	auto start = std::chrono::high_resolution_clock::now();
 
-	// TODO: add quit/cancel token instead of total-time
-	while (t < total_time)  // TODO: Replace w/ overridable method, "LoopCondition"
+	while (this->ContinueLoop())
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		this->m_duration = end - start;
@@ -38,7 +41,7 @@ void EngineBase::Run()
 		while (accumulator >= dt_s)
 		{
 			this->Update(dt_s);
-			t += dt_s;
+			m_current_time += dt_s;
 			accumulator -= dt_s;
 		}
 

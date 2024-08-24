@@ -1,6 +1,6 @@
 #include "OpenGLEngine.h"
 
-OpenGLEngine::OpenGLEngine() : EngineBase(SystemConfig())
+OpenGLEngine::OpenGLEngine(const SystemConfig& sc) : EngineBase(sc)
 {
 }
 
@@ -10,29 +10,24 @@ OpenGLEngine::~OpenGLEngine()
 }
 
 void OpenGLEngine::OnStartup()
-{
-    // TODO: window ptr should be a class member field
-    GLFWwindow* window;
+{    
     glfwInit();
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-		glfwTerminate();
-    glfwMakeContextCurrent(window);
-    // TODO: glfwWindowShouldClose should go into LoopCondition overridable.  e.g.,
-    // while (!glfwWindowShouldClose(window) && t < total_time)
-    while (!glfwWindowShouldClose(window))
-    {
-        // TODO: Below goes into Update method, along w/ m_system->Step(dt);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-    // TODO: This should go into OnCompletion
-    glfwTerminate();
+    m_window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+
+    if (!m_window)
+        glfwTerminate();
+	
+    glfwMakeContextCurrent(m_window);
+}
+
+bool OpenGLEngine::ContinueLoop()
+{
+    return !glfwWindowShouldClose(m_window);//&& m_current_time < m_config.total_time;
 }
 
 void OpenGLEngine::OnCompletion()
 {
+    glfwTerminate();
 }
 
 void OpenGLEngine::Update(const double& dt)
@@ -42,6 +37,9 @@ void OpenGLEngine::Update(const double& dt)
 
 void OpenGLEngine::Render()
 {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(m_window);
+    glfwPollEvents();
 }
 
 void OpenGLEngine::Interpolate(const double& factor)

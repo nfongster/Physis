@@ -5,11 +5,15 @@
 
 class OpenGLEngine : public EngineBase
 {
+private:
+	GLFWwindow* m_window;
+
 public:
-	OpenGLEngine();
+	OpenGLEngine(const SystemConfig& sc);
 	~OpenGLEngine();
 	
 	void OnStartup();
+	bool ContinueLoop();
 	void OnCompletion();
 
 	void Update(const double& dt);
