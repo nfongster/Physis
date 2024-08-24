@@ -27,4 +27,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\shaders\VertexShader.shader" />
+    <None Include="resource\shaders\FragmentShader.shader" />
+  </ItemGroup>
 </Project>
