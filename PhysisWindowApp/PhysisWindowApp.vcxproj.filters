@@ -21,9 +21,15 @@
     <ClCompile Include="src\OpenGLEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ShaderBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenGLEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

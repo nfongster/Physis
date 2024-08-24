@@ -1,24 +1,20 @@
 #pragma once
 #include <glew.h>
 #include <glfw3.h>
-#include <sstream>
-#include <fstream>
+
 #include "Physis.h"
+#include "ShaderBuilder.h"
 
 class OpenGLEngine : public EngineBase
 {
 private:
-	GLFWwindow* m_window;
-	unsigned int m_shader;
+	GLFWwindow* m_pWindow;
+	unsigned int m_shader_id;
 
 	unsigned int POS_COORDS = 2;
 	unsigned int NUM_VERTICES = 6;
 	unsigned int NUM_TRIANGLES = 4;
 	unsigned int NUM_TRIANGLE_CORNERS = 3;
-
-	std::string ParseShaderFile(const std::string& path);
-	unsigned int BuildShaderProgram(const std::string& vertexSource, const std::string& fragmentSource);
-	unsigned int CompileShader(unsigned int type, const std::string& source);
 
 protected:
 	void OnStartup();
