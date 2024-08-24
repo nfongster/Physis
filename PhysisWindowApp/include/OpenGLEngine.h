@@ -20,10 +20,7 @@ private:
 	unsigned int BuildShaderProgram(const std::string& vertexSource, const std::string& fragmentSource);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 
-public:
-	OpenGLEngine(const SystemConfig& sc);
-	~OpenGLEngine();
-	
+protected:
 	void OnStartup();
 	bool ContinueLoop();
 	void OnCompletion();
@@ -31,6 +28,10 @@ public:
 	void Update(const double& dt);
 	void Render();
 	void Interpolate(const double& factor);
+
+public:
+	OpenGLEngine(const SystemConfig& sc);
+	~OpenGLEngine();
 
 	void AddParticle();
 	void AddParticle(const InitialConditions& ic);

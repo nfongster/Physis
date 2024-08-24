@@ -15,9 +15,6 @@ protected:
 	std::chrono::duration<double, std::milli> m_duration;
 	double m_current_time;
 
-public:
-	EngineBase(const SystemConfig& sc);
-
 	virtual void OnStartup();
 	virtual bool ContinueLoop();
 	virtual void OnCompletion();
@@ -25,6 +22,9 @@ public:
 	virtual void Update(const double& dt) = 0;
 	virtual void Render() = 0;
 	virtual void Interpolate(const double& factor) = 0;
+
+public:
+	EngineBase(const SystemConfig& sc);
 
 	void Run();
 	void Pause();
