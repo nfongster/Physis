@@ -1,6 +1,7 @@
 #pragma once
 #include <glew.h>
 #include <glfw3.h>
+#include <math.h>
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
@@ -10,10 +11,11 @@ class OpenGLEngine : public EngineBase
 private:
 	GLFWwindow* m_pWindow;
 	unsigned int m_shader_id;
+	unsigned int m_u_position_id;
 
 	unsigned int POS_COORDS = 2;
-	unsigned int NUM_VERTICES = 6;
-	unsigned int NUM_TRIANGLES = 4;
+	unsigned int NUM_VERTICES = 3;
+	unsigned int NUM_TRIANGLES = 1;
 	unsigned int NUM_TRIANGLE_CORNERS = 3;
 
 protected:
