@@ -27,9 +27,9 @@ void OpenGLEngine::OnStartup()
     unsigned int indices[] = {
         0, 1, 2
     };
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    
+    glGenBuffers(1, &m_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, NUM_TRIANGLES * NUM_TRIANGLE_CORNERS * sizeof(int), indices, GL_STATIC_DRAW);
 
     // get initial position
@@ -98,7 +98,7 @@ void OpenGLEngine::Render()
         Vec2 pos = p.second->GetPosition();
         glUniform2f(m_u_position_id, pos.X, pos.Y);
         glBindVertexArray(p.first);
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
         glDrawElements(GL_TRIANGLES, NUM_TRIANGLES * NUM_TRIANGLE_CORNERS, GL_UNSIGNED_INT, nullptr);
     }
     
