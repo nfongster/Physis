@@ -10,9 +10,12 @@ int main()
     auto engine = new OpenGLEngine(SystemConfig(t_total, dt, scalar));
 
     Vec2 r0 (-0.45, -0.45);
-    Vec2 v0 (0.1, 0.3);
-    Vec2 a0 (0.01, -0.03);
-    engine->AddParticle(InitialConditions(r0, v0, a0));
+    for (int i = 0; i < 3; i++)
+    {
+        Vec2 v0(0.1 + (i * 0.05), 0.3);
+        Vec2 a0(0, -0.07 * (i + 1));
+        engine->AddParticle(InitialConditions(r0, v0, a0));
+    }
     engine->Run();
     delete engine;
     return 0;

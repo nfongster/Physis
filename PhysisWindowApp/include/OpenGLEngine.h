@@ -2,6 +2,7 @@
 #include <glew.h>
 #include <glfw3.h>
 #include <math.h>
+#include <map>
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
@@ -12,6 +13,8 @@ private:
 	GLFWwindow* m_pWindow;
 	unsigned int m_shader_id;
 	unsigned int m_u_position_id;
+	std::map<unsigned int, Particle*> m_vao_map;
+	unsigned int m_ibo;
 
 	unsigned int POS_COORDS = 2;
 	unsigned int NUM_VERTICES = 3;
