@@ -11,8 +11,9 @@ int main()
 
     Vec2 r0 (-0.45, -0.45);
     Vec2 v0 (0.1, 0.3);
-    Vec2 a0 (0.01, -0.03);
+    Vec2 a0 (0, -0.07);
     engine->AddParticle(InitialConditions(r0, v0, a0));
+    engine->AddParticle(InitialConditions(Vec2(0, -0.3), Vec2(0.1, 0), Vec2()));
     engine->Run();
     delete engine;
     return 0;
