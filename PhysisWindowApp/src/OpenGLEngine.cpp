@@ -71,6 +71,11 @@ void OpenGLEngine::OnStartup()
     m_shader_id = builder.Build();
     glUseProgram(m_shader_id);
     glGetUniformLocation(m_u_position_id, "u_Position");
+
+    // TODO: Create a deep copy constructor
+    m_system_prev_state = new ParticleSystem();
+    for (auto p : m_system->GetParticles())
+        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));
 }
 
 bool OpenGLEngine::ContinueLoop()
@@ -86,6 +91,9 @@ void OpenGLEngine::OnCompletion()
 
 void OpenGLEngine::Update(const double& dt)
 {
+    m_system_prev_state = new ParticleSystem();
+    for (auto p : m_system->GetParticles())
+        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));
 	m_system->Step(dt);
 }
 
@@ -109,6 +117,27 @@ void OpenGLEngine::Render()
 void OpenGLEngine::Interpolate(const double& factor)
 {
 	// Interpolate remaining accumulator time
+    // CurrentState = CurrentState * factor + PreviousState * (1 - factor)
+    int i = 0;  // loop across 2 vectors simultaneously and don't be an idiot
+    for (Particle* p : m_system->GetParticles())
+    {
+        auto r_curr = p->GetPosition();
+        auto v_curr = p->GetVelocity();
+        auto a_curr = p->GetAcceleration();
+
+        auto r_prev = m_system_prev_state->GetParticles()[i]->GetPosition();
+        auto v_prev = m_system_prev_state->GetParticles()[i]->GetVelocity();
+        auto a_prev = m_system_prev_state->GetParticles()[i]->GetAcceleration();
+
+        auto r = r_curr * factor + r_prev * (1 - factor);
+        auto v = v_curr * factor + v_prev * (1 - factor);
+        auto a = a_curr * factor + a_prev * (1 - factor);
+
+        // TODO: These should not be public methods, perhaps use a single 'interpolate' method on the particle
+        p->SetPosition(r);
+        p->SetVelocity(v);
+        p->SetAcceleration(a);
+    }
 }
 
 void OpenGLEngine::AddParticle()

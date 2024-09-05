@@ -22,5 +22,9 @@ public:
 	Vec2 GetVelocity();
 	Vec2 GetAcceleration();
 
+	void SetPosition(Vec2 r);
+	void SetVelocity(Vec2 v);
+	void SetAcceleration(Vec2 a);
+
 	void Step(double dt);
 };
