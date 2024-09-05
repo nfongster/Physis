@@ -29,6 +29,21 @@ Vec2 Particle::GetAcceleration()
 	return m_acc;
 }
 
+void Particle::SetPosition(Vec2 r)
+{
+	m_pos = r;
+}
+
+void Particle::SetVelocity(Vec2 v)
+{
+	m_vel = v;
+}
+
+void Particle::SetAcceleration(Vec2 a)
+{
+	m_acc = a;
+}
+
 void Particle::Step(double dt)
 {
 	if (dt < 0)
@@ -37,13 +52,3 @@ void Particle::Step(double dt)
 	m_pos = Kinematics::UpdatePosition(m_pos, m_vel, m_acc, dt);
 	m_vel = Kinematics::UpdateVelocity(m_vel, m_acc, dt);
 }
-
-//std::string Particle::PrintState()
-//{
-//	return std::string(m_pos.X) + '\t'
-//		<< m_pos.Y << '\t'
-//		<< m_vel.X << '\t'
-//		<< m_vel.Y << '\t'
-//		<< m_acc.X << '\t'
-//		<< m_acc.Y << '\t' << '\n';
-//}

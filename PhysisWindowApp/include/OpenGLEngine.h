@@ -16,6 +16,8 @@ private:
 	std::map<unsigned int, Particle*> m_vao_map;
 	unsigned int m_ibo;
 
+	ParticleSystem* m_system_prev_state;
+
 	unsigned int POS_COORDS = 2;
 	unsigned int NUM_VERTICES = 3;
 	unsigned int NUM_TRIANGLES = 1;
