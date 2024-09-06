@@ -36,8 +36,9 @@ void OpenGLEngine::OnStartup()
     float l = 0.03;  // side length of equilateral triangle
     float c = (l / 2.0f) * (std::sqrt(3) / 3.0f);  // vertical distance to base
     
-    for (auto p : m_system->GetParticles())
+    for (const auto& pair : m_system->GetParticles())
     {
+        Particle* p = pair.second;
         float pos[2 * 3];  // 2 coords * 3 vertices
         // todo: initalize separately
         // todo: create normalizer class
@@ -74,8 +75,13 @@ void OpenGLEngine::OnStartup()
 
     // TODO: Create a deep copy constructor
     m_system_prev_state = new ParticleSystem();
-    for (auto p : m_system->GetParticles())
-        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));
+    for (const auto& pair : m_system->GetParticles())
+    {
+        m_system_prev_state->Add(InitialConditions(
+            pair.second->GetPosition(),
+            pair.second->GetVelocity(),
+            pair.second->GetAcceleration()));
+    }
 }
 
 bool OpenGLEngine::ContinueLoop()
@@ -91,10 +97,12 @@ void OpenGLEngine::OnCompletion()
 
 void OpenGLEngine::Update(const double& dt)
 {
-    m_system_prev_state = new ParticleSystem();
+    /*m_system_prev_state = new ParticleSystem();
     for (auto p : m_system->GetParticles())
-        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));
-	m_system->Step(dt);
+        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));*/
+    /*for (int i = 0; i < m_system->GetParticles().size(); i++)
+        m_system_prev_state[i] = m_system[i];*/
+    m_system->Step(dt);
 }
 
 void OpenGLEngine::Render()
@@ -118,26 +126,26 @@ void OpenGLEngine::Interpolate(const double& factor)
 {
 	// Interpolate remaining accumulator time
     // CurrentState = CurrentState * factor + PreviousState * (1 - factor)
-    int i = 0;  // loop across 2 vectors simultaneously and don't be an idiot
-    for (Particle* p : m_system->GetParticles())
-    {
-        auto r_curr = p->GetPosition();
-        auto v_curr = p->GetVelocity();
-        auto a_curr = p->GetAcceleration();
+    //int i = 0;  // loop across 2 vectors simultaneously and don't be an idiot; or, store current/prev ParticleSystem in same struct
+    //for (Particle* p : m_system->GetParticles())
+    //{
+    //    auto r_curr = p->GetPosition();
+    //    auto v_curr = p->GetVelocity();
+    //    auto a_curr = p->GetAcceleration();
 
-        auto r_prev = m_system_prev_state->GetParticles()[i]->GetPosition();
-        auto v_prev = m_system_prev_state->GetParticles()[i]->GetVelocity();
-        auto a_prev = m_system_prev_state->GetParticles()[i]->GetAcceleration();
+    //    auto r_prev = m_system_prev_state->GetParticles()[i]->GetPosition();
+    //    auto v_prev = m_system_prev_state->GetParticles()[i]->GetVelocity();
+    //    auto a_prev = m_system_prev_state->GetParticles()[i]->GetAcceleration();
 
-        auto r = r_curr * factor + r_prev * (1 - factor);
-        auto v = v_curr * factor + v_prev * (1 - factor);
-        auto a = a_curr * factor + a_prev * (1 - factor);
+    //    auto r = r_curr * factor + r_prev * (1 - factor);
+    //    auto v = v_curr * factor + v_prev * (1 - factor);
+    //    auto a = a_curr * factor + a_prev * (1 - factor);
 
-        // TODO: These should not be public methods, perhaps use a single 'interpolate' method on the particle
-        p->SetPosition(r);
-        p->SetVelocity(v);
-        p->SetAcceleration(a);
-    }
+    //    // TODO: These should not be public methods, perhaps use a single 'interpolate' method on the particle
+    //    p->SetPosition(r);
+    //    p->SetVelocity(v);
+    //    p->SetAcceleration(a);
+    //}
 }
 
 void OpenGLEngine::AddParticle()

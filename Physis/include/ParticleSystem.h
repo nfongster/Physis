@@ -1,17 +1,19 @@
 #pragma once
 #include "Particle.h"
-#include <vector>
+#include <map>
 
 class PHYSIS_API ParticleSystem
 {
 private:
-	std::vector<Particle*> m_particles;
+	std::map<unsigned int, Particle*> m_particles;
 
 public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	std::vector<Particle*> GetParticles();
+	std::map<unsigned int, Particle*> GetParticles();
 	void Add(const InitialConditions& ic);
 	void Step(const double& dt);
+
+	// TODO: add [] operator
 };

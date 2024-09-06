@@ -3,6 +3,7 @@
 #include "Physis.h"
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 class BenchmarkEngine : public EngineBase
 {

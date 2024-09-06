@@ -17,11 +17,11 @@ TEST_CASE("Particle system can be iterated with multiple particles")
 		ps.Add(InitialConditions());
 
 	REQUIRE(ps.GetParticles().size() == count);
-	for (Particle* p : ps.GetParticles())
+	for (const auto& pair : ps.GetParticles())
 	{
-		REQUIRE(p->GetPosition().Equals(Vec2()));
-		REQUIRE(p->GetVelocity().Equals(Vec2()));
-		REQUIRE(p->GetAcceleration().Equals(Vec2()));
+		REQUIRE(pair.second->GetPosition().Equals(Vec2()));
+		REQUIRE(pair.second->GetVelocity().Equals(Vec2()));
+		REQUIRE(pair.second->GetAcceleration().Equals(Vec2()));
 	}
 }
 
