@@ -13,7 +13,7 @@ private:
 	GLFWwindow* m_pWindow;
 	unsigned int m_shader_id;
 	unsigned int m_u_position_id;
-	std::map<unsigned int, Particle*> m_vao_map;
+	std::map<unsigned int, std::shared_ptr<Particle>> m_vao_map;
 	unsigned int m_ibo;
 
 	ParticleSystem* m_system_prev_state;

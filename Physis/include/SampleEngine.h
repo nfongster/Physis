@@ -14,5 +14,5 @@ public:
 
 	void AddParticle();
 	void AddParticle(const InitialConditions& ic);
-	std::map<unsigned int, Particle*> Sample();
+	std::map<unsigned int, std::shared_ptr<Particle>> Sample();
 };

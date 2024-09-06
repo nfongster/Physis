@@ -7,6 +7,7 @@ OpenGLEngine::OpenGLEngine(const SystemConfig& sc) : EngineBase(sc)
 OpenGLEngine::~OpenGLEngine()
 {
 	delete m_system;
+    delete m_system_prev_state;
 }
 
 void OpenGLEngine::OnStartup()
@@ -38,7 +39,7 @@ void OpenGLEngine::OnStartup()
     
     for (const auto& pair : m_system->GetParticles())
     {
-        Particle* p = pair.second;
+        std::shared_ptr<Particle> p = pair.second;
         float pos[2 * 3];  // 2 coords * 3 vertices
         // todo: initalize separately
         // todo: create normalizer class
@@ -97,11 +98,13 @@ void OpenGLEngine::OnCompletion()
 
 void OpenGLEngine::Update(const double& dt)
 {
-    /*m_system_prev_state = new ParticleSystem();
-    for (auto p : m_system->GetParticles())
-        m_system_prev_state->Add(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));*/
-    /*for (int i = 0; i < m_system->GetParticles().size(); i++)
-        m_system_prev_state[i] = m_system[i];*/
+    for (const auto& pair : m_system->GetParticles())
+    {
+        unsigned int index = pair.first;
+        std::shared_ptr<Particle> particle = pair.second;
+        InitialConditions ic = InitialConditions(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
+        (*m_system_prev_state)[index] = std::make_shared<Particle>(ic);
+    }
     m_system->Step(dt);
 }
 
