@@ -16,6 +16,7 @@ public:
 	std::map<unsigned int, std::shared_ptr<Particle>> GetParticles();
 	void Add(const InitialConditions& ic);
 	void Step(const double& dt);
+	void Update(const unsigned int index, const InitialConditions& ic);
 
 	std::shared_ptr<Particle> operator[] (unsigned int index);
 };

@@ -26,6 +26,14 @@ void ParticleSystem::Step(const double& dt)
 		pair.second->Step(dt);
 }
 
+void ParticleSystem::Update(const unsigned int index, const InitialConditions& ic)
+{
+	if (index < 0 || index >= m_particles.size())
+		throw std::out_of_range("Index out of range");
+
+	m_particles[index] = std::make_shared<Particle>(ic);
+}
+
 std::shared_ptr<Particle> ParticleSystem::operator[](const unsigned int index)
 {
 	if (index < 0 || index >= m_particles.size())
