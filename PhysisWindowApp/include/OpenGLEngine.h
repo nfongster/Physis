@@ -6,22 +6,14 @@
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
+#include "EntityManager.h"
 
 class OpenGLEngine : public EngineBase
 {
 private:
 	GLFWwindow* m_pWindow;
-	unsigned int m_shader_id;
-	unsigned int m_u_position_id;
-	std::map<unsigned int, std::shared_ptr<Particle>> m_vao_map;
-	unsigned int m_ibo;
-
 	ParticleSystem* m_system_prev_state;
-
-	unsigned int POS_COORDS = 2;
-	unsigned int NUM_VERTICES = 3;
-	unsigned int NUM_TRIANGLES = 1;
-	unsigned int NUM_TRIANGLE_CORNERS = 3;
+	EntityManager* m_entity_manager;
 
 protected:
 	void OnStartup();

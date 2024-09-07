@@ -136,10 +136,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\ShaderBuilder.cpp" />
     <ClCompile Include="src\OpenGLEngine.cpp" />
+    <ClCompile Include="src\TriangleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\EntityManager.h" />
     <ClInclude Include="include\OpenGLEngine.h" />
     <ClInclude Include="include\ShaderBuilder.h" />
+    <ClInclude Include="include\TriangleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Physis\Physis.vcxproj">
