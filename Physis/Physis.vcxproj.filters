@@ -53,7 +53,7 @@
     <ClInclude Include="include\InitialConditions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SystemConfig.h">
+    <ClInclude Include="include\TimeConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Kinematics.h">

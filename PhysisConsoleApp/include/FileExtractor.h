@@ -15,6 +15,6 @@ public:
 	FileExtractor(const char* filepath);
 	~FileExtractor();
 
-	std::tuple<InitialConditions, SystemConfig, int> Extract();
+	std::tuple<InitialConditions, TimeConfig, int> Extract();
 };
 

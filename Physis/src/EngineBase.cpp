@@ -1,6 +1,6 @@
 #include "EngineBase.h"
 
-EngineBase::EngineBase(const SystemConfig& sc)
+EngineBase::EngineBase(const TimeConfig& sc)
 	: m_config(sc), m_system(new ParticleSystem())
 {
 }

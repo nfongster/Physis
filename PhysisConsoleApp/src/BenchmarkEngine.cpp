@@ -6,7 +6,7 @@
 /// <param name="sc">System configuration.</param>
 /// <param name="outdir">Directory to write results.</param>
 /// <param name="render_time">Time to pause (ms) during the render phase.</param>
-BenchmarkEngine::BenchmarkEngine(const SystemConfig& sc, const std::string& outdir, 
+BenchmarkEngine::BenchmarkEngine(const TimeConfig& sc, const std::string& outdir, 
 	const std::chrono::duration<double, std::milli>& render_time)
 	: EngineBase(sc), m_outdir(outdir), m_render_time(render_time)
 {

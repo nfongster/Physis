@@ -5,7 +5,7 @@
 class PHYSIS_API SampleEngine : public EngineBase
 {
 public:
-	SampleEngine(const SystemConfig& sc);
+	SampleEngine(const TimeConfig& sc);
 	~SampleEngine();
 
 	void Update(const double& dt);

@@ -8,7 +8,7 @@ FileExtractor::~FileExtractor()
 	m_file.close();
 }
 
-std::tuple<InitialConditions, SystemConfig, int> FileExtractor::Extract()
+std::tuple<InitialConditions, TimeConfig, int> FileExtractor::Extract()
 {
 	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
 	std::string line;
@@ -68,7 +68,7 @@ std::tuple<InitialConditions, SystemConfig, int> FileExtractor::Extract()
 	return 
 	{
 		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		SystemConfig(t_total, dt, t_scale),
+		TimeConfig(t_total, dt, t_scale),
 		num_particles
 	};
 }

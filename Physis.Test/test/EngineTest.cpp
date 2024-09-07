@@ -3,14 +3,14 @@
 
 TEST_CASE("Engine can be constructed with no particles")
 {
-	SampleEngine* engine = new SampleEngine(SystemConfig());
+	SampleEngine* engine = new SampleEngine(TimeConfig());
 	REQUIRE(engine != nullptr);
 	REQUIRE(engine->Sample().size() == 0);
 }
 
 TEST_CASE("Engine can be constructed with a single particle with default values")
 {
-	SystemConfig sc = SystemConfig();
+	TimeConfig sc = TimeConfig();
 	SampleEngine* engine = new SampleEngine(sc);
 	REQUIRE(engine != nullptr);
 
@@ -26,7 +26,7 @@ TEST_CASE("Engine can be constructed with a single particle with default values"
 
 TEST_CASE("Engine with 1 stationary particle can be sampled at a slower rate than dt")
 {
-	SystemConfig sc = SystemConfig();
+	TimeConfig sc = TimeConfig();
 	SampleEngine* engine = new SampleEngine(sc);
 	engine->AddParticle();
 	engine->Run();
@@ -42,7 +42,7 @@ TEST_CASE("If engine runs with 1 stationary particle, then the particle's final 
 	double total_time = 10;
 	double delta_time = 1;
 
-	SampleEngine* engine = new SampleEngine(SystemConfig(total_time, delta_time, 1));
+	SampleEngine* engine = new SampleEngine(TimeConfig(total_time, delta_time, 1));
 	engine->AddParticle();
 	engine->Run();
 
@@ -66,7 +66,7 @@ TEST_CASE("If engine runs with 1 moving particle, then the particle's final cond
 	Vec2 rf = Kinematics::UpdatePosition(r0, v0, a0, total_time);
 	Vec2 vf = Kinematics::UpdateVelocity(v0, a0, total_time);
 
-	SampleEngine* engine = new SampleEngine(SystemConfig(total_time, delta_time, 1));
+	SampleEngine* engine = new SampleEngine(TimeConfig(total_time, delta_time, 1));
 	engine->AddParticle(InitialConditions(r0, v0, a0));
 	engine->Run();
 

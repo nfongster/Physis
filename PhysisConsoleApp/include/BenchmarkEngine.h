@@ -20,7 +20,7 @@ protected:
 	void Interpolate(const double& factor);
 
 public:
-	BenchmarkEngine(const SystemConfig& sc, const std::string& outdir, 
+	BenchmarkEngine(const TimeConfig& sc, const std::string& outdir, 
 		const std::chrono::duration<double, std::milli>& render_time);
 
 	~BenchmarkEngine();

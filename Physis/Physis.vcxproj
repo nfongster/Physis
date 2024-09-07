@@ -32,7 +32,7 @@
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\Kinematics.h" />
     <ClInclude Include="Physis.h" />
-    <ClInclude Include="include\SystemConfig.h" />
+    <ClInclude Include="include\TimeConfig.h" />
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\Vec.h" />

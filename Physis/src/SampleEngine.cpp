@@ -1,6 +1,6 @@
 #include "SampleEngine.h"
 
-SampleEngine::SampleEngine(const SystemConfig& sc)
+SampleEngine::SampleEngine(const TimeConfig& sc)
 	: EngineBase(sc)
 {
 }

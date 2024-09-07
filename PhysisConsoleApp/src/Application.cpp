@@ -19,7 +19,7 @@ int main()
 	std::cout << "Running the client test app..." << '\n';
 
 	InitialConditions ic;
-	SystemConfig sc;
+	TimeConfig sc;
 	int num_particles;
 
 	std::cout << "Press C to enter initial conditions.  Press any other key to read from a file.\n";

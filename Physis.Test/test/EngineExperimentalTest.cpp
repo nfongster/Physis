@@ -11,7 +11,7 @@ TEST_CASE("Engine can be constructed and run", "[engine]")
 	double t_total = 1;
 	double dt_sim = 0.05;
 	double scalar = 1.0;
-	auto sc = SystemConfig(t_total, dt_sim, scalar);
+	auto sc = TimeConfig(t_total, dt_sim, scalar);
 	SampleEngine* engine = new SampleEngine(sc);
 	engine->AddParticle();
 

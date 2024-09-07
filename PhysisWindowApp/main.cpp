@@ -7,7 +7,7 @@ int main()
     double t_total = 20;
     double dt = 0.0001;
     double scalar = 1;
-    auto engine = OpenGLEngine::WithTriangles(SystemConfig(t_total, dt, scalar));
+    auto engine = OpenGLEngine::WithTriangles(TimeConfig(t_total, dt, scalar));
 
     Vec2 r0 (-0.45, -0.45);
     for (int i = 0; i < 3; i++)

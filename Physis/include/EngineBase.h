@@ -5,12 +5,12 @@
 #include <chrono>
 #include "Core.h"
 #include "ParticleSystem.h"
-#include "SystemConfig.h"
+#include "TimeConfig.h"
 
 class PHYSIS_API EngineBase
 {
 protected:
-	SystemConfig m_config;
+	TimeConfig m_config;
 	ParticleSystem* m_system;
 	std::chrono::duration<double, std::milli> m_duration;
 	double m_current_time;
@@ -24,7 +24,7 @@ protected:
 	virtual void Interpolate(const double& factor) = 0;
 
 public:
-	EngineBase(const SystemConfig& sc);
+	EngineBase(const TimeConfig& sc);
 
 	void Run();
 	void Pause();

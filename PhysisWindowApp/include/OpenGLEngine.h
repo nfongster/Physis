@@ -25,10 +25,10 @@ protected:
 	void Interpolate(const double& factor);
 
 public:
-	OpenGLEngine(const SystemConfig& sc, EntityManager* entity_manager);
+	OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager);
 	~OpenGLEngine();
 
-	static std::unique_ptr<OpenGLEngine> WithTriangles(const SystemConfig& sc);
+	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& sc);
 
 	void AddParticle();
 	void AddParticle(const InitialConditions& ic);
