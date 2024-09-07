@@ -127,28 +127,11 @@ void OpenGLEngine::Render()
 
 void OpenGLEngine::Interpolate(const double& factor)
 {
-	// Interpolate remaining accumulator time
-    // CurrentState = CurrentState * factor + PreviousState * (1 - factor)
     for (auto pair : m_system->GetParticles())
     {
         unsigned int i = pair.first;
         std::shared_ptr<Particle> p = pair.second;
-        auto r_curr = p->GetPosition();
-        auto v_curr = p->GetVelocity();
-        auto a_curr = p->GetAcceleration();
-
-        auto r_prev = (*m_system_prev_state)[i]->GetPosition();
-        auto v_prev = (*m_system_prev_state)[i]->GetVelocity();
-        auto a_prev = (*m_system_prev_state)[i]->GetAcceleration();
-
-        auto r = r_curr * factor + r_prev * (1 - factor);
-        auto v = v_curr * factor + v_prev * (1 - factor);
-        auto a = a_curr * factor + a_prev * (1 - factor);
-
-        // TODO: These should not be public methods, perhaps use a single 'interpolate' method on the particle
-        p->SetPosition(r);
-        p->SetVelocity(v);
-        p->SetAcceleration(a);
+        p->Interpolate((*m_system_prev_state)[i], factor);
     }
 }
 
