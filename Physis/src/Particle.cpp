@@ -29,21 +29,6 @@ Vec2 Particle::GetAcceleration()
 	return m_acc;
 }
 
-void Particle::SetPosition(Vec2 r)
-{
-	m_pos = r;
-}
-
-void Particle::SetVelocity(Vec2 v)
-{
-	m_vel = v;
-}
-
-void Particle::SetAcceleration(Vec2 a)
-{
-	m_acc = a;
-}
-
 void Particle::Step(double dt)
 {
 	if (dt < 0)
@@ -51,4 +36,20 @@ void Particle::Step(double dt)
 
 	m_pos = Kinematics::UpdatePosition(m_pos, m_vel, m_acc, dt);
 	m_vel = Kinematics::UpdateVelocity(m_vel, m_acc, dt);
+}
+
+void Particle::Interpolate(const std::shared_ptr<Particle> previousState, const double factor)
+{
+	auto r_prev = previousState->GetPosition();
+	auto v_prev = previousState->GetVelocity();
+	auto a_prev = previousState->GetAcceleration();
+
+	// CurrentState = CurrentState * factor + PreviousState * (1 - factor)
+	auto r = m_pos * factor + r_prev * (1 - factor);
+	auto v = m_vel * factor + v_prev * (1 - factor);
+	auto a = m_acc * factor + a_prev * (1 - factor);
+
+	m_pos = r;
+	m_vel = v;
+	m_acc = a;
 }

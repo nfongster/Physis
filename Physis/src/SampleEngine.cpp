@@ -35,7 +35,7 @@ void SampleEngine::AddParticle(const InitialConditions& ic)
 	m_system->Add(ic);
 }
 
-std::vector<Particle*> SampleEngine::Sample()
+std::map<unsigned int, std::shared_ptr<Particle>> SampleEngine::Sample()
 {
 	return m_system->GetParticles();
 }

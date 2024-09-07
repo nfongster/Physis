@@ -17,7 +17,7 @@ TEST_CASE("Engine can be constructed with a single particle with default values"
 	engine->AddParticle();
 	REQUIRE(engine->Sample().size() == 1);
 
-	Particle* p = engine->Sample()[0];
+	std::shared_ptr<Particle> p = engine->Sample()[0];
 	REQUIRE(p->GetPosition().Equals(Vec2()));
 	REQUIRE(p->GetVelocity().Equals(Vec2()));
 	REQUIRE(p->GetAcceleration().Equals(Vec2()));
@@ -46,7 +46,7 @@ TEST_CASE("If engine runs with 1 stationary particle, then the particle's final 
 	engine->AddParticle();
 	engine->Run();
 
-	Particle* p = engine->Sample()[0];
+	std::shared_ptr<Particle> p = engine->Sample()[0];
 	REQUIRE(p->GetPosition().Equals(Vec2()));
 	REQUIRE(p->GetVelocity().Equals(Vec2()));
 	REQUIRE(p->GetAcceleration().Equals(Vec2()));
@@ -70,7 +70,7 @@ TEST_CASE("If engine runs with 1 moving particle, then the particle's final cond
 	engine->AddParticle(InitialConditions(r0, v0, a0));
 	engine->Run();
 
-	Particle* p = engine->Sample()[0];
+	std::shared_ptr<Particle> p = engine->Sample()[0];
 
 	(std::cout << "rf (expected): " << rf) << std::endl;
 	(std::cout << "rf (computed): " << p->GetPosition()) << std::endl;
