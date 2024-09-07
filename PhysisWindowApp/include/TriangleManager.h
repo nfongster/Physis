@@ -25,9 +25,9 @@ private:
 	unsigned int NUM_TRIANGLE_CORNERS = 3;
 
 public:
-	TriangleManager(ParticleSystem* system);
+	TriangleManager();
 	~TriangleManager();
 
-	void Initialize();
+	void Initialize(ParticleSystem* particle_system);
 	void Render();
 };

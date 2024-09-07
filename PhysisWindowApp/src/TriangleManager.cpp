@@ -1,6 +1,6 @@
 #include "TriangleManager.h"
 
-TriangleManager::TriangleManager(ParticleSystem* system) : m_system(system)
+TriangleManager::TriangleManager()
 {
 }
 
@@ -9,7 +9,7 @@ TriangleManager::~TriangleManager()
     glDeleteProgram(m_shader_id);
 }
 
-void TriangleManager::Initialize()
+void TriangleManager::Initialize(ParticleSystem* particle_system)
 {
     unsigned int indices[] = {
         0, 1, 2
@@ -23,7 +23,7 @@ void TriangleManager::Initialize()
     float l = 0.03;  // side length of equilateral triangle
     float c = (l / 2.0f) * (std::sqrt(3) / 3.0f);  // vertical distance to base
 
-    for (const auto& pair : m_system->GetParticles())
+    for (const auto& pair : particle_system->GetParticles())
     {
         std::shared_ptr<Particle> p = pair.second;
         float pos[2 * 3];  // 2 coords * 3 vertices

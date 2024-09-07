@@ -1,8 +1,8 @@
 #include "OpenGLEngine.h"
 #include "TriangleManager.h"
 
-OpenGLEngine::OpenGLEngine(const SystemConfig& sc) 
-    : m_entity_manager(new TriangleManager(m_system)), EngineBase(sc)
+OpenGLEngine::OpenGLEngine(const SystemConfig& sc, EntityManager* entity_manager) 
+    : m_entity_manager(entity_manager), EngineBase(sc)
 {
 }
 
@@ -10,6 +10,11 @@ OpenGLEngine::~OpenGLEngine()
 {
 	delete m_system;
     delete m_system_prev_state;
+}
+
+std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const SystemConfig& sc)
+{
+    return std::make_unique<OpenGLEngine>(sc, new TriangleManager());
 }
 
 void OpenGLEngine::OnStartup()
@@ -26,7 +31,7 @@ void OpenGLEngine::OnStartup()
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
-    m_entity_manager->Initialize();
+    m_entity_manager->Initialize(m_system);
 
     // TODO: Create a deep copy constructor
     m_system_prev_state = new ParticleSystem();
