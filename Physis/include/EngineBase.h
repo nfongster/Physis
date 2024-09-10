@@ -6,12 +6,14 @@
 #include "Core.h"
 #include "ParticleSystem.h"
 #include "TimeConfig.h"
+#include "SystemState.h"
 
 class PHYSIS_API EngineBase
 {
 protected:
 	TimeConfig m_config;
-	ParticleSystem* m_system;
+	SystemState* m_system_state;
+
 	std::chrono::duration<double, std::milli> m_duration;
 	double m_current_time;
 

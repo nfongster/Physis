@@ -12,7 +12,6 @@ class OpenGLEngine : public EngineBase
 {
 private:
 	GLFWwindow* m_pWindow;
-	ParticleSystem* m_system_prev_state;
 	EntityManager* m_entity_manager;
 
 protected:

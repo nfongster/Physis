@@ -14,7 +14,7 @@ BenchmarkEngine::BenchmarkEngine(const TimeConfig& sc, const std::string& outdir
 
 BenchmarkEngine::~BenchmarkEngine()
 {
-	delete m_system;
+	delete m_system_state;
 }
 
 void BenchmarkEngine::OnCompletion()
@@ -48,7 +48,7 @@ void BenchmarkEngine::OnCompletion()
 
 void BenchmarkEngine::Update(const double& dt)
 {
-	m_system->Step(dt);
+	m_system_state->GetCurrent()->Step(dt);
 }
 
 void BenchmarkEngine::Render()
@@ -65,10 +65,10 @@ void BenchmarkEngine::Interpolate(const double& factor)
 
 void BenchmarkEngine::AddParticle()
 {
-	m_system->Add(InitialConditions());
+	m_system_state->GetCurrent()->Add(InitialConditions());
 }
 
 void BenchmarkEngine::AddParticle(const InitialConditions& ic)
 {
-	m_system->Add(ic);
+	m_system_state->GetCurrent()->Add(ic);
 }

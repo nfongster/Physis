@@ -8,8 +8,7 @@ OpenGLEngine::OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager)
 
 OpenGLEngine::~OpenGLEngine()
 {
-	delete m_system;
-    delete m_system_prev_state;
+    delete m_system_state;
 }
 
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& sc)
@@ -31,17 +30,7 @@ void OpenGLEngine::OnStartup()
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
-    m_entity_manager->Initialize(m_system);
-
-    // TODO: Create a deep copy constructor
-    m_system_prev_state = new ParticleSystem();
-    for (const auto& pair : m_system->GetParticles())
-    {
-        m_system_prev_state->Add(InitialConditions(
-            pair.second->GetPosition(),
-            pair.second->GetVelocity(),
-            pair.second->GetAcceleration()));
-    }
+    m_entity_manager->Initialize(m_system_state);
 }
 
 bool OpenGLEngine::ContinueLoop()
@@ -57,14 +46,14 @@ void OpenGLEngine::OnCompletion()
 
 void OpenGLEngine::Update(const double& dt)
 {
-    for (const auto& pair : m_system->GetParticles())
+    for (const auto& pair : m_system_state->GetCurrent()->GetParticles())
     {
         unsigned int index = pair.first;
         std::shared_ptr<Particle> particle = pair.second;
         InitialConditions ic = InitialConditions(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
-        m_system_prev_state->Update(index, ic);
+        m_system_state->GetPrevious()->Update(index, ic);
     }
-    m_system->Step(dt);
+    m_system_state->GetCurrent()->Step(dt);
 }
 
 void OpenGLEngine::Render()
@@ -77,20 +66,20 @@ void OpenGLEngine::Render()
 
 void OpenGLEngine::Interpolate(const double& factor)
 {
-    for (auto pair : m_system->GetParticles())
+    for (auto pair : m_system_state->GetCurrent()->GetParticles())
     {
         unsigned int i = pair.first;
         std::shared_ptr<Particle> p = pair.second;
-        p->Interpolate((*m_system_prev_state)[i], factor);
+        p->Interpolate((*m_system_state->GetPrevious())[i], factor);
     }
 }
 
 void OpenGLEngine::AddParticle()
 {
-	m_system->Add(InitialConditions());
+    m_system_state->GetCurrent()->Add(InitialConditions());
 }
 
 void OpenGLEngine::AddParticle(const InitialConditions& ic)
 {
-	m_system->Add(ic);
+    m_system_state->GetCurrent()->Add(ic);
 }

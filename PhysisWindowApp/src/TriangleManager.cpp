@@ -9,7 +9,7 @@ TriangleManager::~TriangleManager()
     glDeleteProgram(m_shader_id);
 }
 
-void TriangleManager::Initialize(ParticleSystem* particle_system)
+void TriangleManager::Initialize(SystemState* system_state)
 {
     unsigned int indices[] = {
         0, 1, 2
@@ -23,7 +23,7 @@ void TriangleManager::Initialize(ParticleSystem* particle_system)
     float l = 0.03;  // side length of equilateral triangle
     float c = (l / 2.0f) * (std::sqrt(3) / 3.0f);  // vertical distance to base
 
-    for (const auto& pair : particle_system->GetParticles())
+    for (const auto& pair : system_state->GetCurrent()->GetParticles())
     {
         std::shared_ptr<Particle> p = pair.second;
         float pos[2 * 3];  // 2 coords * 3 vertices
@@ -59,6 +59,15 @@ void TriangleManager::Initialize(ParticleSystem* particle_system)
     m_shader_id = builder.Build();
     glUseProgram(m_shader_id);
     glGetUniformLocation(m_u_position_id, "u_Position");
+
+    // TODO: Create a deep copy constructor
+    for (const auto& pair : system_state->GetCurrent()->GetParticles())
+    {
+        system_state->GetPrevious()->Add(InitialConditions(
+            pair.second->GetPosition(),
+            pair.second->GetVelocity(),
+            pair.second->GetAcceleration()));
+    }
 }
 
 void TriangleManager::Render()

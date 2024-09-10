@@ -28,6 +28,6 @@ public:
 	TriangleManager();
 	~TriangleManager();
 
-	void Initialize(ParticleSystem* particle_system);
+	void Initialize(SystemState* system_state);
 	void Render();
 };

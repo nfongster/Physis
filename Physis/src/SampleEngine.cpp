@@ -7,12 +7,12 @@ SampleEngine::SampleEngine(const TimeConfig& sc)
 
 SampleEngine::~SampleEngine()
 {
-	delete m_system;
+	delete m_system_state;
 }
 
 void SampleEngine::Update(const double& dt)
 {
-	m_system->Step(dt);
+	m_system_state->GetCurrent()->Step(dt);
 }
 
 void SampleEngine::Render()
@@ -27,15 +27,15 @@ void SampleEngine::Interpolate(const double& factor)
 
 void SampleEngine::AddParticle()
 {
-	m_system->Add(InitialConditions());
+	m_system_state->GetCurrent()->Add(InitialConditions());
 }
 
 void SampleEngine::AddParticle(const InitialConditions& ic)
 {
-	m_system->Add(ic);
+	m_system_state->GetCurrent()->Add(ic);
 }
 
 std::map<unsigned int, std::shared_ptr<Particle>> SampleEngine::Sample()
 {
-	return m_system->GetParticles();
+	return m_system_state->GetCurrent()->GetParticles();
 }

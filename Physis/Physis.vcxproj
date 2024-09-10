@@ -24,6 +24,7 @@
     <ClCompile Include="src\Vec.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
+    <ClCompile Include="src\SystemState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\Vec.h" />
+    <ClInclude Include="include\SystemState.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ToDo.txt" />
