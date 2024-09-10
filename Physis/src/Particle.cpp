@@ -29,7 +29,7 @@ Vec2 Particle::GetAcceleration()
 	return m_acc;
 }
 
-void Particle::Step(double dt)
+void Particle::Step(const double& dt)
 {
 	if (dt < 0)
 		throw std::invalid_argument("Input value was negative!");
@@ -38,7 +38,7 @@ void Particle::Step(double dt)
 	m_vel = Kinematics::UpdateVelocity(m_vel, m_acc, dt);
 }
 
-void Particle::Interpolate(const std::shared_ptr<Particle> previousState, const double factor)
+void Particle::Interpolate(const std::shared_ptr<Particle> previousState, const double& factor)
 {
 	auto r_prev = previousState->GetPosition();
 	auto v_prev = previousState->GetVelocity();
