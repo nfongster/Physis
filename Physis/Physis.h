@@ -3,5 +3,6 @@
 // External client use only!
 
 #include "include\SampleEngine.h"
+#include "include\BenchmarkEngine.h"
 #include "include\TimeConfig.h"
 #include "include\InitialConditions.h"

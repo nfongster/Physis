@@ -1,7 +1,6 @@
 #include <iostream>
 #include <Physis.h>
 #include "Utility.h"
-#include "BenchmarkEngine.h"
 #include "Extractor.h"
 #include "ConsoleExtractor.h"
 #include "FileExtractor.h"

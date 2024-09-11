@@ -148,7 +148,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\BenchmarkEngine.cpp" />
     <ClCompile Include="src\FileExtractor.cpp" />
     <ClCompile Include="src\ConsoleExtractor.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -158,7 +157,6 @@
     <ClInclude Include="include\FileExtractor.h" />
     <ClInclude Include="include\ConsoleExtractor.h" />
     <ClInclude Include="include\Utility.h" />
-    <ClInclude Include="include\BenchmarkEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resource\default_initial_conditions.txt" />

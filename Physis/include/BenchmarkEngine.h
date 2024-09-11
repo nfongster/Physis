@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Physis.h"
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include "EngineBase.h"
 
-class BenchmarkEngine : public EngineBase
+class PHYSIS_API BenchmarkEngine : public EngineBase
 {
 private:
 	const std::string m_outdir;
