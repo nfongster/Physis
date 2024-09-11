@@ -20,6 +20,28 @@ void EngineBase::OnCompletion()
 	// Optional override
 }
 
+void EngineBase::Update(const double& dt)
+{
+	for (const auto& pair : m_system_state->GetCurrent()->GetParticles())
+	{
+		unsigned int index = pair.first;
+		std::shared_ptr<Particle> particle = pair.second;
+		InitialConditions ic = InitialConditions(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
+		m_system_state->GetPrevious()->Update(index, ic);
+	}
+	m_system_state->GetCurrent()->Step(dt);
+}
+
+void EngineBase::Interpolate(const double& factor)
+{
+	for (auto pair : m_system_state->GetCurrent()->GetParticles())
+	{
+		unsigned int i = pair.first;
+		std::shared_ptr<Particle> p = pair.second;
+		p->Interpolate((*m_system_state->GetPrevious())[i], factor);
+	}
+}
+
 void EngineBase::Run()
 {
 	this->OnStartup();

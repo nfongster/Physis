@@ -5,6 +5,12 @@ SystemState::SystemState()
 {
 }
 
+void SystemState::AddParticle(const InitialConditions& ic)
+{
+    m_system_curr_state->Add(ic);
+    m_system_prev_state->Add(ic);
+}
+
 ParticleSystem* SystemState::GetCurrent()
 {
 	return m_system_curr_state;

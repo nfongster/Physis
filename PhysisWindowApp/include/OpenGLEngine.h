@@ -19,9 +19,7 @@ protected:
 	bool ContinueLoop();
 	void OnCompletion();
 
-	void Update(const double& dt);
 	void Render();
-	void Interpolate(const double& factor);
 
 public:
 	OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager);

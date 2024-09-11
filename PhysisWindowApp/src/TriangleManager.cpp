@@ -59,15 +59,6 @@ void TriangleManager::Initialize(SystemState* system_state)
     m_shader_id = builder.Build();
     glUseProgram(m_shader_id);
     glGetUniformLocation(m_u_position_id, "u_Position");
-
-    // TODO: Create a deep copy constructor
-    for (const auto& pair : system_state->GetCurrent()->GetParticles())
-    {
-        system_state->GetPrevious()->Add(InitialConditions(
-            pair.second->GetPosition(),
-            pair.second->GetVelocity(),
-            pair.second->GetAcceleration()));
-    }
 }
 
 void TriangleManager::Render()

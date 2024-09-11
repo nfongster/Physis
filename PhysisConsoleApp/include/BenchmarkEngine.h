@@ -15,7 +15,6 @@ private:
 protected:
 	void OnCompletion();
 
-	void Update(const double& dt);
 	void Render();
 	void Interpolate(const double& factor);
 

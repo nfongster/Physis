@@ -8,7 +8,6 @@ public:
 	SampleEngine(const TimeConfig& sc);
 	~SampleEngine();
 
-	void Update(const double& dt);
 	void Render();
 	void Interpolate(const double& factor);
 

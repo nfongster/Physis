@@ -10,6 +10,7 @@ private:
 
 public:
 	SystemState();
+	void AddParticle(const InitialConditions& ic);
 	ParticleSystem* GetCurrent();
 	ParticleSystem* GetPrevious();
 };

@@ -46,11 +46,6 @@ void BenchmarkEngine::OnCompletion()
 	file.close();
 }
 
-void BenchmarkEngine::Update(const double& dt)
-{
-	m_system_state->GetCurrent()->Step(dt);
-}
-
 void BenchmarkEngine::Render()
 {
 	// Multiple render time by num particles?
@@ -60,15 +55,15 @@ void BenchmarkEngine::Render()
 
 void BenchmarkEngine::Interpolate(const double& factor)
 {
-	// Interpolate remaining accumulator time
+	// TODO: Include or override base class interpolate?
 }
 
 void BenchmarkEngine::AddParticle()
 {
-	m_system_state->GetCurrent()->Add(InitialConditions());
+	m_system_state->AddParticle(InitialConditions());
 }
 
 void BenchmarkEngine::AddParticle(const InitialConditions& ic)
 {
-	m_system_state->GetCurrent()->Add(ic);
+	m_system_state->AddParticle(ic);
 }

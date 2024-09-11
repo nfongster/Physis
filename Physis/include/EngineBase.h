@@ -21,9 +21,9 @@ protected:
 	virtual bool ContinueLoop();
 	virtual void OnCompletion();
 
-	virtual void Update(const double& dt) = 0;
+	virtual void Update(const double& dt);
 	virtual void Render() = 0;
-	virtual void Interpolate(const double& factor) = 0;
+	virtual void Interpolate(const double& factor);
 
 public:
 	EngineBase(const TimeConfig& sc);
