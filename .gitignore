@@ -1,7 +1,8 @@
 # Directories
 .vs/
 x64/
-thirdparty/
+extern/
+benchmarking/
 
 # Files
 *.vcxproj.user
