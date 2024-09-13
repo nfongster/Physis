@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BenchmarkEngine.cpp" />
-    <ClCompile Include="src\pybindtest.cpp" />
+    <ClCompile Include="bindings\physis-python.cpp" />
     <ClCompile Include="src\SampleEngine.cpp" />
     <ClCompile Include="src\EngineBase.cpp" />
     <ClCompile Include="src\Vec.cpp" />

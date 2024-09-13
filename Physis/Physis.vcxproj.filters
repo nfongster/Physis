@@ -36,7 +36,7 @@
     <ClCompile Include="src\BenchmarkEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\pybindtest.cpp">
+    <ClCompile Include="bindings\physis-python.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
