@@ -44,4 +44,11 @@ PYBIND11_MODULE(physis, m) {
             {
                 return "(" + std::to_string(v.X) + ", " + std::to_string(v.Y) + ", " + std::to_string(v.Z) + ")";
             });
+
+    py::class_<InitialConditions>(m, "InitialConditions")
+        .def(py::init())
+        .def(py::init<Vec2, Vec2, Vec2>())
+        .def_readwrite("r", &InitialConditions::r)
+        .def_readwrite("v", &InitialConditions::v)
+        .def_readwrite("a", &InitialConditions::a);
 }
