@@ -1,8 +1,13 @@
-# Directories
+# C++ Directories
 .vs/
 x64/
 extern/
 benchmarking/
 
+# Python Directories
+venv/
+__pycache__/
+
 # Files
 *.vcxproj.user
+*.pyd
