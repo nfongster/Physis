@@ -140,7 +140,7 @@
       <AdditionalDependencies>python312.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(OutDir)$(ProjectName).dll" "$(SolutionDir)PhysisPlotter\physis.pyd"</Command>
+      <Command>copy /Y "$(OutDir)$(ProjectName).dll" "$(SolutionDir)PhysisPlotter\test\physis.pyd"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,7 +162,7 @@
       <AdditionalDependencies>python312.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(OutDir)$(ProjectName).dll" "$(SolutionDir)PhysisPlotter\physis.pyd"</Command>
+      <Command>copy /Y "$(OutDir)$(ProjectName).dll" "$(SolutionDir)PhysisPlotter\test\physis.pyd"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
