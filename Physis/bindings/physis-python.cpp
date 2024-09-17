@@ -1,5 +1,6 @@
 #pragma once
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>  // required for shared pointerse
 #include "..\Physis.h"
 
 #include <string>
@@ -51,4 +52,25 @@ PYBIND11_MODULE(physis, m) {
         .def_readwrite("r", &InitialConditions::r)
         .def_readwrite("v", &InitialConditions::v)
         .def_readwrite("a", &InitialConditions::a);
+
+    // You must designated Particle as a shared pointer.
+    // This provides consistency when accessing the particle map in ParticleSystem.
+    py::class_<Particle, std::shared_ptr<Particle>>(m, "Particle")
+        .def(py::init())
+        .def(py::init<InitialConditions>())
+        .def("position", &Particle::GetPosition, "returns the particle's position")
+        .def("velocity", &Particle::GetVelocity, "returns the particle's velocity")
+        .def("acceleration", &Particle::GetAcceleration, "returns the particle's acceleration")
+        .def("step", &Particle::Step, "iterates the particle's state",
+            py::arg("dt"));
+
+    py::class_<ParticleSystem>(m, "ParticleSystem")
+        .def(py::init())
+        .def("particles", &ParticleSystem::GetParticles, "gets all particles in the system")
+        .def("add", &ParticleSystem::Add, "add a new particle to the system",
+            py::arg("ic"))
+        .def("step", &ParticleSystem::Step, "steps all particles in the system")
+        .def("update", &ParticleSystem::Update, "updates the particle at the specified location",
+            py::arg("index"),
+            py::arg("ic"));
 }
