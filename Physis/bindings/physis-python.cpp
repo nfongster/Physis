@@ -53,7 +53,7 @@ PYBIND11_MODULE(physis, m) {
         .def_readwrite("v", &InitialConditions::v)
         .def_readwrite("a", &InitialConditions::a);
 
-    // You must designated Particle as a shared pointer.
+    // You must designate Particle as a shared pointer.
     // This provides consistency when accessing the particle map in ParticleSystem.
     py::class_<Particle, std::shared_ptr<Particle>>(m, "Particle")
         .def(py::init())
