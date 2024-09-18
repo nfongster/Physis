@@ -53,6 +53,10 @@ PYBIND11_MODULE(physis, m) {
         .def_readwrite("v", &InitialConditions::v)
         .def_readwrite("a", &InitialConditions::a);
 
+    py::class_<TimeConfig>(m, "TimeConfig")
+        .def(py::init())
+        .def(py::init<const double&, const double&, const double&>());
+
     // You must designate Particle as a shared pointer.
     // This provides consistency when accessing the particle map in ParticleSystem.
     py::class_<Particle, std::shared_ptr<Particle>>(m, "Particle")
