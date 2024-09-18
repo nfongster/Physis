@@ -9,7 +9,7 @@ TriangleManager::~TriangleManager()
     glDeleteProgram(m_shader_id);
 }
 
-void TriangleManager::Initialize(SystemState* system_state)
+void TriangleManager::Initialize(std::shared_ptr<SystemState>& system_state)
 {
     unsigned int indices[] = {
         0, 1, 2

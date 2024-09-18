@@ -7,7 +7,6 @@ SampleEngine::SampleEngine(const TimeConfig& sc)
 
 SampleEngine::~SampleEngine()
 {
-	delete m_system_state;
 }
 
 void SampleEngine::Render()

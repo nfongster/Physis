@@ -14,7 +14,6 @@ BenchmarkEngine::BenchmarkEngine(const TimeConfig& sc, const std::string& outdir
 
 BenchmarkEngine::~BenchmarkEngine()
 {
-	delete m_system_state;
 }
 
 void BenchmarkEngine::OnCompletion()

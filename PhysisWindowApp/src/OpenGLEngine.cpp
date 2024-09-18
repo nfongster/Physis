@@ -8,7 +8,6 @@ OpenGLEngine::OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager)
 
 OpenGLEngine::~OpenGLEngine()
 {
-    delete m_system_state;
 }
 
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& sc)

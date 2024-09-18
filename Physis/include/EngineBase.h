@@ -12,7 +12,7 @@ class PHYSIS_API EngineBase
 {
 protected:
 	TimeConfig m_config;
-	SystemState* m_system_state;
+	std::shared_ptr<SystemState> m_system_state;
 
 	std::chrono::duration<double, std::milli> m_duration;
 	double m_current_time;
