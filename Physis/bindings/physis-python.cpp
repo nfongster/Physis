@@ -1,6 +1,7 @@
 #pragma once
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>  // required for shared pointerse
+#include <pybind11/stl.h>  // required for shared pointers
+#include <pybind11/chrono.h>  // required for chrono::duration
 #include "..\Physis.h"
 
 #include <string>
