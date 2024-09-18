@@ -1,36 +1,31 @@
-Make a simple GUI that does the following:
-- Shows trajectory of particle in 2D under gravity
-- Allows user to specify initial position and velocity
-- Allows user to specify distance scale (e.g., window = 1 km across)
-- Shows current velocity, position, acceleration, and elapsed time
+Python Wrapper Infrastructure ("import physis")
+- Migrate all code in Physis into python wrapper
+- Add python test for each piece of code
+- Merge branch into main
 
-Phases:
-1. Console app
-2. OpenGL window
-3. Python script (plot trajectory & compare w/ analytical sln)
-4. GUI (no rendering)
-5. GUI + OpenGL window
-
-Phase 1: Console app
-- User specified r0 (m), v0 (m/s), a0 (m/s^2), t_total (sec), dt (sec)
-- Handle user input robustly
-- Option to read from file (save typing)
-- Evolve system across t_total
-- Add sequential patterns
-  (1) Game Loop
-      - Make engine abstract class with render/step virtual functions
-      - Experiment with different parameter combinations
-  (2) Double Buffer
-- Show results in console
-- Output results to log
-
-Phase 2: OpenGL window
-- Create new OpenGL app
-- Create new OpenGL-specific engine
-- Normalize kinematic parameters to +/- 1
-
-Phase 3: Python app
-- Research ways of linking C++ / Python (pybind11 or SWIG)
+PhysisPlotter: Rounding Errors
 - Write Python script that plots actual trajectory vs. analytic solution
 - Experiment with different parameters and write reports
-- Resolve rounding errors (rf, vf actual != expected)
+- Resolve rounding errors (rf, vf actual != expected) - perhaps resolve stuttering?
+
+PhysisPlotter: Stability
+- Write Python script that plots simulation stability over time
+- Experiment with different parameters (dt, t_total, num particles), write report
+- Establish a good stability baseline for rendering particles - perhaps resolve stuttering?
+
+Based on Python results, resolve rounding errors in:
+- Unit Tests (perhaps create regression tests instead?  Use PhysisPlotter as regression?)
+- OpenGL app
+
+
+// Notes on pybind11
+- Make sure you add include and lib paths in project properties to the Python interpreter
+  and include dir for the given Python version you wish to use
+- Currently, if you build Physis.dll, you must rename it to physis.pyd (or whatever
+  name you give it in the PYBIND11_MODULE macro).
+- Then, move this file to the directory in which your python code lives.  Alternatively,
+  add it to the place you need to add it to.
+- Currently, post-build event copies Physis.dll, renames copy to physis.pyd, and moves to
+  PhysisPlotter project.
+
+  See: https://www.youtube.com/watch?v=D4cKL0HoN1U

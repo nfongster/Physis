@@ -1,0 +1,3 @@
+t,5,dt,0.1,scale,1,nump,10
+idx,r0x,r0y,v0x,v0y,a0x,a0y
+0,-1,0,1,0,0,0

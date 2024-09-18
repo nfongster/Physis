@@ -74,7 +74,7 @@ PYBIND11_MODULE(physis, m) {
             py::arg("index"),
             py::arg("ic"));
 
-    py::class_<SystemState>(m, "SystemState")
+    py::class_<SystemState, std::shared_ptr<SystemState>>(m, "SystemState")
         .def(py::init())
         .def("add", &SystemState::AddParticle, "add a new particle to the system",
             py::arg("ic"))
