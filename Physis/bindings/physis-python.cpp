@@ -91,4 +91,10 @@ PYBIND11_MODULE(physis, m) {
         .def("add", py::overload_cast<const InitialConditions&>(&SampleEngine::AddParticle), "add a new particle to the engine")
         .def("run", &EngineBase::Run, "run the engine")
         .def("sample", &SampleEngine::Sample, "get the current state of the system");
+
+    py::class_<BenchmarkEngine>(m, "BenchmarkEngine")
+        .def(py::init<const TimeConfig&, const std::string&, const std::chrono::duration<double, std::milli>&>())
+        .def("add", py::overload_cast<>(&BenchmarkEngine::AddParticle), "add a new particle to the engine")
+        .def("add", py::overload_cast<const InitialConditions&>(&BenchmarkEngine::AddParticle), "add a new particle to the engine")
+        .def("run", &EngineBase::Run, "run the engine");
 }
