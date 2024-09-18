@@ -84,4 +84,11 @@ PYBIND11_MODULE(physis, m) {
             py::arg("ic"))
         .def("current", &SystemState::GetCurrent, "gets the current state of the system")
         .def("previous", &SystemState::GetPrevious, "gets the previous state of the system");
+
+    py::class_<SampleEngine>(m, "SampleEngine")
+        .def(py::init<const TimeConfig&>())
+        .def("add", py::overload_cast<>(&SampleEngine::AddParticle), "add a new particle to the engine")
+        .def("add", py::overload_cast<const InitialConditions&>(&SampleEngine::AddParticle), "add a new particle to the engine")
+        .def("run", &EngineBase::Run, "run the engine")
+        .def("sample", &SampleEngine::Sample, "get the current state of the system");
 }

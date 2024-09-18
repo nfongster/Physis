@@ -11,7 +11,6 @@ SampleEngine::~SampleEngine()
 
 void SampleEngine::Render()
 {
-	std::cout << "Rendering...\n";
 }
 
 void SampleEngine::Interpolate(const double& factor)
