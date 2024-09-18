@@ -73,4 +73,11 @@ PYBIND11_MODULE(physis, m) {
         .def("update", &ParticleSystem::Update, "updates the particle at the specified location",
             py::arg("index"),
             py::arg("ic"));
+
+    py::class_<SystemState>(m, "SystemState")
+        .def(py::init())
+        .def("add", &SystemState::AddParticle, "add a new particle to the system",
+            py::arg("ic"))
+        .def("current", &SystemState::GetCurrent, "gets the current state of the system")
+        .def("previous", &SystemState::GetPrevious, "gets the previous state of the system");
 }
