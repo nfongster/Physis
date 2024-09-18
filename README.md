@@ -6,3 +6,4 @@ Currently, you will need Visual Studio (I have developed using VS 2022) and/or m
 
 1. Create a folder called 'extern' in your local repository.
 2. TBD: add instructions for catch2, OpenGL, and pybind11
+3. TBD: add instructions for ensuring physis.pyd is available in correct location
