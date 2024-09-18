@@ -1,7 +1,8 @@
 #include "SystemState.h"
 
 SystemState::SystemState()
-	: m_system_curr_state(new ParticleSystem()), m_system_prev_state(new ParticleSystem())
+	: m_system_curr_state(std::make_shared<ParticleSystem>()), 
+	  m_system_prev_state(std::make_shared<ParticleSystem>())
 {
 }
 
@@ -11,12 +12,12 @@ void SystemState::AddParticle(const InitialConditions& ic)
     m_system_prev_state->Add(ic);
 }
 
-ParticleSystem* SystemState::GetCurrent()
+std::shared_ptr<ParticleSystem> SystemState::GetCurrent()
 {
 	return m_system_curr_state;
 }
 
-ParticleSystem* SystemState::GetPrevious()
+std::shared_ptr<ParticleSystem> SystemState::GetPrevious()
 {
 	return m_system_prev_state;
 }

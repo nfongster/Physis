@@ -64,7 +64,7 @@ PYBIND11_MODULE(physis, m) {
         .def("step", &Particle::Step, "iterates the particle's state",
             py::arg("dt"));
 
-    py::class_<ParticleSystem>(m, "ParticleSystem")
+    py::class_<ParticleSystem, std::shared_ptr<ParticleSystem>>(m, "ParticleSystem")
         .def(py::init())
         .def("particles", &ParticleSystem::GetParticles, "gets all particles in the system")
         .def("add", &ParticleSystem::Add, "add a new particle to the system",

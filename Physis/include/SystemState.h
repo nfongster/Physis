@@ -5,13 +5,13 @@
 class PHYSIS_API SystemState
 {
 private:
-	ParticleSystem* m_system_curr_state;
-	ParticleSystem* m_system_prev_state;
+	std::shared_ptr<ParticleSystem> m_system_curr_state;
+	std::shared_ptr<ParticleSystem> m_system_prev_state;
 
 public:
 	SystemState();
 	void AddParticle(const InitialConditions& ic);
-	ParticleSystem* GetCurrent();
-	ParticleSystem* GetPrevious();
+	std::shared_ptr<ParticleSystem> GetCurrent();
+	std::shared_ptr<ParticleSystem> GetPrevious();
 };
 
