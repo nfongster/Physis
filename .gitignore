@@ -11,3 +11,6 @@ __pycache__/
 # Files
 *.vcxproj.user
 *.pyd
+*results.txt
+*ToDo.txt
+/Physis/ToDo.txt
