@@ -84,31 +84,27 @@ if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
     aggregator = DataAggregator(outdir)
-    
+
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
-        t_total = 10
-        dt = 0.01
-        scalar = 1
-        render_time_ms = 1
-        pcount = 1
-    
+        t_total, scalar, render_time_ms = 20, 1, 1
 
-        for dt in [0.01, 0.02, 0.03]:
-            print(f"Executing run dt={dt}...")
-            render_time = timedelta(milliseconds=render_time_ms)
-            engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
-            engine.initialize(pcount)
-            engine.run()
-            print(f"Run dt={dt} complete.  Getting ms per frame...")
+        for dt in [0.1, 0.01, 0.001, 0.0001]:
+            for pcount in [1, 10, 100, 1000, 10000]:
+                print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time_ms}, scalar={scalar}")
+                render_time = timedelta(milliseconds=render_time_ms)
+                engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
+                engine.initialize(pcount)
+                engine.run()
+                print("Run complete.  Getting ms per frame...")
 
-            metadata = SimulationMetadata(timedelta(milliseconds=scalar), 
-                                          timedelta(milliseconds=dt),
-                                          render_time, 
-                                          timedelta(milliseconds=t_total),
-                                          pcount)
-            aggregator.read(metadata)
-            print("Data saved.")
+                metadata = SimulationMetadata(timedelta(milliseconds=scalar), 
+                                              timedelta(milliseconds=dt),
+                                              render_time, 
+                                              timedelta(milliseconds=t_total),
+                                              pcount)
+                aggregator.read(metadata)
+                print("Data saved.")
 
         aggregator.serialize("aggregate_results.pkl")
     
