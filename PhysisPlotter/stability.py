@@ -1,14 +1,14 @@
 import physis
-from datetime import timedelta
-import os, sys
+from datetime import datetime, timedelta
+import os, sys, sqlite3
 import numpy as np
-import pickle
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)  # frozen because dict keys must be immutable
 class SimulationMetadata:
-    scalar: timedelta
+    scalar: float
     dt: timedelta
     t_render: timedelta
     t_total: timedelta
@@ -48,14 +48,54 @@ class DataAggregator:
         self.times_map[metadata] = np.array(render_times)
 
     def serialize(self, filename=str) -> None:
-        with open(filename, 'wb') as f:
-            pickle.dump(self.times_map, f)
+        # Note: first need to delete db each time you re-run
+        timestamp = datetime.now()
+        timestamp_str = timestamp.strftime('%Y%m%d%H%M%S') + f"{timestamp.microsecond // 1000:03d}"
+        connection = sqlite3.connect(filename)
+        cursor = connection.cursor()
+        cursor.execute(("CREATE TABLE stability (datetime TEXT, "
+                "dt FLOAT, "
+                "pcount INTEGER, "
+                "scalar FLOAT,"
+                "rendertime FLOAT," 
+                "totaltime FLOAT," 
+                "data BLOB," 
+                "datalen INT)"))
+        
+        for m, data in self.times_map.items():
+            datablob = data.tobytes()
+            dt = m.dt.microseconds / 1000
+            t_render = m.t_render.microseconds / 1000
+            t_total = m.t_total.microseconds / 1000
+            pcount = m.pcount
+            scalar = m.scalar
+            cursor.execute("INSERT INTO stability VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+                (timestamp_str, dt, pcount, scalar, t_render, t_total, datablob, len(data)))
+        
+            connection.commit()
+        connection.close()
         self.times_map = {}
 
     def deserialize(self, filename=str) -> None:
         self.times_map = {}
-        with open(filename, 'rb') as f:
-            self.times_map = pickle.load(f)
+        connection = sqlite3.connect(filename)
+        cursor = connection.cursor()
+        rows = cursor.execute("SELECT datetime, dt, pcount, scalar, rendertime, totaltime, data, datalen FROM stability").fetchall()
+        for row in rows:
+            dt = row[1]
+            pcount = row[2]
+            scalar = row[3]
+            render_time = row[4]
+            t_total = row[5]
+            metadata = SimulationMetadata(scalar, 
+                                          timedelta(milliseconds=dt),
+                                          timedelta(milliseconds=render_time), 
+                                          timedelta(milliseconds=t_total),
+                                          pcount)
+            # hack
+            data = np.zeros(row[7])
+            self.times_map[metadata] = np.frombuffer(row[6], dtype=data.dtype)
+        connection.close()
 
 
 class Plotter:
@@ -64,7 +104,7 @@ class Plotter:
         self.fig, self.ax = plt.subplots()
 
     def _get_metadata_label(self, m=SimulationMetadata) -> str:
-        return (f"r={m.scalar.microseconds / 1000:.2f},"
+        return (f"r={m.scalar:.2f},"
                 f"dt={m.dt.microseconds / 1000:.2f},"
                 f"N={m.pcount},"
                 f"tr={m.t_render.microseconds / 1000:.2f},"
@@ -84,13 +124,14 @@ if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
     aggregator = DataAggregator(outdir)
+    db_name = "stability.db"
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
-        t_total, scalar, render_time_ms = 20, 1, 1
+        t_total, scalar, render_time_ms = 2, 1, 1
 
-        for dt in [0.1, 0.01, 0.001, 0.0001]:
-            for pcount in [1, 10, 100, 1000, 10000]:
+        for dt in [0.1, 0.2]:
+            for pcount in [1]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time_ms}, scalar={scalar}")
                 render_time = timedelta(milliseconds=render_time_ms)
                 engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
@@ -98,17 +139,17 @@ if __name__ == "__main__":
                 engine.run()
                 print("Run complete.  Getting ms per frame...")
 
-                metadata = SimulationMetadata(timedelta(milliseconds=scalar), 
+                metadata = SimulationMetadata(scalar, 
                                               timedelta(milliseconds=dt),
                                               render_time, 
                                               timedelta(milliseconds=t_total),
                                               pcount)
                 aggregator.read(metadata)
                 print("Data saved.")
-
-        aggregator.serialize("aggregate_results.pkl")
+        
+        aggregator.serialize(db_name)
     
-    aggregator.deserialize("aggregate_results.pkl")
+    aggregator.deserialize(db_name)
     plotter = Plotter(aggregator)
     plotter.plot()
     
