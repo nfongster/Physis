@@ -69,8 +69,8 @@ class DataAggregator:
         with open(self.trajectory_expected_filepath, 'r') as file:
             for i, line in enumerate(file):
                 data = line.split('\t')
-                pid = data[0]
-                time = data[1]
+                pid = int(data[0])
+                time = float(data[1])
                 r_text = re.sub(r'[( )]', '', data[2]).split(',')
                 r = (float(r_text[0]), float(r_text[1]))
                 v_text = re.sub(r'[( )]', '', data[3]).split(',')
@@ -79,14 +79,11 @@ class DataAggregator:
                 a = (float(a_text[0]), float(a_text[1]))
                 self.trajectory[i] = (pid, time, r, v, a)
 
-        # TODO: Temporary, for testing
-        for id, params in self.trajectory.items():
-            print(f"{id}: {params[0]}, {params[1]}, {params[2]}, {params[3]}, {params[4]}")
-
     def serialize(self, filename=str) -> None:
         timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
+        # Stability
         cursor.execute(("CREATE TABLE stability (datetime TEXT, "
                 "dt FLOAT, "
                 "pcount INTEGER, "
@@ -107,6 +104,27 @@ class DataAggregator:
                 (timestamp_str, dt, pcount, scalar, t_render, t_total, datablob, len(data)))
         
             connection.commit()
+
+        # Trajectory
+        cursor.execute(("CREATE TABLE trajectory (pid INTEGER,"
+                "time FLOAT,"
+                "rx FLOAT,"
+                "ry FLOAT,"
+                "vx FLOAT,"
+                "vy FLOAT,"
+                "ax FLOAT,"
+                "ay FLOAT)"))
+        
+        for _, params in self.trajectory.items():
+            pid = params[0]
+            time = params[1]
+            r = params[2]
+            v = params[3]
+            a = params[4]
+            cursor.execute("INSERT INTO trajectory VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                           (pid, time, r[0], r[1], v[0], v[1], a[0], a[1]))
+            connection.commit()
+        
         connection.close()
         self.times_map = {}
 
@@ -129,13 +147,22 @@ class DataAggregator:
             # hack
             data = np.zeros(row[7])
             self.times_map[metadata] = np.frombuffer(row[6], dtype=data.dtype)
+
+        # Trajectory
+        trajectory_rows = cursor.execute("SELECT pid, time, rx, ry, vx, vy, ax, ay FROM trajectory").fetchall()
+        for i, row in enumerate(trajectory_rows):
+            pid = row[0]
+            time = row[1]
+            r = (row[2], row[3])
+            v = (row[4], row[5])
+            a = (row[6], row[7])
+            self.trajectory[i] = (pid, time, r, v, a)
         connection.close()
 
 
 class Plotter:
     def __init__(self, aggregator=DataAggregator):
         self.aggregator = aggregator
-        self.fig, self.ax = plt.subplots()
 
     def _get_metadata_label(self, m=SimulationMetadata) -> str:
         return (f"r={m.scalar:.2f},"
@@ -144,13 +171,24 @@ class Plotter:
                 f"tr={m.t_render.microseconds / 1000:.2f},"
                 f"tt={m.t_total.microseconds / 1000:.2f}")
 
-    def plot(self):
+    def plot_stability(self):
         # Clip the initial frame because it is fast
+        fig, ax = plt.subplots()
         for metadata, times in self.aggregator.times_map.items():
             x = np.arange(len(times) - 1)
             y = times[1:]
-            self.ax.scatter(x, y, vmin=0, vmax=100, label=self._get_metadata_label(metadata))
-            self.ax.legend()
+            ax.scatter(x, y, vmin=0, vmax=100, label=self._get_metadata_label(metadata))
+            ax.legend()
+        plt.show()
+
+    def plot_trajectory(self):
+        x, y = [], []
+        fig, ax = plt.subplots()
+        for i, params in self.aggregator.trajectory.items():
+            pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
+            x.append(r[0])
+            y.append(r[1])
+        ax.scatter(x, y)
         plt.show()
 
 
@@ -158,7 +196,7 @@ if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
     aggregator = DataAggregator(outdir)
-    db_name = f"results_{build_timestamp_str()}.db"
+    db_name = "results.db"
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
@@ -170,7 +208,7 @@ if __name__ == "__main__":
                 render_time = timedelta(milliseconds=render_time_ms)
                 engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
                 #engine.initialize(pcount)
-                engine.initialize_one(0, 0, 1, 0, 0, -9.81)
+                engine.initialize_one(0, 0, 10, 10, 0, -9.81)
                 engine.run()
                 print("Run complete.  Getting ms per frame...")
 
@@ -187,5 +225,6 @@ if __name__ == "__main__":
     
     aggregator.deserialize(db_name)
     plotter = Plotter(aggregator)
-    plotter.plot()
+    plotter.plot_stability()
+    plotter.plot_trajectory()
     
