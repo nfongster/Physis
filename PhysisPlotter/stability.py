@@ -50,7 +50,7 @@ class DataAggregator:
         self.times_map = {}
         self.trajectory = {}
 
-    def read(self, metadata=SimulationMetadata) -> None:
+    def read_stability(self, metadata=SimulationMetadata) -> None:
         if not os.path.exists(self.stability_expected_filepath):
             raise FileNotFoundError(f"File not found: {self.stability_expected_filepath}")
         
@@ -69,17 +69,19 @@ class DataAggregator:
         with open(self.trajectory_expected_filepath, 'r') as file:
             for i, line in enumerate(file):
                 data = line.split('\t')
-                r_text = re.sub(r'[( )]', '', data[0]).split(',')
+                pid = data[0]
+                time = data[1]
+                r_text = re.sub(r'[( )]', '', data[2]).split(',')
                 r = (float(r_text[0]), float(r_text[1]))
-                v_text = re.sub(r'[( )]', '', data[1]).split(',')
+                v_text = re.sub(r'[( )]', '', data[3]).split(',')
                 v = (float(v_text[0]), float(v_text[1]))
-                a_text = re.sub(r'[( )]', '', data[2]).split(',')
+                a_text = re.sub(r'[( )]', '', data[4]).split(',')
                 a = (float(a_text[0]), float(a_text[1]))
-                self.trajectory[i] = (r, v, a)
+                self.trajectory[i] = (pid, time, r, v, a)
 
         # TODO: Temporary, for testing
         for id, params in self.trajectory.items():
-            print(f"{id}: {params[0]}, {params[1]}, {params[2]}")
+            print(f"{id}: {params[0]}, {params[1]}, {params[2]}, {params[3]}, {params[4]}")
 
     def serialize(self, filename=str) -> None:
         timestamp_str = build_timestamp_str()
@@ -162,7 +164,7 @@ if __name__ == "__main__":
         print("Running benchmark engine...")
         t_total, scalar, render_time_ms = 2, 1, 1
 
-        for dt in [0.1, 0.2]:
+        for dt in [0.01]:
             for pcount in [1]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time_ms}, scalar={scalar}")
                 render_time = timedelta(milliseconds=render_time_ms)
@@ -177,7 +179,7 @@ if __name__ == "__main__":
                                               render_time, 
                                               timedelta(milliseconds=t_total),
                                               pcount)
-                aggregator.read(metadata)
+                aggregator.read_stability(metadata)
                 aggregator.read_trajectory()
                 print("Data saved.")
         

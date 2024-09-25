@@ -61,16 +61,18 @@ void BenchmarkEngine::OnCompletion()
 		for (const auto& pair : this->m_history)  // for each particle
 		{
 			const unsigned int id = pair.first;
-			std::vector<InitialConditions> history = pair.second;
+			auto history = pair.second;
 			if (buffer.size() >= reservedBytes)
 			{
 				file.write(buffer.c_str(), buffer.size());
 				buffer.clear();
 			}
-			for (const auto& params : history) // for each timestamp
+			for (const auto& timestamp_tuple : history) // for each timestamp
 			{
 				std::stringstream sub_ss;
-				sub_ss << params.r << '\t' << params.v << '\t' << params.a << '\n';
+				double time = std::get<0>(timestamp_tuple);
+				InitialConditions params = std::get<1>(timestamp_tuple);
+				sub_ss << id << '\t' << time << '\t' << params.r << '\t' << params.v << '\t' << params.a << '\n';
 				buffer.append(sub_ss.str());
 			}
 		}
@@ -93,7 +95,8 @@ void BenchmarkEngine::Render()
 	{
 		const unsigned int id = pair.first;
 		std::shared_ptr<Particle> p = pair.second;
-		this->m_history[id].push_back(InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration()));
+		InitialConditions ic = InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration());
+		this->m_history[id].push_back(std::tuple<double, InitialConditions>(m_current_time, ic));
 	}
 }
 
