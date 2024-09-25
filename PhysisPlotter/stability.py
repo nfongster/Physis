@@ -5,6 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
 
+def build_timestamp_str() -> str:
+    """Returns the current date-time with format YYYYMMDDHHMMSSMMM."""
+    timestamp = datetime.now()
+    return timestamp.strftime('%Y%m%d%H%M%S') + f"{timestamp.microsecond // 1000:03d}"
+
 
 @dataclass(frozen=True)  # frozen because dict keys must be immutable
 class SimulationMetadata:
@@ -77,9 +82,7 @@ class DataAggregator:
             print(f"{id}: {params[0]}, {params[1]}, {params[2]}")
 
     def serialize(self, filename=str) -> None:
-        # Note: first need to delete db each time you re-run
-        timestamp = datetime.now()
-        timestamp_str = timestamp.strftime('%Y%m%d%H%M%S') + f"{timestamp.microsecond // 1000:03d}"
+        timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
         cursor.execute(("CREATE TABLE stability (datetime TEXT, "
@@ -153,7 +156,7 @@ if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
     aggregator = DataAggregator(outdir)
-    db_name = "stability.db"
+    db_name = f"results_{build_timestamp_str()}.db"
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
