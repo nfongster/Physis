@@ -1,6 +1,6 @@
 import physis
 from datetime import datetime, timedelta
-import os, sys, sqlite3
+import os, sys, re, sqlite3
 import numpy as np
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
@@ -24,7 +24,13 @@ class EngineWrapper:
 
     def initialize(self, pcount=int) -> None:
         for _ in range(pcount):
-            self.engine.add()
+            self.engine.add(physis.InitialConditions())
+
+    def initialize_one(self, rx=float, ry=float, vx=float, vy=float, ax=float, ay=float) -> None:
+        r0 = physis.Vec2(rx, ry)
+        v0 = physis.Vec2(vx, vy)
+        a0 = physis.Vec2(ax, ay)
+        self.engine.add(physis.InitialConditions(r0, v0, a0))
 
     def run(self) -> None:
         self.engine.run()
@@ -32,20 +38,43 @@ class EngineWrapper:
 
 class DataAggregator:
     def __init__(self, outdir=str):
-        results_filename = "results.txt"
-        self.expected_filepath = os.path.join(outdir, results_filename)
+        stability_results_filename = "stability.txt"
+        trajectory_results_filename = "trajectory.txt"
+        self.stability_expected_filepath = os.path.join(outdir, stability_results_filename)
+        self.trajectory_expected_filepath = os.path.join(outdir, trajectory_results_filename)
         self.times_map = {}
+        self.trajectory = {}
 
     def read(self, metadata=SimulationMetadata) -> None:
-        if not os.path.exists(self.expected_filepath):
-            raise FileNotFoundError(f"File not found: {self.expected_filepath}")
+        if not os.path.exists(self.stability_expected_filepath):
+            raise FileNotFoundError(f"File not found: {self.stability_expected_filepath}")
         
         render_times = []
-        with open(self.expected_filepath, 'r') as file:
+        with open(self.stability_expected_filepath, 'r') as file:
             for line in file:
                 render_times.append(float(line))
         
         self.times_map[metadata] = np.array(render_times)
+
+    def read_trajectory(self) -> None:
+        if not os.path.exists(self.trajectory_expected_filepath):
+            raise FileNotFoundError(f"File not found: {self.trajectory_expected_filepath}")
+        
+        self.trajectory = {}
+        with open(self.trajectory_expected_filepath, 'r') as file:
+            for i, line in enumerate(file):
+                data = line.split('\t')
+                r_text = re.sub(r'[( )]', '', data[0]).split(',')
+                r = (float(r_text[0]), float(r_text[1]))
+                v_text = re.sub(r'[( )]', '', data[1]).split(',')
+                v = (float(v_text[0]), float(v_text[1]))
+                a_text = re.sub(r'[( )]', '', data[2]).split(',')
+                a = (float(a_text[0]), float(a_text[1]))
+                self.trajectory[i] = (r, v, a)
+
+        # TODO: Temporary, for testing
+        for id, params in self.trajectory.items():
+            print(f"{id}: {params[0]}, {params[1]}, {params[2]}")
 
     def serialize(self, filename=str) -> None:
         # Note: first need to delete db each time you re-run
@@ -135,7 +164,8 @@ if __name__ == "__main__":
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time_ms}, scalar={scalar}")
                 render_time = timedelta(milliseconds=render_time_ms)
                 engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
-                engine.initialize(pcount)
+                #engine.initialize(pcount)
+                engine.initialize_one(0, 0, 1, 0, 0, -9.81)
                 engine.run()
                 print("Run complete.  Getting ms per frame...")
 
@@ -145,6 +175,7 @@ if __name__ == "__main__":
                                               timedelta(milliseconds=t_total),
                                               pcount)
                 aggregator.read(metadata)
+                aggregator.read_trajectory()
                 print("Data saved.")
         
         aggregator.serialize(db_name)

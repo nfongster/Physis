@@ -11,6 +11,7 @@ private:
 	const std::string m_outdir;
 	const std::chrono::duration<double, std::milli> m_render_time;
 	std::vector<std::chrono::duration<double, std::milli>> m_durations;
+	std::map<unsigned int, std::vector<InitialConditions>> m_history;
 
 protected:
 	void OnCompletion();
