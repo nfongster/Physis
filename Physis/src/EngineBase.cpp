@@ -8,12 +8,51 @@ EngineBase::EngineBase(const TimeConfig& config) :
 
 void EngineBase::OnStartup() { /* Optional override */ }
 
+void EngineBase::OnCompletion() { /* Optional override */ }
+
+void EngineBase::Pause() { /* Optional override */ }
+
+void EngineBase::Resume() { /* Optional override */ }
+
+void EngineBase::Run()
+{
+	this->OnStartup();
+
+	double accumulator_sec = 0.0;
+	const double dt_sec = this->m_config.delta_time.count();
+	const double time_scalar = this->m_config.time_scalar;
+	auto start = std::chrono::high_resolution_clock::now();
+
+	while (this->ContinueLoop())
+	{
+		auto end = std::chrono::high_resolution_clock::now();
+		this->m_current_frame_time = end - start;
+		auto frameTime = this->m_current_frame_time.count() * time_scalar;
+		start = end;
+		accumulator_sec += frameTime;
+		double integration_time_sec = 0;
+
+		while (accumulator_sec >= dt_sec)
+		{
+			this->Update(dt_sec);
+			integration_time_sec += dt_sec;
+			accumulator_sec -= dt_sec;
+		}
+
+		m_elapsed_simulation_time += std::chrono::duration<double>(integration_time_sec);
+		this->Interpolate(accumulator_sec / dt_sec);
+		this->Render();
+	}
+	auto end = std::chrono::high_resolution_clock::now();
+	this->m_current_frame_time = end - start;
+
+	this->OnCompletion();
+}
+
 bool EngineBase::ContinueLoop()
 {
 	return m_elapsed_simulation_time < m_config.total_time;
 }
-
-void EngineBase::OnCompletion() { /* Optional override */ }
 
 void EngineBase::Update(const double& dt)
 {
@@ -36,40 +75,3 @@ void EngineBase::Interpolate(const double& factor)
 		p->Interpolate((*m_system_state->GetPrevious())[i], factor);
 	}
 }
-
-void EngineBase::Run()
-{
-	this->OnStartup();
-
-	double accumulator = 0.0;
-	const double dt_s = this->m_config.delta_time.count();
-	const double time_scalar = this->m_config.time_scalar;
-	auto start = std::chrono::high_resolution_clock::now();
-
-	while (this->ContinueLoop())
-	{
-		auto end = std::chrono::high_resolution_clock::now();
-		this->m_current_frame_time = end - start;
-		auto frameTime = this->m_current_frame_time.count() * 0.001 * time_scalar;
-		start = end;
-		accumulator += frameTime;
-
-		while (accumulator >= dt_s)
-		{
-			this->Update(dt_s);
-			m_elapsed_simulation_time += std::chrono::duration<double>(dt_s);
-			accumulator -= dt_s;
-		}
-
-		this->Interpolate(accumulator / dt_s);
-		this->Render();
-	}
-	auto end = std::chrono::high_resolution_clock::now();
-	this->m_current_frame_time = end - start;
-
-	this->OnCompletion();
-}
-
-void EngineBase::Pause() { /* Optional override */ }
-
-void EngineBase::Resume() { /* Optional override */ }
