@@ -8,12 +8,12 @@ class TestSystemState:
 
     def test_add_particle(self):
         ss = physis.SystemState()
-        ss.add(physis.InitialConditions())
+        ss.add(physis.KinematicParameters())
         assert ss != None
 
     def test_get_current_state(self):
         ss = physis.SystemState()
-        ss.add(physis.InitialConditions())
+        ss.add(physis.KinematicParameters())
         pmap = ss.current().particles()
         assert pmap[0].position().equals(physis.Vec2())
         assert pmap[0].velocity().equals(physis.Vec2())
@@ -21,7 +21,7 @@ class TestSystemState:
 
     def test_get_previous_state(self):
         ss = physis.SystemState()
-        ss.add(physis.InitialConditions())
+        ss.add(physis.KinematicParameters())
         pmap = ss.previous().particles()
         assert pmap[0].position().equals(physis.Vec2())
         assert pmap[0].velocity().equals(physis.Vec2())

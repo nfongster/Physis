@@ -17,7 +17,7 @@ class TestSampleEngine:
         r = physis.Vec2(1, 1)
         v = physis.Vec2(-0.1, 9.0)
         a = physis.Vec2(0, 2.1)
-        engine.add(physis.InitialConditions(r, v, a))
+        engine.add(physis.KinematicParameters(r, v, a))
         pmap = engine.sample()
         assert pmap[0] != None
 

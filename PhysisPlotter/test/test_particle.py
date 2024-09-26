@@ -13,14 +13,14 @@ class TestParticle:
         r_exp = physis.Vec2(2, 1)
         v_exp = physis.Vec2(7, 8)
         a_exp = physis.Vec2(4, -1)
-        ic = physis.InitialConditions(r_exp, v_exp, a_exp)
+        ic = physis.KinematicParameters(r_exp, v_exp, a_exp)
         p = physis.Particle(ic)
         assert p.position().equals(r_exp)
         assert p.velocity().equals(v_exp)
         assert p.acceleration().equals(a_exp)
 
     def test_step(self):
-        ic = physis.InitialConditions(physis.Vec2(), physis.Vec2(1, 0), physis.Vec2())
+        ic = physis.KinematicParameters(physis.Vec2(), physis.Vec2(1, 0), physis.Vec2())
         p = physis.Particle(ic)
         dt = 0.1
         rf_exp = physis.Vec2(0.1, 0)
