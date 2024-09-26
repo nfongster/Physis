@@ -13,32 +13,40 @@ def build_timestamp_str() -> str:
 
 @dataclass(frozen=True)  # frozen because dict keys must be immutable
 class SimulationMetadata:
-    scalar: float
-    dt: timedelta
-    t_render: timedelta
-    t_total: timedelta
-    pcount: int
+    scalar:   float      # Determines simulation speed.
+    dt:       timedelta  # Simulation integration time step size.
+    t_render: timedelta  # Time to simulate rendering.
+    t_total:  timedelta  # Total time to run the simulation.
+    pcount:   int        # Number of particles in the simulation.
 
 
 class EngineWrapper:
-    def __init__(self, t_total=timedelta, dt=timedelta, scalar=float, render_time=timedelta, outdir=str):
-        self.time_config = physis.TimeConfig(t_total, dt, scalar)
+    def __init__(self, metadata=SimulationMetadata, outdir=str):
+        self.metadata = metadata
         self.outdir = outdir
-        # TODO: Delay creation of engine
-        self.engine = physis.BenchmarkEngine(self.time_config, self.outdir, render_time)
+        self.engine = None
 
-    def initialize(self, pcount=int) -> None:
-        for _ in range(pcount):
+    def initialize(self) -> None:
+        self._create_engine()
+        for _ in range(self.metadata.pcount):
             self.engine.add(physis.KinematicParameters())
 
-    def initialize_one(self, rx=float, ry=float, vx=float, vy=float, ax=float, ay=float) -> None:
+    def initialize(self, rx=float, ry=float, vx=float, vy=float, ax=float, ay=float) -> None:
         r0 = physis.Vec2(rx, ry)
         v0 = physis.Vec2(vx, vy)
         a0 = physis.Vec2(ax, ay)
-        self.engine.add(physis.KinematicParameters(r0, v0, a0))
+        self._create_engine()
+        for _ in range(self.metadata.pcount):
+            self.engine.add(physis.KinematicParameters(r0, v0, a0))
 
     def run(self) -> None:
+        if self.engine == None:
+            self.initialize()
         self.engine.run()
+
+    def _create_engine(self) -> None:
+        config = physis.TimeConfig(self.metadata.t_total, self.metadata.dt, self.metadata.scalar)
+        self.engine = physis.BenchmarkEngine(config, self.outdir, self.metadata.t_render)
 
 
 class DataAggregator:
@@ -205,17 +213,17 @@ if __name__ == "__main__":
         for dt in [timedelta(seconds=0.01)]:
             for pcount in [1]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
-                engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
-                #engine.initialize(pcount)
-                engine.initialize_one(0, 0, 10, 10, 0, -9.81)
-                engine.run()
-                print("Run complete.  Getting ms per frame...")
-
                 metadata = SimulationMetadata(scalar, 
                                               dt,
                                               render_time, 
                                               t_total,
                                               pcount)
+                engine = EngineWrapper(metadata, outdir)
+                engine.initialize(0, 0, 10, 10, 0, -9.81)
+                engine.run()
+                print("Run complete.  Getting ms per frame...")
+
+                
                 aggregator.read_stability(metadata)
                 aggregator.read_trajectory()
                 print("Data saved.")
