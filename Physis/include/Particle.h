@@ -21,6 +21,7 @@ public:
 	Vec2 GetPosition();
 	Vec2 GetVelocity();
 	Vec2 GetAcceleration();
+	KinematicParameters GetKinematicParameters();
 
 	void Step(const double& dt);
 	void Interpolate(const std::shared_ptr<Particle> previousState, const double& factor);

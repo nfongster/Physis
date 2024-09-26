@@ -96,7 +96,7 @@ void BenchmarkEngine::Render()
 	{
 		const unsigned int id = pair.first;
 		std::shared_ptr<Particle> p = pair.second;
-		KinematicParameters params = KinematicParameters(p->GetPosition(), p->GetVelocity(), p->GetAcceleration());
+		KinematicParameters params = p->GetKinematicParameters();
 		this->m_history[id].push_back(std::tuple<double, KinematicParameters>(m_elapsed_simulation_time.count(), params));
 	}
 }

@@ -54,16 +54,16 @@ bool EngineBase::ContinueLoop()
 	return m_elapsed_simulation_time < m_config.total_time;
 }
 
-void EngineBase::Update(const double& dt)
+void EngineBase::Update(const double& dt_sec)
 {
 	for (const auto& pair : m_system_state->GetCurrent()->GetParticles())
 	{
 		unsigned int index = pair.first;
 		std::shared_ptr<Particle> particle = pair.second;
-		KinematicParameters parameters = KinematicParameters(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
+		KinematicParameters parameters = particle->GetKinematicParameters();
 		m_system_state->GetPrevious()->Update(index, parameters);
 	}
-	m_system_state->GetCurrent()->Step(dt);
+	m_system_state->GetCurrent()->Step(dt_sec);
 }
 
 void EngineBase::Interpolate(const double& factor)

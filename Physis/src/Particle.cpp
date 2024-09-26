@@ -29,6 +29,11 @@ Vec2 Particle::GetAcceleration()
 	return m_acc;
 }
 
+KinematicParameters Particle::GetKinematicParameters()
+{
+	return KinematicParameters(m_pos, m_vel, m_acc);
+}
+
 void Particle::Step(const double& dt)
 {
 	if (dt < 0)

@@ -12,16 +12,15 @@ class PHYSIS_API EngineBase
 {
 protected:
 	TimeConfig m_config;
-	std::shared_ptr<SystemState> m_system_state;
-
 	std::chrono::duration<double> m_current_frame_time;
 	std::chrono::duration<double> m_elapsed_simulation_time;
+	std::shared_ptr<SystemState> m_system_state;
 
 	virtual void OnStartup();
 	virtual bool ContinueLoop();
 	virtual void OnCompletion();
 
-	virtual void Update(const double& dt);
+	virtual void Update(const double& dt_sec);
 	virtual void Render() = 0;
 	virtual void Interpolate(const double& factor);
 
