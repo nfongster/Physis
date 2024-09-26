@@ -150,7 +150,7 @@
   <ItemGroup>
     <ClCompile Include="src\FileExtractor.cpp" />
     <ClCompile Include="src\ConsoleExtractor.cpp" />
-    <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Extractor.h" />
