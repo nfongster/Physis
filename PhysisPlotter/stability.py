@@ -5,6 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
 
+
+db_name = "results.db"
+stability_filename = "stability.txt"
+trajectory_filename = "trajectory.txt"
+
+
 def build_timestamp_str() -> str:
     """Returns the current date-time with format YYYYMMDDHHMMSSMMM."""
     timestamp = datetime.now()
@@ -12,6 +18,18 @@ def build_timestamp_str() -> str:
 
 
 @dataclass(frozen=True)  # frozen because dict keys must be immutable
+class KinematicData:
+    pid:  int        # Particle ID.
+    time: timedelta  # Time relative to start of simulation.
+    rx:   float      # X position.
+    ry:   float      # Y position.
+    vx:   float      # X velocity.
+    vy:   float      # Y velocity.
+    ax:   float      # X acceleration.
+    ay:   float      # Y acceleration.
+
+
+@dataclass(frozen=True)
 class SimulationMetadata:
     scalar:   float      # Determines simulation speed.
     dt:       timedelta  # Simulation integration time step size.
@@ -51,41 +69,39 @@ class EngineWrapper:
 
 class DataAggregator:
     def __init__(self, outdir=str):
-        stability_results_filename = "stability.txt"
-        trajectory_results_filename = "trajectory.txt"
-        self.stability_expected_filepath = os.path.join(outdir, stability_results_filename)
-        self.trajectory_expected_filepath = os.path.join(outdir, trajectory_results_filename)
-        self.times_map = {}
-        self.trajectory = {}
+        self.stability_filepath = os.path.join(outdir, stability_filename)
+        self.trajectory_filepath = os.path.join(outdir, trajectory_filename)
+        self.map_metadata_to_times = {}
+        self.map_timeid_to_trajectory = {}
 
     def read_stability(self, metadata=SimulationMetadata) -> None:
-        if not os.path.exists(self.stability_expected_filepath):
-            raise FileNotFoundError(f"File not found: {self.stability_expected_filepath}")
+        if not os.path.exists(self.stability_filepath):
+            raise FileNotFoundError(f"File not found: {self.stability_filepath}")
         
         render_times = []
-        with open(self.stability_expected_filepath, 'r') as file:
+        with open(self.stability_filepath, 'r') as file:
             for line in file:
                 render_times.append(float(line))
         
-        self.times_map[metadata] = np.array(render_times)
+        self.map_metadata_to_times[metadata] = np.array(render_times)
 
     def read_trajectory(self) -> None:
-        if not os.path.exists(self.trajectory_expected_filepath):
-            raise FileNotFoundError(f"File not found: {self.trajectory_expected_filepath}")
+        if not os.path.exists(self.trajectory_filepath):
+            raise FileNotFoundError(f"File not found: {self.trajectory_filepath}")
         
-        self.trajectory = {}
-        with open(self.trajectory_expected_filepath, 'r') as file:
+        self.map_timeid_to_trajectory = {}
+        with open(self.trajectory_filepath, 'r') as file:
             for i, line in enumerate(file):
                 data = line.split('\t')
                 pid = int(data[0])
-                time = float(data[1])
+                time = timedelta(seconds=float(data[1]))
                 r_text = re.sub(r'[( )]', '', data[2]).split(',')
-                r = (float(r_text[0]), float(r_text[1]))
+                rx, ry = float(r_text[0]), float(r_text[1])
                 v_text = re.sub(r'[( )]', '', data[3]).split(',')
-                v = (float(v_text[0]), float(v_text[1]))
+                vx, vy = float(v_text[0]), float(v_text[1])
                 a_text = re.sub(r'[( )]', '', data[4]).split(',')
-                a = (float(a_text[0]), float(a_text[1]))
-                self.trajectory[i] = (pid, time, r, v, a)
+                ax, ay = float(a_text[0]), float(a_text[1])
+                self.map_timeid_to_trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
     def serialize(self, filename=str) -> None:
         timestamp_str = build_timestamp_str()
@@ -101,7 +117,7 @@ class DataAggregator:
                 "data BLOB," 
                 "datalen INT)"))
         
-        for m, data in self.times_map.items():
+        for m, data in self.map_metadata_to_times.items():
             datablob = data.tobytes()
             dt = m.dt.microseconds / 1000
             t_render = m.t_render.microseconds / 1000
@@ -123,21 +139,16 @@ class DataAggregator:
                 "ax FLOAT,"
                 "ay FLOAT)"))
         
-        for _, params in self.trajectory.items():
-            pid = params[0]
-            time = params[1]
-            r = params[2]
-            v = params[3]
-            a = params[4]
+        for _, data in self.map_timeid_to_trajectory.items():
             cursor.execute("INSERT INTO trajectory VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                           (pid, time, r[0], r[1], v[0], v[1], a[0], a[1]))
+                           (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
             connection.commit()
         
         connection.close()
-        self.times_map = {}
+        self.map_metadata_to_times = {}
 
     def deserialize(self, filename=str) -> None:
-        self.times_map = {}
+        self.map_metadata_to_times = {}
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
         rows = cursor.execute("SELECT datetime, dt, pcount, scalar, rendertime, totaltime, data, datalen FROM stability").fetchall()
@@ -154,7 +165,7 @@ class DataAggregator:
                                           pcount)
             # hack
             data = np.zeros(row[7])
-            self.times_map[metadata] = np.frombuffer(row[6], dtype=data.dtype)
+            self.map_metadata_to_times[metadata] = np.frombuffer(row[6], dtype=data.dtype)
 
         # Trajectory
         trajectory_rows = cursor.execute("SELECT pid, time, rx, ry, vx, vy, ax, ay FROM trajectory").fetchall()
@@ -164,7 +175,7 @@ class DataAggregator:
             r = (row[2], row[3])
             v = (row[4], row[5])
             a = (row[6], row[7])
-            self.trajectory[i] = (pid, time, r, v, a)
+            self.map_timeid_to_trajectory[i] = (pid, time, r, v, a)
         connection.close()
 
 
@@ -182,7 +193,7 @@ class Plotter:
     def plot_stability(self):
         # Clip the initial frame because it is fast
         fig, ax = plt.subplots()
-        for metadata, times in self.aggregator.times_map.items():
+        for metadata, times in self.aggregator.map_metadata_to_times.items():
             x = np.arange(len(times) - 1)
             y = times[1:]
             ax.scatter(x, y, vmin=0, vmax=100, label=self._get_metadata_label(metadata))
@@ -192,7 +203,7 @@ class Plotter:
     def plot_trajectory(self):
         x, y = [], []
         fig, ax = plt.subplots()
-        for i, params in self.aggregator.trajectory.items():
+        for i, params in self.aggregator.map_timeid_to_trajectory.items():
             pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
             x.append(r[0])
             y.append(r[1])
@@ -204,7 +215,6 @@ if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
     aggregator = DataAggregator(outdir)
-    db_name = "results.db"
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
@@ -213,17 +223,11 @@ if __name__ == "__main__":
         for dt in [timedelta(seconds=0.01)]:
             for pcount in [1]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
-                metadata = SimulationMetadata(scalar, 
-                                              dt,
-                                              render_time, 
-                                              t_total,
-                                              pcount)
+                metadata = SimulationMetadata(scalar, dt, render_time, t_total, pcount)
                 engine = EngineWrapper(metadata, outdir)
                 engine.initialize(0, 0, 10, 10, 0, -9.81)
                 engine.run()
                 print("Run complete.  Getting ms per frame...")
-
-                
                 aggregator.read_stability(metadata)
                 aggregator.read_trajectory()
                 print("Data saved.")
