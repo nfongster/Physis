@@ -56,7 +56,7 @@ PYBIND11_MODULE(physis, m) {
 
     py::class_<TimeConfig>(m, "TimeConfig")
         .def(py::init())
-        .def(py::init<const double&, const double&, const double&>());
+        .def(py::init<const std::chrono::duration<double>&, const std::chrono::duration<double>&, const double&>());
 
     // You must designate Particle as a shared pointer.
     // This provides consistency when accessing the particle map in ParticleSystem.

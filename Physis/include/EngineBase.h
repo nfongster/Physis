@@ -14,8 +14,8 @@ protected:
 	TimeConfig m_config;
 	std::shared_ptr<SystemState> m_system_state;
 
-	std::chrono::duration<double, std::milli> m_duration;
-	double m_current_time;
+	std::chrono::duration<double, std::milli> m_current_frame_time;
+	std::chrono::duration<double, std::milli> m_elapsed_simulation_time;
 
 	virtual void OnStartup();
 	virtual bool ContinueLoop();

@@ -29,7 +29,7 @@ std::tuple<KinematicParameters, TimeConfig, int> ConsoleExtractor::Extract()
 	return
 	{
 		KinematicParameters(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
-		TimeConfig(t_total, dt, t_scale),
+		TimeConfig(std::chrono::duration<double>(t_total), std::chrono::duration<double>(dt), t_scale),
 		num_particles
 	};
 }

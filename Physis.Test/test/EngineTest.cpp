@@ -39,8 +39,8 @@ TEST_CASE("Engine with 1 stationary particle can be sampled at a slower rate tha
 TEST_CASE("If engine runs with 1 stationary particle, then the particle's final and initial\
 	conditions are the same")
 {
-	double total_time = 10;
-	double delta_time = 1;
+	auto total_time = std::chrono::duration<double>(10);
+	auto delta_time = std::chrono::duration<double>(1);
 
 	SampleEngine* engine = new SampleEngine(TimeConfig(total_time, delta_time, 1));
 	engine->AddParticle();
@@ -55,16 +55,16 @@ TEST_CASE("If engine runs with 1 stationary particle, then the particle's final 
 TEST_CASE("If engine runs with 1 moving particle, then the particle's final conditions\
 	match the analytic solution within a certain tolerance")
 {	// TODO: Currently failing due to rounding errors.
-	double total_time = 1;
-	double delta_time = 0.0001;
+	auto total_time = std::chrono::duration<double>(1);
+	auto delta_time = std::chrono::duration<double>(0.0001);
 	double tolerance = 1e-5;
 
 	Vec2 r0 = Vec2(4, -2.3);
 	Vec2 v0 = Vec2(6.5, 2.1);
 	Vec2 a0 = Vec2(-2.2, 7.9);
 	
-	Vec2 rf = Kinematics::UpdatePosition(r0, v0, a0, total_time);
-	Vec2 vf = Kinematics::UpdateVelocity(v0, a0, total_time);
+	Vec2 rf = Kinematics::UpdatePosition(r0, v0, a0, total_time.count());
+	Vec2 vf = Kinematics::UpdateVelocity(v0, a0, total_time.count());
 
 	SampleEngine* engine = new SampleEngine(TimeConfig(total_time, delta_time, 1));
 	engine->AddParticle(KinematicParameters(r0, v0, a0));

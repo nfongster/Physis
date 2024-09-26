@@ -17,14 +17,13 @@ private:
 
 protected:
 	void OnCompletion();
-
 	void Render();
 	void Interpolate(const double& factor);
 
 public:
-	BenchmarkEngine(const TimeConfig& config, const std::string& outdir, 
-		const std::chrono::duration<double, std::milli>& render_time);
-
+	BenchmarkEngine(const TimeConfig& config, 
+					const std::string& outdir, 
+					const std::chrono::duration<double>& render_time);
 	~BenchmarkEngine();
 
 	void AddParticle();

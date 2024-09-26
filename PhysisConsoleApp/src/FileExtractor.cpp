@@ -10,7 +10,8 @@ FileExtractor::~FileExtractor()
 
 std::tuple<KinematicParameters, TimeConfig, int> FileExtractor::Extract()
 {
-	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
+	double r0x, r0y, v0x, v0y, a0x, a0y, t_scale;
+	std::chrono::duration<double> t_total, dt;
 	std::string line;
 	int index;
 	int num_particles = 1;
@@ -24,12 +25,12 @@ std::tuple<KinematicParameters, TimeConfig, int> FileExtractor::Extract()
 		if (token == "t")
 		{
 			std::getline(ss, token, ',');
-			t_total = atof(token.c_str());
+			t_total = std::chrono::duration<double>(atof(token.c_str()));
 		}
 		else if (token == "dt")
 		{
 			std::getline(ss, token, ',');
-			dt = atof(token.c_str());
+			dt = std::chrono::duration<double>(atof(token.c_str()));
 		}
 		else if (token == "scale")
 		{

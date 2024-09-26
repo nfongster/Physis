@@ -21,7 +21,7 @@ class SimulationMetadata:
 
 
 class EngineWrapper:
-    def __init__(self, t_total=float, dt=float, scalar=float, render_time=timedelta, outdir=str):
+    def __init__(self, t_total=timedelta, dt=timedelta, scalar=float, render_time=timedelta, outdir=str):
         self.time_config = physis.TimeConfig(t_total, dt, scalar)
         self.outdir = outdir
         # TODO: Delay creation of engine
@@ -140,9 +140,9 @@ class DataAggregator:
             render_time = row[4]
             t_total = row[5]
             metadata = SimulationMetadata(scalar, 
-                                          timedelta(milliseconds=dt),
-                                          timedelta(milliseconds=render_time), 
-                                          timedelta(milliseconds=t_total),
+                                          timedelta(seconds=dt),
+                                          timedelta(seconds=render_time), 
+                                          timedelta(seconds=t_total),
                                           pcount)
             # hack
             data = np.zeros(row[7])
@@ -200,12 +200,11 @@ if __name__ == "__main__":
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
-        t_total, scalar, render_time_ms = 2, 1, 1
+        t_total, scalar, render_time = timedelta(seconds=2), 1, timedelta(seconds=0.001)
 
-        for dt in [0.01]:
+        for dt in [timedelta(seconds=0.01)]:
             for pcount in [1]:
-                print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time_ms}, scalar={scalar}")
-                render_time = timedelta(milliseconds=render_time_ms)
+                print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
                 engine = EngineWrapper(t_total, dt, scalar, render_time, outdir)
                 #engine.initialize(pcount)
                 engine.initialize_one(0, 0, 10, 10, 0, -9.81)
@@ -213,9 +212,9 @@ if __name__ == "__main__":
                 print("Run complete.  Getting ms per frame...")
 
                 metadata = SimulationMetadata(scalar, 
-                                              timedelta(milliseconds=dt),
+                                              dt,
                                               render_time, 
-                                              timedelta(milliseconds=t_total),
+                                              t_total,
                                               pcount)
                 aggregator.read_stability(metadata)
                 aggregator.read_trajectory()

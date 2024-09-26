@@ -8,8 +8,8 @@
 // 2. Type tag(s) in command arguments field
 TEST_CASE("Engine can be constructed and run", "[engine]")
 {
-	double t_total = 1;
-	double dt_sim = 0.05;
+	auto t_total = std::chrono::duration<double>(1);
+	auto dt_sim = std::chrono::duration<double>(0.05);
 	double scalar = 1.0;
 	auto sc = TimeConfig(t_total, dt_sim, scalar);
 	SampleEngine* engine = new SampleEngine(sc);

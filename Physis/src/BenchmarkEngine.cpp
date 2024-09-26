@@ -6,8 +6,9 @@
 /// <param name="sc">System configuration.</param>
 /// <param name="outdir">Directory to write results.</param>
 /// <param name="render_time">Time to pause (ms) during the render phase.</param>
-BenchmarkEngine::BenchmarkEngine(const TimeConfig& config, const std::string& outdir, 
-	const std::chrono::duration<double, std::milli>& render_time)
+BenchmarkEngine::BenchmarkEngine(const TimeConfig& config, 
+								 const std::string& outdir, 
+								 const std::chrono::duration<double>& render_time)
 	: EngineBase(config), m_outdir(outdir), m_render_time(render_time)
 {
 }
@@ -18,7 +19,7 @@ BenchmarkEngine::~BenchmarkEngine()
 
 void BenchmarkEngine::OnCompletion()
 {
-	this->m_durations.push_back(m_duration);
+	this->m_durations.push_back(m_current_frame_time);
 
 	// Stability
 	{
@@ -87,7 +88,7 @@ void BenchmarkEngine::Render()
 {
 	// TODO: Multiply render time by num particles?
 	std::this_thread::sleep_for(m_render_time);
-	this->m_durations.push_back(m_duration);
+	this->m_durations.push_back(m_current_frame_time);
 
 	// Store particle positions
 	auto pmap = this->m_system_state->GetCurrent()->GetParticles();
@@ -96,7 +97,7 @@ void BenchmarkEngine::Render()
 		const unsigned int id = pair.first;
 		std::shared_ptr<Particle> p = pair.second;
 		KinematicParameters params = KinematicParameters(p->GetPosition(), p->GetVelocity(), p->GetAcceleration());
-		this->m_history[id].push_back(std::tuple<double, KinematicParameters>(m_current_time, params));
+		this->m_history[id].push_back(std::tuple<double, KinematicParameters>(m_elapsed_simulation_time.count(), params));
 	}
 }
 
