@@ -17,8 +17,8 @@ TEST_CASE("Particle injected values are expected")
 	auto r0 = Vec2(1, 1);
 	auto v0 = Vec2(1, 0);
 	auto a0 = Vec2(-9.81, 0);
-	auto ic = InitialConditions(r0, v0, a0);
-	auto p = Particle(ic);
+	auto parameters = KinematicParameters(r0, v0, a0);
+	auto p = Particle(parameters);
 
 	REQUIRE(p.GetPosition().Equals(r0));
 	REQUIRE(p.GetVelocity().Equals(v0));
@@ -30,8 +30,8 @@ TEST_CASE("If dt = 0, then particle state is unchanged")
 	auto r0 = Vec2(1, 1);
 	auto v0 = Vec2(1, 0);
 	auto a0 = Vec2(-9.81, 0);
-	auto ic = InitialConditions(r0, v0, a0);
-	auto p = Particle(ic);
+	auto parameters = KinematicParameters(r0, v0, a0);
+	auto p = Particle(parameters);
 
 	p.Step(0);
 
@@ -45,8 +45,8 @@ TEST_CASE("If dt > 0, then particle state is correctly updated")
 	auto r0 = Vec2(1, 1);
 	auto v0 = Vec2(1, 0);
 	auto a0 = Vec2(-1, 1);
-	auto ic = InitialConditions(r0, v0, a0);
-	auto p = Particle(ic);
+	auto parameters = KinematicParameters(r0, v0, a0);
+	auto p = Particle(parameters);
 
 	double dt = 1;
 	p.Step(dt);
@@ -61,8 +61,8 @@ TEST_CASE("If dt < 0, then exception is thrown")
 	auto r0 = Vec2(1, 1);
 	auto v0 = Vec2(1, 0);
 	auto a0 = Vec2(-1, 1);
-	auto ic = InitialConditions(r0, v0, a0);
-	auto p = Particle(ic);
+	auto parameters = KinematicParameters(r0, v0, a0);
+	auto p = Particle(parameters);
 
 	double dt = -1;
 	REQUIRE_THROWS_AS(p.Step(dt), std::invalid_argument);

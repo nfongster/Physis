@@ -26,7 +26,7 @@ protected:
 	virtual void Interpolate(const double& factor);
 
 public:
-	EngineBase(const TimeConfig& sc);
+	EngineBase(const TimeConfig& config);
 
 	void Run();
 	void Pause();

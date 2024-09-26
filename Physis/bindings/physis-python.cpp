@@ -47,12 +47,12 @@ PYBIND11_MODULE(physis, m) {
                 return "(" + std::to_string(v.X) + ", " + std::to_string(v.Y) + ", " + std::to_string(v.Z) + ")";
             });
 
-    py::class_<InitialConditions>(m, "InitialConditions")
+    py::class_<KinematicParameters>(m, "KinematicParameters")
         .def(py::init())
         .def(py::init<Vec2, Vec2, Vec2>())
-        .def_readwrite("r", &InitialConditions::r)
-        .def_readwrite("v", &InitialConditions::v)
-        .def_readwrite("a", &InitialConditions::a);
+        .def_readwrite("r", &KinematicParameters::r)
+        .def_readwrite("v", &KinematicParameters::v)
+        .def_readwrite("a", &KinematicParameters::a);
 
     py::class_<TimeConfig>(m, "TimeConfig")
         .def(py::init())
@@ -62,7 +62,7 @@ PYBIND11_MODULE(physis, m) {
     // This provides consistency when accessing the particle map in ParticleSystem.
     py::class_<Particle, std::shared_ptr<Particle>>(m, "Particle")
         .def(py::init())
-        .def(py::init<InitialConditions>())
+        .def(py::init<KinematicParameters>())
         .def("position", &Particle::GetPosition, "returns the particle's position")
         .def("velocity", &Particle::GetVelocity, "returns the particle's velocity")
         .def("acceleration", &Particle::GetAcceleration, "returns the particle's acceleration")
@@ -89,13 +89,13 @@ PYBIND11_MODULE(physis, m) {
     py::class_<SampleEngine>(m, "SampleEngine")
         .def(py::init<const TimeConfig&>())
         .def("add", py::overload_cast<>(&SampleEngine::AddParticle), "add a new particle to the engine")
-        .def("add", py::overload_cast<const InitialConditions&>(&SampleEngine::AddParticle), "add a new particle to the engine")
+        .def("add", py::overload_cast<const KinematicParameters&>(&SampleEngine::AddParticle), "add a new particle to the engine")
         .def("run", &EngineBase::Run, "run the engine")
         .def("sample", &SampleEngine::Sample, "get the current state of the system");
 
     py::class_<BenchmarkEngine>(m, "BenchmarkEngine")
         .def(py::init<const TimeConfig&, const std::string&, const std::chrono::duration<double, std::milli>&>())
         .def("add", py::overload_cast<>(&BenchmarkEngine::AddParticle), "add a new particle to the engine")
-        .def("add", py::overload_cast<const InitialConditions&>(&BenchmarkEngine::AddParticle), "add a new particle to the engine")
+        .def("add", py::overload_cast<const KinematicParameters&>(&BenchmarkEngine::AddParticle), "add a new particle to the engine")
         .def("run", &EngineBase::Run, "run the engine");
 }

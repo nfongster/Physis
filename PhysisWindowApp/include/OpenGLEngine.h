@@ -22,11 +22,11 @@ protected:
 	void Render();
 
 public:
-	OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager);
+	OpenGLEngine(const TimeConfig& config, EntityManager* entity_manager);
 	~OpenGLEngine();
 
-	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& sc);
+	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& config);
 
 	void AddParticle();
-	void AddParticle(const InitialConditions& ic);
+	void AddParticle(const KinematicParameters& parameters);
 };

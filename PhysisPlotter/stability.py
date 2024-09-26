@@ -29,13 +29,13 @@ class EngineWrapper:
 
     def initialize(self, pcount=int) -> None:
         for _ in range(pcount):
-            self.engine.add(physis.InitialConditions())
+            self.engine.add(physis.KinematicParameters())
 
     def initialize_one(self, rx=float, ry=float, vx=float, vy=float, ax=float, ay=float) -> None:
         r0 = physis.Vec2(rx, ry)
         v0 = physis.Vec2(vx, vy)
         a0 = physis.Vec2(ax, ay)
-        self.engine.add(physis.InitialConditions(r0, v0, a0))
+        self.engine.add(physis.KinematicParameters(r0, v0, a0))
 
     def run(self) -> None:
         self.engine.run()

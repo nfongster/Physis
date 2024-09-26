@@ -17,7 +17,7 @@ int main()
 	std::cout << "Welcome to the Physis (f-EYE-sis) Engine." << '\n';
 	std::cout << "Running the client test app..." << '\n';
 
-	InitialConditions ic;
+	KinematicParameters kp;
 	TimeConfig sc;
 	int num_particles;
 
@@ -29,14 +29,14 @@ int main()
 	const auto system_parameters = extractor->Extract();
 	delete extractor;
 
-	ic = std::get<0>(system_parameters);
+	kp = std::get<0>(system_parameters);
 	sc = std::get<1>(system_parameters);
 	num_particles = std::get<2>(system_parameters);
 
 	std::cout << "\nInitial conditions:\n";
-	std::cout << "r0 (m):\t\t(" << ic.r.X << ", " << ic.r.Y << ")\n";
-	std::cout << "v0 (m/s):\t(" << ic.v.X << ", " << ic.v.Y << ")\n";
-	std::cout << "a0 (m/s^2):\t(" << ic.a.X << ", " << ic.a.Y << ")\n";
+	std::cout << "r0 (m):\t\t(" << kp.r.X << ", " << kp.r.Y << ")\n";
+	std::cout << "v0 (m/s):\t(" << kp.v.X << ", " << kp.v.Y << ")\n";
+	std::cout << "a0 (m/s^2):\t(" << kp.a.X << ", " << kp.a.Y << ")\n";
 	std::cout << "t_total (s):\t" << sc.total_time << '\n';
 	std::cout << "dt (s):\t\t" << sc.delta_time << '\n';
 	std::cout << "t_scale (sim / comp):\t" << sc.time_scalar << '\n';
@@ -45,7 +45,7 @@ int main()
 	auto engine = new BenchmarkEngine(sc, OutputPath, RenderDelay);
 
 	for (int i = 0; i < num_particles; i++)
-		engine->AddParticle(ic);
+		engine->AddParticle(kp);
 	
 	engine->Run();
 	delete engine;

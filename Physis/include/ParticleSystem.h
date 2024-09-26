@@ -14,9 +14,9 @@ public:
 	~ParticleSystem();
 
 	std::map<unsigned int, std::shared_ptr<Particle>> GetParticles();
-	void Add(const InitialConditions& ic);
+	void Add(const KinematicParameters& parameters);
 	void Step(const double& dt);
-	void Update(const unsigned int index, const InitialConditions& ic);
+	void Update(const unsigned int index, const KinematicParameters& parameters);
 
 	std::shared_ptr<Particle> operator[] (unsigned int index);
 };

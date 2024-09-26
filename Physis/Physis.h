@@ -5,4 +5,4 @@
 #include "include\SampleEngine.h"
 #include "include\BenchmarkEngine.h"
 #include "include\TimeConfig.h"
-#include "include\InitialConditions.h"
+#include "include\KinematicParameters.h"

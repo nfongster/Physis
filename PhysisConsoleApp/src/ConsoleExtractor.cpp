@@ -8,7 +8,7 @@ ConsoleExtractor::~ConsoleExtractor()
 {
 }
 
-std::tuple<InitialConditions, TimeConfig, int> ConsoleExtractor::Extract()
+std::tuple<KinematicParameters, TimeConfig, int> ConsoleExtractor::Extract()
 {
 	double r0x, r0y, v0x, v0y, a0x, a0y, t_total, dt, t_scale;
 	int num_particles;
@@ -28,7 +28,7 @@ std::tuple<InitialConditions, TimeConfig, int> ConsoleExtractor::Extract()
 
 	return
 	{
-		InitialConditions(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
+		KinematicParameters(Vec2(r0x, r0y), Vec2(v0x, v0y), Vec2(a0x, a0y)),
 		TimeConfig(t_total, dt, t_scale),
 		num_particles
 	};

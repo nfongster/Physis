@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include "Core.h"
 #include "Vec.h"
-#include "InitialConditions.h"
+#include "KinematicParameters.h"
 #include "Kinematics.h"
 
 class PHYSIS_API Particle
@@ -15,7 +15,7 @@ private:
 
 public:
 	Particle();
-	Particle(InitialConditions ic);
+	Particle(KinematicParameters parameters);
 	~Particle();
 
 	Vec2 GetPosition();

@@ -12,6 +12,6 @@ public:
 	ConsoleExtractor();
 	~ConsoleExtractor();
 
-	std::tuple<InitialConditions, TimeConfig, int> Extract();
+	std::tuple<KinematicParameters, TimeConfig, int> Extract();
 };
 

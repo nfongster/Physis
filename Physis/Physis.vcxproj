@@ -33,7 +33,7 @@
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\SampleEngine.h" />
     <ClInclude Include="include\EngineBase.h" />
-    <ClInclude Include="include\InitialConditions.h" />
+    <ClInclude Include="include\KinematicParameters.h" />
     <ClInclude Include="include\Kinematics.h" />
     <ClInclude Include="Physis.h" />
     <ClInclude Include="include\TimeConfig.h" />

@@ -6,10 +6,10 @@ SystemState::SystemState()
 {
 }
 
-void SystemState::AddParticle(const InitialConditions& ic)
+void SystemState::AddParticle(const KinematicParameters& parameters)
 {
-    m_system_curr_state->Add(ic);
-    m_system_prev_state->Add(ic);
+    m_system_curr_state->Add(parameters);
+    m_system_prev_state->Add(parameters);
 }
 
 std::shared_ptr<ParticleSystem> SystemState::GetCurrent()

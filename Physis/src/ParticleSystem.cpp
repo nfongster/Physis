@@ -15,9 +15,9 @@ std::map<unsigned int, std::shared_ptr<Particle>> ParticleSystem::GetParticles()
 	return m_particles;
 }
 
-void ParticleSystem::Add(const InitialConditions& ic)
+void ParticleSystem::Add(const KinematicParameters& parameters)
 {
-	m_particles.insert({ m_particles.size(), std::unique_ptr<Particle>(new Particle(ic)) });
+	m_particles.insert({ m_particles.size(), std::unique_ptr<Particle>(new Particle(parameters)) });
 }
 
 void ParticleSystem::Step(const double& dt)
@@ -26,12 +26,12 @@ void ParticleSystem::Step(const double& dt)
 		pair.second->Step(dt);
 }
 
-void ParticleSystem::Update(const unsigned int index, const InitialConditions& ic)
+void ParticleSystem::Update(const unsigned int index, const KinematicParameters& parameters)
 {
 	if (index < 0 || index >= m_particles.size())
 		throw std::out_of_range("Index out of range");
 
-	m_particles[index] = std::make_shared<Particle>(ic);
+	m_particles[index] = std::make_shared<Particle>(parameters);
 }
 
 std::shared_ptr<Particle> ParticleSystem::operator[](const unsigned int index)

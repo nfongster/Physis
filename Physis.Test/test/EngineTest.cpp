@@ -67,7 +67,7 @@ TEST_CASE("If engine runs with 1 moving particle, then the particle's final cond
 	Vec2 vf = Kinematics::UpdateVelocity(v0, a0, total_time);
 
 	SampleEngine* engine = new SampleEngine(TimeConfig(total_time, delta_time, 1));
-	engine->AddParticle(InitialConditions(r0, v0, a0));
+	engine->AddParticle(KinematicParameters(r0, v0, a0));
 	engine->Run();
 
 	std::shared_ptr<Particle> p = engine->Sample()[0];

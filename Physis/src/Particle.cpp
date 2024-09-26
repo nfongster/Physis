@@ -5,8 +5,8 @@ Particle::Particle()
 {
 }
 
-Particle::Particle(InitialConditions ic)
-	: m_pos(ic.r), m_vel(ic.v), m_acc(ic.a)
+Particle::Particle(KinematicParameters parameters)
+	: m_pos(parameters.r), m_vel(parameters.v), m_acc(parameters.a)
 {
 }
 

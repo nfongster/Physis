@@ -6,9 +6,9 @@
 /// <param name="sc">System configuration.</param>
 /// <param name="outdir">Directory to write results.</param>
 /// <param name="render_time">Time to pause (ms) during the render phase.</param>
-BenchmarkEngine::BenchmarkEngine(const TimeConfig& sc, const std::string& outdir, 
+BenchmarkEngine::BenchmarkEngine(const TimeConfig& config, const std::string& outdir, 
 	const std::chrono::duration<double, std::milli>& render_time)
-	: EngineBase(sc), m_outdir(outdir), m_render_time(render_time)
+	: EngineBase(config), m_outdir(outdir), m_render_time(render_time)
 {
 }
 
@@ -71,7 +71,7 @@ void BenchmarkEngine::OnCompletion()
 			{
 				std::stringstream sub_ss;
 				double time = std::get<0>(timestamp_tuple);
-				InitialConditions params = std::get<1>(timestamp_tuple);
+				KinematicParameters params = std::get<1>(timestamp_tuple);
 				sub_ss << id << '\t' << time << '\t' << params.r << '\t' << params.v << '\t' << params.a << '\n';
 				buffer.append(sub_ss.str());
 			}
@@ -95,8 +95,8 @@ void BenchmarkEngine::Render()
 	{
 		const unsigned int id = pair.first;
 		std::shared_ptr<Particle> p = pair.second;
-		InitialConditions ic = InitialConditions(p->GetPosition(), p->GetVelocity(), p->GetAcceleration());
-		this->m_history[id].push_back(std::tuple<double, InitialConditions>(m_current_time, ic));
+		KinematicParameters params = KinematicParameters(p->GetPosition(), p->GetVelocity(), p->GetAcceleration());
+		this->m_history[id].push_back(std::tuple<double, KinematicParameters>(m_current_time, params));
 	}
 }
 
@@ -107,10 +107,10 @@ void BenchmarkEngine::Interpolate(const double& factor)
 
 void BenchmarkEngine::AddParticle()
 {
-	m_system_state->AddParticle(InitialConditions());
+	m_system_state->AddParticle(KinematicParameters());
 }
 
-void BenchmarkEngine::AddParticle(const InitialConditions& ic)
+void BenchmarkEngine::AddParticle(const KinematicParameters& parameters)
 {
-	m_system_state->AddParticle(ic);
+	m_system_state->AddParticle(parameters);
 }

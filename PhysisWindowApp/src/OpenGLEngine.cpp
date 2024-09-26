@@ -1,8 +1,8 @@
 #include "OpenGLEngine.h"
 #include "TriangleManager.h"
 
-OpenGLEngine::OpenGLEngine(const TimeConfig& sc, EntityManager* entity_manager) 
-    : m_entity_manager(entity_manager), EngineBase(sc)
+OpenGLEngine::OpenGLEngine(const TimeConfig& config, EntityManager* entity_manager) 
+    : m_entity_manager(entity_manager), EngineBase(config)
 {
 }
 
@@ -10,9 +10,9 @@ OpenGLEngine::~OpenGLEngine()
 {
 }
 
-std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& sc)
+std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& config)
 {
-    return std::make_unique<OpenGLEngine>(sc, new TriangleManager());
+    return std::make_unique<OpenGLEngine>(config, new TriangleManager());
 }
 
 void OpenGLEngine::OnStartup()
@@ -53,10 +53,10 @@ void OpenGLEngine::Render()
 
 void OpenGLEngine::AddParticle()
 {
-    m_system_state->AddParticle(InitialConditions());
+    m_system_state->AddParticle(KinematicParameters());
 }
 
-void OpenGLEngine::AddParticle(const InitialConditions& ic)
+void OpenGLEngine::AddParticle(const KinematicParameters& parameters)
 {
-    m_system_state->AddParticle(ic);
+    m_system_state->AddParticle(parameters);
 }

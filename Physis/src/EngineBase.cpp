@@ -1,7 +1,7 @@
 #include "EngineBase.h"
 
-EngineBase::EngineBase(const TimeConfig& sc)
-	: m_config(sc), m_system_state(std::make_shared<SystemState>())
+EngineBase::EngineBase(const TimeConfig& config)
+	: m_config(config), m_system_state(std::make_shared<SystemState>())
 {
 }
 
@@ -26,8 +26,8 @@ void EngineBase::Update(const double& dt)
 	{
 		unsigned int index = pair.first;
 		std::shared_ptr<Particle> particle = pair.second;
-		InitialConditions ic = InitialConditions(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
-		m_system_state->GetPrevious()->Update(index, ic);
+		KinematicParameters parameters = KinematicParameters(particle->GetPosition(), particle->GetVelocity(), particle->GetAcceleration());
+		m_system_state->GetPrevious()->Update(index, parameters);
 	}
 	m_system_state->GetCurrent()->Step(dt);
 }

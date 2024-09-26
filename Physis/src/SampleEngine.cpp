@@ -1,7 +1,7 @@
 #include "SampleEngine.h"
 
-SampleEngine::SampleEngine(const TimeConfig& sc)
-	: EngineBase(sc)
+SampleEngine::SampleEngine(const TimeConfig& config)
+	: EngineBase(config)
 {
 }
 
@@ -20,12 +20,12 @@ void SampleEngine::Interpolate(const double& factor)
 
 void SampleEngine::AddParticle()
 {
-	m_system_state->AddParticle(InitialConditions());
+	m_system_state->AddParticle(KinematicParameters());
 }
 
-void SampleEngine::AddParticle(const InitialConditions& ic)
+void SampleEngine::AddParticle(const KinematicParameters& parameters)
 {
-	m_system_state->AddParticle(ic);
+	m_system_state->AddParticle(parameters);
 }
 
 std::map<unsigned int, std::shared_ptr<Particle>> SampleEngine::Sample()
