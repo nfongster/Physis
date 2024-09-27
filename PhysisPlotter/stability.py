@@ -56,7 +56,7 @@ class EngineWrapper:
         for _ in range(self.metadata.pcount):
             self.engine.add(physis.KinematicParameters())
 
-    def initialize(self, rx=float, ry=float, vx=float, vy=float, ax=float, ay=float) -> None:
+    def initialize(self, rx: float, ry: float, vx: float, vy: float, ax: float, ay: float) -> None:
         r0 = physis.Vec2(rx, ry)
         v0 = physis.Vec2(vx, vy)
         a0 = physis.Vec2(ax, ay)
@@ -83,11 +83,11 @@ class DataAggregator:
         self.map_metadata_to_times = {}
         self.map_timeid_to_trajectory = {}
 
-    def store(self, metadata=SimulationMetadata) -> None:
+    def store(self, metadata: SimulationMetadata) -> None:
         self.read_stability(metadata)
         self.read_trajectory()
 
-    def read_stability(self, metadata=SimulationMetadata) -> None:
+    def read_stability(self, metadata: SimulationMetadata) -> None:
         stability_filepath = self.filepaths[DataType.STABILITY]
         if not os.path.exists(stability_filepath):
             raise FileNotFoundError(f"File not found: {stability_filepath}")
@@ -118,7 +118,7 @@ class DataAggregator:
                 ax, ay = float(a_text[0]), float(a_text[1])
                 self.map_timeid_to_trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
-    def write(self, filename=str, dump_data=bool) -> None:
+    def write(self, filename: str, dump_data: bool) -> None:
         timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
@@ -164,7 +164,7 @@ class DataAggregator:
             self.map_metadata_to_times = {}
             self.map_timeid_to_trajectory = {}
 
-    def read(self, filename=str) -> None:
+    def read(self, filename: str) -> None:
         self.map_metadata_to_times = {}
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
@@ -197,12 +197,12 @@ class DataAggregator:
 
 
 class Plotter:
-    def __init__(self, aggregator=DataAggregator):
+    def __init__(self, aggregator: DataAggregator):
         if not aggregator.map_metadata_to_times or not aggregator.map_timeid_to_trajectory:
             raise RuntimeError("Aggregator must contain both stability and trajectory data!")
         self.aggregator = aggregator
 
-    def _get_metadata_label(self, m=SimulationMetadata) -> str:
+    def _get_metadata_label(self, m: SimulationMetadata) -> str:
         return (f"r={m.scalar:.2f},"
                 f"dt={m.dt.microseconds / 1000:.2f},"
                 f"N={m.pcount},"
