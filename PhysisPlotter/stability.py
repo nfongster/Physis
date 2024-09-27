@@ -90,8 +90,10 @@ class StabilityReader:
         
         self.times[metadata] = np.array(render_times)
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:
         cursor = connection.cursor()
+        if overwrite: cursor.execute("DROP TABLE IF EXISTS stability")
+
         cursor.execute(("CREATE TABLE IF NOT EXISTS stability (datetime TEXT, "
                 "dt FLOAT, "
                 "pcount INTEGER, "
@@ -156,8 +158,10 @@ class TrajectoryReader:
                 ax, ay = float(a_text[0]), float(a_text[1])
                 self.trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:  # TODO: Get rid of timestamp_str, only for stability
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:  # TODO: Get rid of timestamp_str, only for stability
         cursor = connection.cursor()
+        if overwrite: cursor.execute("DROP TABLE IF EXISTS trajectory")
+
         cursor.execute(("CREATE TABLE IF NOT EXISTS trajectory (pid INTEGER,"
                 "time FLOAT,"
                 "rx FLOAT,"
@@ -204,12 +208,12 @@ class DataAggregator:
             reader.cache(metadata)  # TODO: Only needed for stability reader
     # TODO: replace with store_all, add store(DataType)
 
-    def write(self, dbfilename: str, dump_data: bool) -> None:  # todo: replace with write_all, add write(DataType)
+    def write(self, dbfilename: str, overwrite: bool, dump_data: bool) -> None:  # todo: replace with write_all, add write(DataType)
         timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(dbfilename)
 
         for reader in self.readers.values():
-            reader.write(connection, timestamp_str, dump_data)
+            reader.write(connection, timestamp_str, overwrite, dump_data)
         
         connection.close()
 
@@ -285,7 +289,7 @@ if __name__ == "__main__":
                 aggregator.cache(metadata)  # TODO: map datatype enum -> reqd object
                 print("Data stored.")
         
-        aggregator.write(db_name, False)
+        aggregator.write(db_name, True, False)
 
     aggregator.read(db_name)
     plotter = Plotter(aggregator)
