@@ -83,7 +83,7 @@ class StabilityReader:
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
-        render_times = []
+        self.times, render_times = {}, []
         with open(self.path, 'r') as file:
             for line in file:
                 render_times.append(float(line))
@@ -92,8 +92,7 @@ class StabilityReader:
 
     def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:
         cursor = connection.cursor()
-        # TODO: Check for existence of table
-        cursor.execute(("CREATE TABLE stability (datetime TEXT, "
+        cursor.execute(("CREATE TABLE IF NOT EXISTS stability (datetime TEXT, "
                 "dt FLOAT, "
                 "pcount INTEGER, "
                 "scalar FLOAT,"
@@ -159,7 +158,7 @@ class TrajectoryReader:
 
     def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:  # TODO: Get rid of timestamp_str, only for stability
         cursor = connection.cursor()
-        cursor.execute(("CREATE TABLE trajectory (pid INTEGER,"
+        cursor.execute(("CREATE TABLE IF NOT EXISTS trajectory (pid INTEGER,"
                 "time FLOAT,"
                 "rx FLOAT,"
                 "ry FLOAT,"
