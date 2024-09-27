@@ -4,6 +4,8 @@ import os, sys, re, sqlite3
 import numpy as np
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
+from enum import Enum
+from typing import Dict
 
 
 db_name = "results.db"
@@ -38,6 +40,11 @@ class SimulationMetadata:
     pcount:   int        # Number of particles in the simulation.
 
 
+class DataType(Enum):
+    STABILITY = 0
+    TRAJECTORY = 1
+
+
 class EngineWrapper:
     def __init__(self, metadata=SimulationMetadata, outdir=str):
         self.metadata = metadata
@@ -68,29 +75,37 @@ class EngineWrapper:
 
 
 class DataAggregator:
-    def __init__(self, outdir=str):
-        self.stability_filepath = os.path.join(outdir, stability_filename)
-        self.trajectory_filepath = os.path.join(outdir, trajectory_filename)
+    def __init__(self, filepaths: Dict[DataType, str]):
+        if filepaths is None:
+            raise ValueError("Supplied datafiles must be a non-empty dict!")
+        
+        self.filepaths = filepaths
         self.map_metadata_to_times = {}
         self.map_timeid_to_trajectory = {}
 
+    def store(self, metadata=SimulationMetadata) -> None:
+        self.read_stability(metadata)
+        self.read_trajectory()
+
     def read_stability(self, metadata=SimulationMetadata) -> None:
-        if not os.path.exists(self.stability_filepath):
-            raise FileNotFoundError(f"File not found: {self.stability_filepath}")
+        stability_filepath = self.filepaths[DataType.STABILITY]
+        if not os.path.exists(stability_filepath):
+            raise FileNotFoundError(f"File not found: {stability_filepath}")
         
         render_times = []
-        with open(self.stability_filepath, 'r') as file:
+        with open(stability_filepath, 'r') as file:
             for line in file:
                 render_times.append(float(line))
         
         self.map_metadata_to_times[metadata] = np.array(render_times)
 
     def read_trajectory(self) -> None:
-        if not os.path.exists(self.trajectory_filepath):
-            raise FileNotFoundError(f"File not found: {self.trajectory_filepath}")
+        trajectory_filepath = self.filepaths[DataType.TRAJECTORY]
+        if not os.path.exists(trajectory_filepath):
+            raise FileNotFoundError(f"File not found: {trajectory_filepath}")
         
         self.map_timeid_to_trajectory = {}
-        with open(self.trajectory_filepath, 'r') as file:
+        with open(trajectory_filepath, 'r') as file:
             for i, line in enumerate(file):
                 data = line.split('\t')
                 pid = int(data[0])
@@ -103,7 +118,7 @@ class DataAggregator:
                 ax, ay = float(a_text[0]), float(a_text[1])
                 self.map_timeid_to_trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
-    def serialize(self, filename=str) -> None:
+    def write(self, filename=str, dump_data=bool) -> None:
         timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
@@ -145,9 +160,11 @@ class DataAggregator:
             connection.commit()
         
         connection.close()
-        self.map_metadata_to_times = {}
+        if dump_data:
+            self.map_metadata_to_times = {}
+            self.map_timeid_to_trajectory = {}
 
-    def deserialize(self, filename=str) -> None:
+    def read(self, filename=str) -> None:
         self.map_metadata_to_times = {}
         connection = sqlite3.connect(filename)
         cursor = connection.cursor()
@@ -181,6 +198,8 @@ class DataAggregator:
 
 class Plotter:
     def __init__(self, aggregator=DataAggregator):
+        if not aggregator.map_metadata_to_times or not aggregator.map_timeid_to_trajectory:
+            raise RuntimeError("Aggregator must contain both stability and trajectory data!")
         self.aggregator = aggregator
 
     def _get_metadata_label(self, m=SimulationMetadata) -> str:
@@ -189,6 +208,12 @@ class Plotter:
                 f"N={m.pcount},"
                 f"tr={m.t_render.microseconds / 1000:.2f},"
                 f"tt={m.t_total.microseconds / 1000:.2f}")
+    
+    def plot(self, type: DataType):
+        if type == DataType.STABILITY:
+            self.plot_stability()
+        elif type == DataType.TRAJECTORY:
+            self.plot_trajectory()
 
     def plot_stability(self):
         # Clip the initial frame because it is fast
@@ -214,7 +239,10 @@ class Plotter:
 if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
-    aggregator = DataAggregator(outdir)
+    filepaths = { 
+        DataType.STABILITY : os.path.join(stability_filename), 
+        DataType.TRAJECTORY : os.path.join(trajectory_filename) }
+    aggregator = DataAggregator(filepaths)
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
@@ -227,15 +255,13 @@ if __name__ == "__main__":
                 engine = EngineWrapper(metadata, outdir)
                 engine.initialize(0, 0, 10, 10, 0, -9.81)
                 engine.run()
-                print("Run complete.  Getting ms per frame...")
-                aggregator.read_stability(metadata)
-                aggregator.read_trajectory()
-                print("Data saved.")
+                print("Run complete.  Collecting data...")
+                aggregator.store(metadata)  # TODO: map datatype enum -> reqd object
+                print("Data stored.")
         
-        aggregator.serialize(db_name)
-    
-    aggregator.deserialize(db_name)
+        aggregator.write(db_name, False)
+
+    aggregator.read(db_name)
     plotter = Plotter(aggregator)
-    plotter.plot_stability()
-    plotter.plot_trajectory()
-    
+    plotter.plot(DataType.STABILITY)
+    plotter.plot(DataType.TRAJECTORY)
