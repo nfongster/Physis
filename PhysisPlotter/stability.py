@@ -74,55 +74,25 @@ class EngineWrapper:
         self.engine = physis.BenchmarkEngine(config, self.outdir, self.metadata.t_render)
 
 
-class DataAggregator:
-    def __init__(self, filepaths: Dict[DataType, str]):
-        if filepaths is None:
-            raise ValueError("Supplied datafiles must be a non-empty dict!")
-        
-        self.filepaths = filepaths
-        self.map_metadata_to_times = {}
-        self.map_timeid_to_trajectory = {}
+class StabilityReader:
+    def __init__(self, path: str):
+        self.path = path
+        self.times = {}  # metadata -> times
 
-    def store(self, metadata: SimulationMetadata) -> None:
-        self.read_stability(metadata)
-        self.read_trajectory()
-
-    def read_stability(self, metadata: SimulationMetadata) -> None:
-        stability_filepath = self.filepaths[DataType.STABILITY]
-        if not os.path.exists(stability_filepath):
-            raise FileNotFoundError(f"File not found: {stability_filepath}")
+    def cache(self, metadata: SimulationMetadata) -> None:
+        if not os.path.exists(self.path):
+            raise FileNotFoundError(f"File not found: {self.path}")
         
         render_times = []
-        with open(stability_filepath, 'r') as file:
+        with open(self.path, 'r') as file:
             for line in file:
                 render_times.append(float(line))
         
-        self.map_metadata_to_times[metadata] = np.array(render_times)
+        self.times[metadata] = np.array(render_times)
 
-    def read_trajectory(self) -> None:
-        trajectory_filepath = self.filepaths[DataType.TRAJECTORY]
-        if not os.path.exists(trajectory_filepath):
-            raise FileNotFoundError(f"File not found: {trajectory_filepath}")
-        
-        self.map_timeid_to_trajectory = {}
-        with open(trajectory_filepath, 'r') as file:
-            for i, line in enumerate(file):
-                data = line.split('\t')
-                pid = int(data[0])
-                time = timedelta(seconds=float(data[1]))
-                r_text = re.sub(r'[( )]', '', data[2]).split(',')
-                rx, ry = float(r_text[0]), float(r_text[1])
-                v_text = re.sub(r'[( )]', '', data[3]).split(',')
-                vx, vy = float(v_text[0]), float(v_text[1])
-                a_text = re.sub(r'[( )]', '', data[4]).split(',')
-                ax, ay = float(a_text[0]), float(a_text[1])
-                self.map_timeid_to_trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
-
-    def write(self, filename: str, dump_data: bool) -> None:
-        timestamp_str = build_timestamp_str()
-        connection = sqlite3.connect(filename)
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:
         cursor = connection.cursor()
-        # Stability
+        # TODO: Check for existence of table
         cursor.execute(("CREATE TABLE stability (datetime TEXT, "
                 "dt FLOAT, "
                 "pcount INTEGER, "
@@ -132,7 +102,7 @@ class DataAggregator:
                 "data BLOB," 
                 "datalen INT)"))
         
-        for m, data in self.map_metadata_to_times.items():
+        for m, data in self.times.items():
             datablob = data.tobytes()
             dt = m.dt.microseconds / 1000
             t_render = m.t_render.microseconds / 1000
@@ -141,32 +111,11 @@ class DataAggregator:
             scalar = m.scalar
             cursor.execute("INSERT INTO stability VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
                 (timestamp_str, dt, pcount, scalar, t_render, t_total, datablob, len(data)))
-        
-            connection.commit()
-
-        # Trajectory
-        cursor.execute(("CREATE TABLE trajectory (pid INTEGER,"
-                "time FLOAT,"
-                "rx FLOAT,"
-                "ry FLOAT,"
-                "vx FLOAT,"
-                "vy FLOAT,"
-                "ax FLOAT,"
-                "ay FLOAT)"))
-        
-        for _, data in self.map_timeid_to_trajectory.items():
-            cursor.execute("INSERT INTO trajectory VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                           (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
             connection.commit()
         
-        connection.close()
-        if dump_data:
-            self.map_metadata_to_times = {}
-            self.map_timeid_to_trajectory = {}
+        if dump_data: self.times = {}
 
-    def read(self, filename: str) -> None:
-        self.map_metadata_to_times = {}
-        connection = sqlite3.connect(filename)
+    def read(self, connection: sqlite3.Connection) -> None:
         cursor = connection.cursor()
         rows = cursor.execute("SELECT datetime, dt, pcount, scalar, rendertime, totaltime, data, datalen FROM stability").fetchall()
         for row in rows:
@@ -182,9 +131,52 @@ class DataAggregator:
                                           pcount)
             # hack
             data = np.zeros(row[7])
-            self.map_metadata_to_times[metadata] = np.frombuffer(row[6], dtype=data.dtype)
+            self.times[metadata] = np.frombuffer(row[6], dtype=data.dtype)
 
-        # Trajectory
+
+class TrajectoryReader:
+    def __init__(self, path: str):
+        self.path = path
+        self.trajectory = {}  # time_id -> kinematic param
+
+    def cache(self, metadata: SimulationMetadata) -> None:  # TODO: Get rid of metadata, only for stability
+        if not os.path.exists(self.path):
+            raise FileNotFoundError(f"File not found: {self.path}")
+        
+        self.trajectory = {}
+        with open(self.path, 'r') as file:
+            for i, line in enumerate(file):
+                data = line.split('\t')
+                pid = int(data[0])
+                time = timedelta(seconds=float(data[1]))
+                r_text = re.sub(r'[( )]', '', data[2]).split(',')
+                rx, ry = float(r_text[0]), float(r_text[1])
+                v_text = re.sub(r'[( )]', '', data[3]).split(',')
+                vx, vy = float(v_text[0]), float(v_text[1])
+                a_text = re.sub(r'[( )]', '', data[4]).split(',')
+                ax, ay = float(a_text[0]), float(a_text[1])
+                self.trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
+
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, dump_data: bool) -> None:  # TODO: Get rid of timestamp_str, only for stability
+        cursor = connection.cursor()
+        cursor.execute(("CREATE TABLE trajectory (pid INTEGER,"
+                "time FLOAT,"
+                "rx FLOAT,"
+                "ry FLOAT,"
+                "vx FLOAT,"
+                "vy FLOAT,"
+                "ax FLOAT,"
+                "ay FLOAT)"))
+        
+        for _, data in self.trajectory.items():
+            cursor.execute("INSERT INTO trajectory VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                           (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
+            connection.commit()
+
+        if dump_data: self.trajectory = {}
+
+    def read(self, connection: sqlite3.Connection) -> None:
+        cursor = connection.cursor()
         trajectory_rows = cursor.execute("SELECT pid, time, rx, ry, vx, vy, ax, ay FROM trajectory").fetchall()
         for i, row in enumerate(trajectory_rows):
             pid = row[0]
@@ -192,13 +184,48 @@ class DataAggregator:
             r = (row[2], row[3])
             v = (row[4], row[5])
             a = (row[6], row[7])
-            self.map_timeid_to_trajectory[i] = (pid, time, r, v, a)
+            self.trajectory[i] = (pid, time, r, v, a)
+
+
+class DataAggregator:
+    def __init__(self, filepaths: Dict[DataType, str]):
+        if filepaths is None:
+            raise ValueError("Supplied datafiles must be a non-empty dict!")
+        
+        self.readers = {}
+        for type, path in filepaths.items():
+            self.readers[type] = self._create_reader(type, path)
+
+    def _create_reader(self, type: DataType, path: str):  # TODO: Create interface
+        if type == DataType.STABILITY:  return StabilityReader(path)
+        if type == DataType.TRAJECTORY: return TrajectoryReader(path)
+
+    def cache(self, metadata: SimulationMetadata) -> None:
+        for reader in self.readers.values():
+            reader.cache(metadata)  # TODO: Only needed for stability reader
+    # TODO: replace with store_all, add store(DataType)
+
+    def write(self, dbfilename: str, dump_data: bool) -> None:  # todo: replace with write_all, add write(DataType)
+        timestamp_str = build_timestamp_str()
+        connection = sqlite3.connect(dbfilename)
+
+        for reader in self.readers.values():
+            reader.write(connection, timestamp_str, dump_data)
+        
+        connection.close()
+
+    def read(self, dbfilename: str) -> None:
+        connection = sqlite3.connect(dbfilename)
+
+        for reader in self.readers.values():
+            reader.read(connection)
+        
         connection.close()
 
 
 class Plotter:
-    def __init__(self, aggregator: DataAggregator):
-        if not aggregator.map_metadata_to_times or not aggregator.map_timeid_to_trajectory:
+    def __init__(self, aggregator: DataAggregator):  # TODO: Replace with dict of readers
+        if not aggregator.readers[DataType.STABILITY].times or not aggregator.readers[DataType.TRAJECTORY].trajectory:
             raise RuntimeError("Aggregator must contain both stability and trajectory data!")
         self.aggregator = aggregator
 
@@ -218,7 +245,7 @@ class Plotter:
     def plot_stability(self):
         # Clip the initial frame because it is fast
         fig, ax = plt.subplots()
-        for metadata, times in self.aggregator.map_metadata_to_times.items():
+        for metadata, times in self.aggregator.readers[DataType.STABILITY].times.items():
             x = np.arange(len(times) - 1)
             y = times[1:]
             ax.scatter(x, y, vmin=0, vmax=100, label=self._get_metadata_label(metadata))
@@ -228,7 +255,7 @@ class Plotter:
     def plot_trajectory(self):
         x, y = [], []
         fig, ax = plt.subplots()
-        for i, params in self.aggregator.map_timeid_to_trajectory.items():
+        for i, params in self.aggregator.readers[DataType.TRAJECTORY].trajectory.items():
             pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
             x.append(r[0])
             y.append(r[1])
@@ -256,7 +283,7 @@ if __name__ == "__main__":
                 engine.initialize(0, 0, 10, 10, 0, -9.81)
                 engine.run()
                 print("Run complete.  Collecting data...")
-                aggregator.store(metadata)  # TODO: map datatype enum -> reqd object
+                aggregator.cache(metadata)  # TODO: map datatype enum -> reqd object
                 print("Data stored.")
         
         aggregator.write(db_name, False)
