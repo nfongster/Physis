@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict
+from functools import reduce
 
 
 db_name = "results.db"
@@ -158,21 +159,62 @@ class TrajectoryReader:
                 ax, ay = float(a_text[0]), float(a_text[1])
                 self.trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:  # TODO: Get rid of timestamp_str, only for stability
-        cursor = connection.cursor()
-        if overwrite: cursor.execute("DROP TABLE IF EXISTS trajectory")
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:
+        particleids = set([data.pid for data in self.trajectory.values()])
+        pcount = len(particleids)
 
-        cursor.execute(("CREATE TABLE IF NOT EXISTS trajectory (pid INTEGER,"
-                "time FLOAT,"
-                "rx FLOAT,"
-                "ry FLOAT,"
-                "vx FLOAT,"
-                "vy FLOAT,"
-                "ax FLOAT,"
-                "ay FLOAT)"))
+        print(f"TEMP.  pcount={pcount}")
+        totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in self.trajectory.values()])
+        print(f"TEMP.  total time (sec)={totaltime_sec}")
+
+        cursor = connection.cursor()
+        if overwrite:
+            cursor.execute("DROP TABLE IF EXISTS Trajectories")
+            cursor.execute("DROP TABLE IF EXISTS Particles")
+            cursor.execute("DROP TABLE IF EXISTS ParticleStates")
+
+        cursor.execute(
+            ("CREATE TABLE IF NOT EXISTS Trajectories ("
+                "RUNID	    INTEGER,"
+                "TIMESTAMP	TEXT,"
+                "PCOUNT	    INTEGER,"
+                "RUNTIME	FLOAT,"
+                "PRIMARY KEY(RUNID AUTOINCREMENT)"
+            ")"))
         
+        cursor.execute("INSERT INTO Trajectories (TIMESTAMP, PCOUNT, RUNTIME) VALUES (?, ?, ?)",
+                           (timestamp_str, pcount, totaltime_sec))
+        runid = cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0]
+        
+        cursor.execute(
+            ("CREATE TABLE IF NOT EXISTS Particles ("
+                "PID	    INTEGER,"
+                "RUNID	    INTEGER,"
+                "PRIMARY KEY(PID AUTOINCREMENT),"
+                "FOREIGN KEY(RUNID) REFERENCES Trajectories(RUNID) ON DELETE CASCADE"
+            ")"))
+        print(particleids)
+        for pid in particleids:
+            cursor.execute("INSERT INTO Particles (PID, RUNID) VALUES (?, ?)", (pid, runid))
+        
+        cursor.execute(
+            ("CREATE TABLE IF NOT EXISTS ParticleStates ("
+                "STATEID	INTEGER,"
+                "PID	    INTEGER,"
+                "SIMTIME	FLOAT,"
+                "RX	        FLOAT,"
+                "RY	        FLOAT,"
+                "VX	        FLOAT,"
+                "VY	        FLOAT,"
+                "AX	        FLOAT,"
+                "AY	        FLOAT,"
+                "PRIMARY KEY(STATEID AUTOINCREMENT),"
+                "FOREIGN KEY(PID) REFERENCES Particles(PID) ON DELETE CASCADE"
+            ")"))
+        
+        print(f"TEMP.  runid={runid}")
         for _, data in self.trajectory.items():
-            cursor.execute("INSERT INTO trajectory VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            cursor.execute("INSERT INTO ParticleStates (PID, SIMTIME, RX, RY, VX, VY, AX, AY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                            (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
             connection.commit()
 
@@ -180,13 +222,14 @@ class TrajectoryReader:
 
     def read(self, connection: sqlite3.Connection) -> None:
         cursor = connection.cursor()
-        trajectory_rows = cursor.execute("SELECT pid, time, rx, ry, vx, vy, ax, ay FROM trajectory").fetchall()
-        for i, row in enumerate(trajectory_rows):
-            pid = row[0]
-            time = row[1]
-            r = (row[2], row[3])
-            v = (row[4], row[5])
-            a = (row[6], row[7])
+        runid = int(cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0])
+        particle_states = cursor.execute("SELECT * FROM ParticleStates ps JOIN Particles p ON ps.pid = p.pid JOIN Trajectories t ON p.runid = t.runid WHERE t.runid = (?)", (runid,)).fetchall()
+        for i, row in enumerate(particle_states):
+            pid = row[1]
+            time = row[2]
+            r = (row[3], row[4])
+            v = (row[5], row[6])
+            a = (row[7], row[8])
             self.trajectory[i] = (pid, time, r, v, a)
 
 
