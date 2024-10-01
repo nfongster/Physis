@@ -284,11 +284,11 @@ class Plotter:
                 f"tr={m.t_render.microseconds / 1000:.2f},"
                 f"tt={m.t_total.microseconds / 1000:.2f}")
     
-    def plot(self, type: DataType):
+    def plot(self, type: DataType, initconditions: KinematicData):
         if type == DataType.STABILITY:
             self.plot_stability()
         elif type == DataType.TRAJECTORY:
-            self.plot_trajectory()
+            self.plot_trajectory(initconditions)
 
     def plot_stability(self):
         # Clip the initial frame because it is fast
@@ -300,28 +300,31 @@ class Plotter:
             ax.legend()
         plt.show()
 
-    def plot_trajectory(self):
+    def plot_trajectory(self, initconditions: KinematicData):
         x, y = [], []
-        fig, ax = plt.subplots(1)
+        fig, ax = plt.subplots(2)
 
         # Trajectory plot
-        ax.set_title("Particle Trajectory"), ax.set_xlabel("x (m)"), ax.set_ylabel("y (m)")
-        ax.grid(True, zorder=1)
+        ax[0].set_title("Particle Trajectory"), ax[0].set_xlabel("x (m)"), ax[0].set_ylabel("y (m)")
+        ax[0].grid(True, zorder=1)
         
         for i, params in self.aggregator.readers[DataType.TRAJECTORY].trajectory.items():
             pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
             x.append(r[0])
             y.append(r[1])
         
-        polynomial = self._generate_polynomial(trajectory_params)  # TODO: Inject as method parameter
+        polynomial = self._generate_polynomial(initconditions)
         print(polynomial.coefficients)
         quadvals = np.arange(min(x), max(x), 0.01)
-        ax.plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
-        ax.scatter(x, y, s=10, label='Raw data', color='Red', alpha=0.75, zorder=2)
-        plt.legend()
+        ax[0].plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
+        ax[0].scatter(x, y, s=10, label='Raw data', color='Red', alpha=0.75, zorder=2)
+        ax[0].legend()
 
         # Error plot
-        #ax[1].set_title("Location errors"), ax[1].set_xlabel()
+        ax[1].set_title("Location errors"), ax[1].set_xlabel("x (m)"), ax[1].set_ylabel("Relative Error, %: $(y_{actual} - y_{analytic}) / y_{analytic}$")
+        ax[1].grid(True, zorder=1)
+        ax[1].scatter(x, 100 * (y - polynomial(x)) / polynomial(x), label="Error %", zorder=2)
+        
         plt.show()
 
     def _generate_polynomial(self, params: KinematicData) -> np.poly1d:
@@ -363,5 +366,5 @@ if __name__ == "__main__":
 
     aggregator.read(db_name)
     plotter = Plotter(aggregator)
-    plotter.plot(DataType.STABILITY)
-    plotter.plot(DataType.TRAJECTORY)
+    plotter.plot(DataType.STABILITY, trajectory_params)
+    plotter.plot(DataType.TRAJECTORY, trajectory_params)
