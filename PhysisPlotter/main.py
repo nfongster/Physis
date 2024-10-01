@@ -31,6 +31,8 @@ class KinematicData:
     ax:   float      # X acceleration.
     ay:   float      # Y acceleration.
 
+trajectory_params = KinematicData(0, timedelta(seconds=0), 0, 0, 10, 10, 0, -9.81)
+
 
 @dataclass(frozen=True)
 class SimulationMetadata:
@@ -300,13 +302,38 @@ class Plotter:
 
     def plot_trajectory(self):
         x, y = [], []
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(1)
+
+        # Trajectory plot
+        ax.set_title("Particle Trajectory"), ax.set_xlabel("x (m)"), ax.set_ylabel("y (m)")
+        ax.grid(True, zorder=1)
+        
         for i, params in self.aggregator.readers[DataType.TRAJECTORY].trajectory.items():
             pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
             x.append(r[0])
             y.append(r[1])
-        ax.scatter(x, y)
+        
+        polynomial = self._generate_polynomial(trajectory_params)  # TODO: Inject as method parameter
+        print(polynomial.coefficients)
+        quadvals = np.arange(min(x), max(x), 0.01)
+        ax.plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
+        ax.scatter(x, y, s=10, label='Raw data', color='Red', alpha=0.75, zorder=2)
+        plt.legend()
+
+        # Error plot
+        #ax[1].set_title("Location errors"), ax[1].set_xlabel()
         plt.show()
+
+    def _generate_polynomial(self, params: KinematicData) -> np.poly1d:
+        if params.ax != 0:
+            raise NotImplementedError("No logic implemented for nonzero x accelerations!")
+        if params.vx == 0:
+            raise NotImplementedError("Initial vx must be nonzero!")
+        
+        x0, y0, vx0, vy0, ay = params.rx, params.ry, params.vx, params.vy, params.ay
+        c1 = ay / (vx0 ** 2)
+        c2 = vy0 / vx0
+        return np.poly1d([0.5 * c1, c2 - (c1 * x0), y0 - (c2 * x0) + (0.5 * c1 * (x0**2))])
 
 
 if __name__ == "__main__":
@@ -326,7 +353,7 @@ if __name__ == "__main__":
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
                 metadata = SimulationMetadata(scalar, dt, render_time, t_total, pcount)
                 engine = EngineWrapper(metadata, outdir)
-                engine.initialize(0, 0, 10, 10, 0, -9.81)
+                engine.initialize(trajectory_params.rx, trajectory_params.ry, trajectory_params.vx, trajectory_params.vy, trajectory_params.ax, trajectory_params.ay)
                 engine.run()
                 print("Run complete.  Collecting data...")
                 aggregator.cache(metadata)  # TODO: map datatype enum -> reqd object
