@@ -164,11 +164,7 @@ class TrajectoryReader:
     def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:
         particleids = set([data.pid for data in self.trajectory.values()])
         pcount = len(particleids)
-
-        print(f"TEMP.  pcount={pcount}")
         totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in self.trajectory.values()])
-        print(f"TEMP.  total time (sec)={totaltime_sec}")
-
         cursor = connection.cursor()
         if overwrite:
             cursor.execute("DROP TABLE IF EXISTS Trajectories")
@@ -195,8 +191,11 @@ class TrajectoryReader:
                 "PRIMARY KEY(PID AUTOINCREMENT),"
                 "FOREIGN KEY(RUNID) REFERENCES Trajectories(RUNID) ON DELETE CASCADE"
             ")"))
-        print(particleids)
+
+        max_pid = cursor.execute("SELECT MAX(PID) FROM Particles").fetchall()[0][0]
         for pid in particleids:
+            if max_pid != None:
+                pid += max_pid + 1
             cursor.execute("INSERT INTO Particles (PID, RUNID) VALUES (?, ?)", (pid, runid))
         
         cursor.execute(
@@ -214,7 +213,6 @@ class TrajectoryReader:
                 "FOREIGN KEY(PID) REFERENCES Particles(PID) ON DELETE CASCADE"
             ")"))
         
-        print(f"TEMP.  runid={runid}")
         for _, data in self.trajectory.items():
             cursor.execute("INSERT INTO ParticleStates (PID, SIMTIME, RX, RY, VX, VY, AX, AY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                            (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
@@ -251,7 +249,6 @@ class DataAggregator:
     def cache(self, metadata: SimulationMetadata) -> None:
         for reader in self.readers.values():
             reader.cache(metadata)  # TODO: Only needed for stability reader
-    # TODO: replace with store_all, add store(DataType)
 
     def write(self, dbfilename: str, overwrite: bool, dump_data: bool) -> None:  # todo: replace with write_all, add write(DataType)
         timestamp_str = build_timestamp_str()
@@ -309,12 +306,10 @@ class Plotter:
         ax[0].grid(True, zorder=1)
         
         for i, params in self.aggregator.readers[DataType.TRAJECTORY].trajectory.items():
-            pid, time, r, v, a = params[0], params[1], params[2], params[3], params[4]
-            x.append(r[0])
-            y.append(r[1])
-        
+            x.append(params.rx)
+            y.append(params.ry)
+    
         polynomial = self._generate_polynomial(initconditions)
-        print(polynomial.coefficients)
         quadvals = np.arange(min(x), max(x), 0.01)
         ax[0].plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
         ax[0].scatter(x, y, s=10, label='Raw data', color='Red', alpha=0.75, zorder=2)
@@ -351,7 +346,7 @@ if __name__ == "__main__":
         print("Running benchmark engine...")
         t_total, scalar, render_time = timedelta(seconds=2), 1, timedelta(seconds=0.001)
 
-        for dt in [timedelta(seconds=0.01)]:
+        for dt in [timedelta(seconds=0.01), timedelta(seconds=0.02)]:
             for pcount in [1]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
                 metadata = SimulationMetadata(scalar, dt, render_time, t_total, pcount)
@@ -361,8 +356,8 @@ if __name__ == "__main__":
                 print("Run complete.  Collecting data...")
                 aggregator.cache(metadata)  # TODO: map datatype enum -> reqd object
                 print("Data stored.")
-        
-        aggregator.write(db_name, True, False)
+                aggregator.write(db_name, False, False)
+                print("Data saved to database.")
 
     aggregator.read(db_name)
     plotter = Plotter(aggregator)
