@@ -14,8 +14,6 @@ class KinematicData:
     ax:   float      # X acceleration.
     ay:   float      # Y acceleration.
 
-trajectory_params = KinematicData(0, timedelta(seconds=0), 0, 0, 10, 10, 0, -9.81)
-
 
 @dataclass(frozen=True)
 class SimulationMetadata:

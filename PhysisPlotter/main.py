@@ -8,8 +8,11 @@ from utility import *
 
 
 db_name = "results.db"
-stability_filename = "stability.txt"
-trajectory_filename = "trajectory.txt"
+trajectory_params = KinematicData(0, timedelta(seconds=0), 0, 0, 10, 10, 0, -9.81)
+filepaths = { 
+    DataType.STABILITY : os.path.join("stability.txt"), 
+    DataType.TRAJECTORY : os.path.join("trajectory.txt") 
+}
 
 
 class EngineWrapper:
@@ -110,9 +113,6 @@ class Plotter:
 if __name__ == "__main__":
     args = sys.argv
     outdir = os.path.join(os.path.dirname(__file__), '')
-    filepaths = { 
-        DataType.STABILITY : os.path.join(stability_filename), 
-        DataType.TRAJECTORY : os.path.join(trajectory_filename) }
     aggregator = DataAggregator(filepaths)
 
     if len(args) > 1 and args[1] == "run":

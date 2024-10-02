@@ -170,6 +170,12 @@ class TrajectoryReader:
 
 class DataAggregator:
     def __init__(self, filepaths: Dict[DataType, str]):
+        """
+        Initializes the aggregator with the appropriate readers.
+
+        Args:
+            filepaths (Dict[DataType, str]): Filepath for each data file emitted by the Physis engine.
+        """
         if filepaths is None:
             raise ValueError("Supplied datafiles must be a non-empty dict!")
         
@@ -177,7 +183,7 @@ class DataAggregator:
         for type, path in filepaths.items():
             self.readers[type] = self._create_reader(type, path)
 
-    def _create_reader(self, type: DataType, path: str):  # TODO: Create interface
+    def _create_reader(self, type: DataType, path: str):
         if type == DataType.STABILITY:  return StabilityReader(path)
         if type == DataType.TRAJECTORY: return TrajectoryReader(path)
 
