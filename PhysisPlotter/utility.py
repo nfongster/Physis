@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass
 from datetime import timedelta
+import numpy as np
 
 
 @dataclass(frozen=True)  # frozen because dict keys must be immutable
@@ -22,6 +23,12 @@ class SimulationMetadata:
     t_render: timedelta  # Time to simulate rendering.
     t_total:  timedelta  # Total time to run the simulation.
     pcount:   int        # Number of particles in the simulation.
+
+
+@dataclass(frozen=True)
+class SimulationData:
+    metadata: SimulationMetadata
+    times:    np.array
 
 
 class DataType(Enum):

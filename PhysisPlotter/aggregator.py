@@ -14,10 +14,17 @@ def build_timestamp_str() -> str:
 
 class StabilityReader:
     def __init__(self, path: str):
-        self.path = path
-        self.times = {}  # metadata -> times
+        """
+        Initializes a new StabilityReader that consumes stability data and reads/writes to the database.
 
-    def cache(self, metadata: SimulationMetadata) -> None:
+        Args:
+            path (str): Expected filepath of the stability.txt file emitted by the Physis engine.
+        """
+        self.path = path
+        self.times = Dict[str, SimulationData]
+
+
+    def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
@@ -26,38 +33,42 @@ class StabilityReader:
             for line in file:
                 render_times.append(float(line))
         
-        self.times[metadata] = np.array(render_times)
+        self.times[timestamp] = SimulationData(metadata, np.array(render_times))
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:
+    
+    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
         cursor = connection.cursor()
-        if overwrite: cursor.execute("DROP TABLE IF EXISTS stability")
+        if overwrite_db: cursor.execute("DROP TABLE IF EXISTS stability")
 
         cursor.execute(("CREATE TABLE IF NOT EXISTS stability (datetime TEXT, "
-                "dt FLOAT, "
+                "dt_sec FLOAT, "
                 "pcount INTEGER, "
                 "scalar FLOAT,"
-                "rendertime FLOAT," 
-                "totaltime FLOAT," 
+                "rendertime_sec FLOAT," 
+                "totaltime_sec FLOAT," 
                 "data BLOB," 
                 "datalen INT)"))
         
-        for m, data in self.times.items():
-            datablob = data.tobytes()
+        for timestamp, simdata in self.times.items():
+            m = simdata.metadata
+            datablob = simdata.times.tobytes()
             dt = m.dt.microseconds / 1000
             t_render = m.t_render.microseconds / 1000
             t_total = m.t_total.microseconds / 1000
             pcount = m.pcount
             scalar = m.scalar
             cursor.execute("INSERT INTO stability VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
-                (timestamp_str, dt, pcount, scalar, t_render, t_total, datablob, len(data)))
+                (timestamp, dt, pcount, scalar, t_render, t_total, datablob, len(simdata.times)))
             connection.commit()
         
-        if dump_data: self.times = {}
+        if reset_cache: self.times = {}
+
 
     def read(self, connection: sqlite3.Connection) -> None:
         cursor = connection.cursor()
-        rows = cursor.execute("SELECT datetime, dt, pcount, scalar, rendertime, totaltime, data, datalen FROM stability").fetchall()
+        rows = cursor.execute("SELECT datetime, dt_sec, pcount, scalar, rendertime_sec, totaltime_sec, data, datalen FROM stability").fetchall()
         for row in rows:
+            timestamp = row[0]
             dt = row[1]
             pcount = row[2]
             scalar = row[3]
@@ -70,13 +81,14 @@ class StabilityReader:
                                           pcount)
             # hack
             data = np.zeros(row[7])
-            self.times[metadata] = np.frombuffer(row[6], dtype=data.dtype)
+            self.times[timestamp] = SimulationData(metadata, np.frombuffer(row[6], dtype=data.dtype))
 
 
 class TrajectoryReader:
     def __init__(self, path: str):
         self.path = path
         self.trajectory = {}  # time_id -> kinematic param
+
 
     def cache(self, metadata: SimulationMetadata) -> None:  # TODO: Get rid of metadata, only for stability
         if not os.path.exists(self.path):
@@ -96,12 +108,13 @@ class TrajectoryReader:
                 ax, ay = float(a_text[0]), float(a_text[1])
                 self.trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite: bool, dump_data: bool) -> None:
+
+    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite_db: bool, reset_cache: bool) -> None:
         particleids = set([data.pid for data in self.trajectory.values()])
         pcount = len(particleids)
         totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in self.trajectory.values()])
         cursor = connection.cursor()
-        if overwrite:
+        if overwrite_db:
             cursor.execute("DROP TABLE IF EXISTS Trajectories")
             cursor.execute("DROP TABLE IF EXISTS Particles")
             cursor.execute("DROP TABLE IF EXISTS ParticleStates")
@@ -153,7 +166,8 @@ class TrajectoryReader:
                            (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
             connection.commit()
 
-        if dump_data: self.trajectory = {}
+        if reset_cache: self.trajectory = {}
+
 
     def read(self, connection: sqlite3.Connection) -> None:
         cursor = connection.cursor()
@@ -183,22 +197,26 @@ class DataAggregator:
         for type, path in filepaths.items():
             self.readers[type] = self._create_reader(type, path)
 
+
     def _create_reader(self, type: DataType, path: str):
-        if type == DataType.STABILITY:  return StabilityReader(path)
-        if type == DataType.TRAJECTORY: return TrajectoryReader(path)
+        if type == DataType.STABILITY:      return StabilityReader(path)
+        if type == DataType.TRAJECTORY:     return TrajectoryReader(path)
+
 
     def cache(self, metadata: SimulationMetadata) -> None:
         for reader in self.readers.values():
             reader.cache(metadata)  # TODO: Only needed for stability reader
 
-    def write(self, dbfilename: str, overwrite: bool, dump_data: bool) -> None:  # todo: replace with write_all, add write(DataType)
+
+    def write(self, dbfilename: str, overwrite_db: bool, reset_cache: bool) -> None:  # todo: replace with write_all, add write(DataType)
         timestamp_str = build_timestamp_str()
         connection = sqlite3.connect(dbfilename)
 
         for reader in self.readers.values():
-            reader.write(connection, timestamp_str, overwrite, dump_data)
+            reader.write(connection, timestamp_str, overwrite_db, reset_cache)
         
         connection.close()
+
 
     def read(self, dbfilename: str) -> None:
         connection = sqlite3.connect(dbfilename)
