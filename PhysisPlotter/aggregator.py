@@ -18,10 +18,10 @@ class StabilityReader:
         Initializes a new StabilityReader that consumes stability data and reads/writes to the database.
 
         Args:
-            path (str): Expected filepath of the stability.txt file emitted by the Physis engine.
+            path (str): Expected (relative) filepath of the stability text file emitted by the Physis engine.
         """
         self.path = path
-        self.times = Dict[str, SimulationData]
+        self.times: Dict[str, SimulationData] = {}
 
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
@@ -35,7 +35,7 @@ class StabilityReader:
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
-        self.times, render_times = {}, []
+        render_times = []
         with open(self.path, 'r') as file:
             for line in file:
                 render_times.append(float(line))
@@ -87,7 +87,7 @@ class StabilityReader:
             connection (Connection): Connection to the database.
         """
         cursor = connection.cursor()
-        rows = cursor.execute("SELECT datetime, dt_sec, pcount, scalar, rendertime_sec, totaltime_sec, data, datalen FROM stability").fetchall()
+        rows = cursor.execute("SELECT * FROM stability").fetchall()
         for row in rows:
             timestamp = row[0]
             dt = row[1]
@@ -107,15 +107,27 @@ class StabilityReader:
 
 class TrajectoryReader:
     def __init__(self, path: str):
+        """
+        Initializes a new TrajectoryReader that consumes trajectory data and reads/writes to the database.
+
+        Args:
+            path (str): Expected (relative) filepath of the trajectory text file emitted by the Physis engine.
+        """
         self.path = path
-        self.trajectory = {}  # time_id -> kinematic param
+        self.trajectory: Dict[str, Dict[int, KinematicData]] = {}
 
 
-    def cache(self, metadata: SimulationMetadata) -> None:  # TODO: Get rid of metadata, only for stability
+    def cache(self, timestamp: str) -> None:
+        """
+        Caches data emitted by the Physis engine into the TrajectoryReader.
+
+        Args:
+            timestamp (str): Desired timestamp with which to mark the simulation run.
+        """
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
-        self.trajectory = {}
+        data_dict: Dict[int, KinematicData] = {}
         with open(self.path, 'r') as file:
             for i, line in enumerate(file):
                 data = line.split('\t')
@@ -127,13 +139,11 @@ class TrajectoryReader:
                 vx, vy = float(v_text[0]), float(v_text[1])
                 a_text = re.sub(r'[( )]', '', data[4]).split(',')
                 ax, ay = float(a_text[0]), float(a_text[1])
-                self.trajectory[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
+                data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
+        self.trajectory[timestamp] = data_dict
 
 
-    def write(self, connection: sqlite3.Connection, timestamp_str: str, overwrite_db: bool, reset_cache: bool) -> None:
-        particleids = set([data.pid for data in self.trajectory.values()])
-        pcount = len(particleids)
-        totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in self.trajectory.values()])
+    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
         cursor = connection.cursor()
         if overwrite_db:
             cursor.execute("DROP TABLE IF EXISTS Trajectories")
@@ -149,58 +159,66 @@ class TrajectoryReader:
                 "PRIMARY KEY(RUNID AUTOINCREMENT)"
             ")"))
         
-        cursor.execute("INSERT INTO Trajectories (TIMESTAMP, PCOUNT, RUNTIME) VALUES (?, ?, ?)",
-                           (timestamp_str, pcount, totaltime_sec))
-        runid = cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0]
-        
-        cursor.execute(
-            ("CREATE TABLE IF NOT EXISTS Particles ("
-                "PID	    INTEGER,"
-                "RUNID	    INTEGER,"
-                "PRIMARY KEY(PID AUTOINCREMENT),"
-                "FOREIGN KEY(RUNID) REFERENCES Trajectories(RUNID) ON DELETE CASCADE"
-            ")"))
+        for timestamp, data_dict in self.trajectory.items():
+            particleids = set([data.pid for data in data_dict.values()])
+            totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in data_dict.values()])
+            
+            cursor.execute("INSERT INTO Trajectories (TIMESTAMP, PCOUNT, RUNTIME) VALUES (?, ?, ?)",
+                            (timestamp, len(particleids), totaltime_sec))
+            runid = cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0]
+            
+            cursor.execute(
+                ("CREATE TABLE IF NOT EXISTS Particles ("
+                    "PID	    INTEGER,"
+                    "RUNID	    INTEGER,"
+                    "PRIMARY KEY(PID AUTOINCREMENT),"
+                    "FOREIGN KEY(RUNID) REFERENCES Trajectories(RUNID) ON DELETE CASCADE"
+                ")"))
 
-        max_pid = cursor.execute("SELECT MAX(PID) FROM Particles").fetchall()[0][0]
-        for pid in particleids:
-            if max_pid != None:
-                pid += max_pid + 1
-            cursor.execute("INSERT INTO Particles (PID, RUNID) VALUES (?, ?)", (pid, runid))
-        
-        cursor.execute(
-            ("CREATE TABLE IF NOT EXISTS ParticleStates ("
-                "STATEID	INTEGER,"
-                "PID	    INTEGER,"
-                "SIMTIME	FLOAT,"
-                "RX	        FLOAT,"
-                "RY	        FLOAT,"
-                "VX	        FLOAT,"
-                "VY	        FLOAT,"
-                "AX	        FLOAT,"
-                "AY	        FLOAT,"
-                "PRIMARY KEY(STATEID AUTOINCREMENT),"
-                "FOREIGN KEY(PID) REFERENCES Particles(PID) ON DELETE CASCADE"
-            ")"))
-        
-        for _, data in self.trajectory.items():
-            cursor.execute("INSERT INTO ParticleStates (PID, SIMTIME, RX, RY, VX, VY, AX, AY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                           (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
-            connection.commit()
+            max_pid = cursor.execute("SELECT MAX(PID) FROM Particles").fetchall()[0][0]
+            for pid in particleids:
+                if max_pid != None:
+                    pid += max_pid + 1
+                cursor.execute("INSERT INTO Particles (PID, RUNID) VALUES (?, ?)", (pid, runid))
+            
+            cursor.execute(
+                ("CREATE TABLE IF NOT EXISTS ParticleStates ("
+                    "STATEID	INTEGER,"
+                    "PID	    INTEGER,"
+                    "SIMTIME	FLOAT,"
+                    "RX	        FLOAT,"
+                    "RY	        FLOAT,"
+                    "VX	        FLOAT,"
+                    "VY	        FLOAT,"
+                    "AX	        FLOAT,"
+                    "AY	        FLOAT,"
+                    "PRIMARY KEY(STATEID AUTOINCREMENT),"
+                    "FOREIGN KEY(PID) REFERENCES Particles(PID) ON DELETE CASCADE"
+                ")"))
+            
+            for _, data in data_dict.items():
+                cursor.execute("INSERT INTO ParticleStates (PID, SIMTIME, RX, RY, VX, VY, AX, AY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                            (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
+                connection.commit()
 
         if reset_cache: self.trajectory = {}
 
 
     def read(self, connection: sqlite3.Connection) -> None:
         cursor = connection.cursor()
-        runid = int(cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0])
-        particle_states = cursor.execute("SELECT * FROM ParticleStates ps JOIN Particles p ON ps.pid = p.pid JOIN Trajectories t ON p.runid = t.runid WHERE t.runid = (?)", (runid,)).fetchall()
-        for i, row in enumerate(particle_states):
-            pid = row[1]
-            time = row[2]
-            r = (row[3], row[4])
-            v = (row[5], row[6])
-            a = (row[7], row[8])
-            self.trajectory[i] = (pid, time, r, v, a)
+        trajectories = cursor.execute("SELECT * FROM Trajectories").fetchall()
+        for traj in trajectories:
+            runid, timestamp, pcount, runtime = traj[0], traj[1], traj[2], traj[3]
+            particle_states = cursor.execute("SELECT * FROM ParticleStates ps JOIN Particles p ON ps.pid = p.pid JOIN Trajectories t ON p.runid = t.runid WHERE t.runid = (?)", (runid,)).fetchall()
+            data_dict: Dict[int, KinematicData] = {}
+            for i, row in enumerate(particle_states):
+                pid = row[1]
+                time = timedelta(seconds=row[2])
+                rx, ry = row[3], row[4]
+                vx, vy = row[5], row[6]
+                ax, ay = row[7], row[8]
+                data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
+            self.trajectory[timestamp] = data_dict
 
 
 class DataAggregator:
