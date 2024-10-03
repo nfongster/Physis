@@ -25,6 +25,13 @@ class StabilityReader:
 
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
+        """
+        Caches data emitted by the Physis engine into the StabilityReader.
+
+        Args:
+            metadata (SimulationMetadata): Metadata about the simulation run.
+            timestamp (str): Desired timestamp with which to mark the simulation run.
+        """
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
@@ -37,6 +44,14 @@ class StabilityReader:
 
     
     def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+        """
+        Instructs the StabilityReader to write its cached data to the database.
+
+        Args:
+            connection (Connection): Connection to the database.
+            overwrite_db (bool): Whether to overwrite all stability data in the database.
+            reset_cache (bool): Whether to reset the StabilityReader's cache after it has written to the database.
+        """
         cursor = connection.cursor()
         if overwrite_db: cursor.execute("DROP TABLE IF EXISTS stability")
 
@@ -65,6 +80,12 @@ class StabilityReader:
 
 
     def read(self, connection: sqlite3.Connection) -> None:
+        """
+        Instructs the StabilityReader to read and cache stability data from the database.
+
+        Args:
+            connection (Connection): Connection to the database.
+        """
         cursor = connection.cursor()
         rows = cursor.execute("SELECT datetime, dt_sec, pcount, scalar, rendertime_sec, totaltime_sec, data, datalen FROM stability").fetchall()
         for row in rows:
