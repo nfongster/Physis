@@ -6,36 +6,53 @@ from utility import *
 
 
 class ReaderInterface():
-    def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
-        pass
-
-    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
-        pass
-
-    def read(self, connection: sqlite3.Connection) -> None:
-        pass
-
-
-class StabilityReader(ReaderInterface):
     def __init__(self, path: str):
         """
-        Initializes a new StabilityReader that consumes stability data and reads/writes to the database.
+        Initializes a new Reader that consumes data and reads/writes to the database.
 
         Args:
-            path (str): Expected (relative) filepath of the stability text file emitted by the Physis engine.
+            path (str): Expected (relative) filepath of the text file emitted by the Physis engine.
         """
-        self.path: str = path
-        self.times: Dict[str, StabilityData] = {}
-
+        pass
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
         """
-        Caches data emitted by the Physis engine into the StabilityReader.
+        Caches data emitted by the Physis engine into the Reader.
 
         Args:
             metadata (SimulationMetadata): Metadata about the simulation run.
             timestamp (str): Desired timestamp with which to mark the simulation run.
         """
+        pass
+
+    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+        """
+        Instructs the Reader to write its cached data to the database.
+
+        Args:
+            connection (Connection): Connection to the database.
+            overwrite_db (bool): Whether to overwrite all data in the database.
+            reset_cache (bool): Whether to reset the Reader's cache after it has written to the database.
+        """
+        pass
+
+    def read(self, connection: sqlite3.Connection) -> None:
+        """
+        Instructs the Reader to read and cache stability data from the database.
+
+        Args:
+            connection (Connection): Connection to the database.
+        """
+        pass
+
+
+class StabilityReader(ReaderInterface):
+    def __init__(self, path: str):
+        self.path:  str = path
+        self.times: Dict[str, StabilityData] = {}
+
+
+    def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
@@ -48,14 +65,6 @@ class StabilityReader(ReaderInterface):
 
     
     def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
-        """
-        Instructs the StabilityReader to write its cached data to the database.
-
-        Args:
-            connection (Connection): Connection to the database.
-            overwrite_db (bool): Whether to overwrite all stability data in the database.
-            reset_cache (bool): Whether to reset the StabilityReader's cache after it has written to the database.
-        """
         cursor = connection.cursor()
         if overwrite_db: cursor.execute("DROP TABLE IF EXISTS stability")
 
@@ -84,12 +93,6 @@ class StabilityReader(ReaderInterface):
 
 
     def read(self, connection: sqlite3.Connection) -> None:
-        """
-        Instructs the StabilityReader to read and cache stability data from the database.
-
-        Args:
-            connection (Connection): Connection to the database.
-        """
         cursor = connection.cursor()
         rows = cursor.execute("SELECT * FROM stability").fetchall()
         for row in rows:
@@ -111,23 +114,11 @@ class StabilityReader(ReaderInterface):
 
 class TrajectoryReader(ReaderInterface):
     def __init__(self, path: str):
-        """
-        Initializes a new TrajectoryReader that consumes trajectory data and reads/writes to the database.
-
-        Args:
-            path (str): Expected (relative) filepath of the trajectory text file emitted by the Physis engine.
-        """
-        self.path: str = path
+        self.path:       str = path
         self.trajectory: Dict[str, TrajectoryData] = {}
 
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
-        """
-        Caches data emitted by the Physis engine into the TrajectoryReader.
-
-        Args:
-            timestamp (str): Desired timestamp with which to mark the simulation run.
-        """
         if not os.path.exists(self.path):
             raise FileNotFoundError(f"File not found: {self.path}")
         
@@ -261,21 +252,22 @@ class DataAggregator:
         if type == DataType.TRAJECTORY:     return TrajectoryReader(path)
 
 
+    # TODO: replace with cache_all, add cache(DataType)
     def cache(self, metadata: SimulationMetadata) -> None:
-        for reader in self.readers.values():
-            reader.cache(metadata)
-
-
-    def write(self, dbfilename: str, overwrite_db: bool, reset_cache: bool) -> None:  # todo: replace with write_all, add write(DataType)
         timestamp_str = build_timestamp_str()
+        for reader in self.readers.values():
+            reader.cache(metadata, timestamp_str)
+
+    # TODO: replace with write_all, add write(DataType)
+    def write(self, dbfilename: str, overwrite_db: bool, reset_cache: bool) -> None:
         connection = sqlite3.connect(dbfilename)
 
         for reader in self.readers.values():
-            reader.write(connection, timestamp_str, overwrite_db, reset_cache)
+            reader.write(connection, overwrite_db, reset_cache)
         
         connection.close()
 
-
+    # TODO: Replace with read_all, add read(DataType)
     def read(self, dbfilename: str) -> None:
         connection = sqlite3.connect(dbfilename)
 
