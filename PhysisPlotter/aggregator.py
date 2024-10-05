@@ -1,15 +1,8 @@
 from typing import Dict
 from functools import reduce
-from datetime import datetime
 import os, re, sqlite3
 import numpy as np
 from utility import *
-
-
-def build_timestamp_str() -> str:
-    """Returns the current date-time with format YYYYMMDDHHMMSSMMM."""
-    timestamp = datetime.now()
-    return timestamp.strftime('%Y%m%d%H%M%S') + f"{timestamp.microsecond // 1000:03d}"
 
 
 class StabilityReader:

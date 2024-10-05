@@ -1,6 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta
 import numpy as np
 
 
@@ -34,3 +34,9 @@ class SimulationData:
 class DataType(Enum):
     STABILITY = 0
     TRAJECTORY = 1
+
+
+def build_timestamp_str() -> str:
+    """Returns the current date-time with format YYYYMMDDHHMMSSMMM."""
+    timestamp = datetime.now()
+    return timestamp.strftime('%Y%m%d%H%M%S') + f"{timestamp.microsecond // 1000:03d}"
