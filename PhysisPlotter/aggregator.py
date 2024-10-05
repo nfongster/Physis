@@ -5,7 +5,18 @@ import numpy as np
 from utility import *
 
 
-class StabilityReader:
+class ReaderInterface():
+    def cache() -> None:
+        pass
+
+    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+        pass
+
+    def read(self, connection: sqlite3.Connection) -> None:
+        pass
+
+
+class StabilityReader(ReaderInterface):
     def __init__(self, path: str):
         """
         Initializes a new StabilityReader that consumes stability data and reads/writes to the database.
@@ -13,7 +24,7 @@ class StabilityReader:
         Args:
             path (str): Expected (relative) filepath of the stability text file emitted by the Physis engine.
         """
-        self.path = path
+        self.path: str = path
         self.times: Dict[str, SimulationData] = {}
 
 
@@ -98,7 +109,7 @@ class StabilityReader:
             self.times[timestamp] = SimulationData(metadata, np.frombuffer(row[6], dtype=data.dtype))
 
 
-class TrajectoryReader:
+class TrajectoryReader(ReaderInterface):
     def __init__(self, path: str):
         """
         Initializes a new TrajectoryReader that consumes trajectory data and reads/writes to the database.
@@ -106,7 +117,7 @@ class TrajectoryReader:
         Args:
             path (str): Expected (relative) filepath of the trajectory text file emitted by the Physis engine.
         """
-        self.path = path
+        self.path: str = path
         self.trajectory: Dict[str, Dict[int, KinematicData]] = {}
 
 
@@ -225,7 +236,7 @@ class DataAggregator:
         if filepaths is None:
             raise ValueError("Supplied datafiles must be a non-empty dict!")
         
-        self.readers = {}
+        self.readers: Dict[DataType, ReaderInterface] = {}
         for type, path in filepaths.items():
             self.readers[type] = self._create_reader(type, path)
 
