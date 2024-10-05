@@ -57,7 +57,7 @@ def test_read():
         file.write(f"({default_data.vx}, {default_data.vy})\t")
         file.write(f"({default_data.ax}, {default_data.ay})\t")
     reader.cache(metadata, timestamp)
-    assert reader.trajectory[timestamp][0] == default_data
+    assert reader.trajectory[timestamp].trajectories[0] == default_data
 
     with sqlite3.Connection(dbname) as connection:
         reader.write(connection, True, True)
@@ -65,7 +65,7 @@ def test_read():
 
     with sqlite3.Connection(dbname) as connection:
         reader.read(connection)
-    assert reader.trajectory[timestamp][0] == default_data
+    assert reader.trajectory[timestamp].trajectories[0] == default_data
 
 
 def test_read_multiple_arrays():
@@ -99,7 +99,7 @@ def test_read_multiple_arrays():
         
         reader.cache(metadata, timestamp)
         for i, data in enumerate(data_arrays):
-            assert reader.trajectory[timestamp][i] == data
+            assert reader.trajectory[timestamp].trajectories[i] == data
 
     with sqlite3.Connection(dbname) as connection:
         if initial_iter:
@@ -116,5 +116,5 @@ def test_read_multiple_arrays():
         assert expected == actual
     
     for expected_data_arr, actual_data_arr in zip([data_run1, data_run2], reader.trajectory.values()):
-        for expected_data, actual_data in zip(expected_data_arr, actual_data_arr.values()):
+        for expected_data, actual_data in zip(expected_data_arr, actual_data_arr.trajectories.values()):
             assert expected_data == actual_data

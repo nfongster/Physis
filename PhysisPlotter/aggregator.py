@@ -118,7 +118,7 @@ class TrajectoryReader(ReaderInterface):
             path (str): Expected (relative) filepath of the trajectory text file emitted by the Physis engine.
         """
         self.path: str = path
-        self.trajectory: Dict[str, Dict[int, KinematicData]] = {}
+        self.trajectory: Dict[str, TrajectoryData] = {}
 
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
@@ -144,7 +144,7 @@ class TrajectoryReader(ReaderInterface):
                 a_text = re.sub(r'[( )]', '', data[4]).split(',')
                 ax, ay = float(a_text[0]), float(a_text[1])
                 data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
-        self.trajectory[timestamp] = data_dict
+        self.trajectory[timestamp] = TrajectoryData(metadata, data_dict)
 
 
     def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
@@ -163,7 +163,8 @@ class TrajectoryReader(ReaderInterface):
                 "PRIMARY KEY(RUNID AUTOINCREMENT)"
             ")"))
         
-        for timestamp, data_dict in self.trajectory.items():
+        for timestamp, trajdata in self.trajectory.items():
+            data_dict = trajdata.trajectories  # TODO: What to do with metadata?
             particleids = set([data.pid for data in data_dict.values()])
             totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in data_dict.values()])
             
@@ -222,7 +223,7 @@ class TrajectoryReader(ReaderInterface):
                 vx, vy = row[5], row[6]
                 ax, ay = row[7], row[8]
                 data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
-            self.trajectory[timestamp] = data_dict
+            self.trajectory[timestamp] = TrajectoryData(None, data_dict)  # TODO: Fix metadtata!
 
 
 class DataAggregator:
