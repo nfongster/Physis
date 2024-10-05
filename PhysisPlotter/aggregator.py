@@ -158,18 +158,26 @@ class TrajectoryReader(ReaderInterface):
             ("CREATE TABLE IF NOT EXISTS Trajectories ("
                 "RUNID	    INTEGER,"
                 "TIMESTAMP	TEXT,"
+                "DT_SEC     FLOAT,"
                 "PCOUNT	    INTEGER,"
+                "SCALAR     FLOAT,"
+                "RENDERTIME FLOAT,"
                 "RUNTIME	FLOAT,"
                 "PRIMARY KEY(RUNID AUTOINCREMENT)"
             ")"))
         
         for timestamp, trajdata in self.trajectory.items():
-            data_dict = trajdata.trajectories  # TODO: What to do with metadata?
+            m, data_dict = trajdata.metadata, trajdata.trajectories
             particleids = set([data.pid for data in data_dict.values()])
-            totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in data_dict.values()])
+            # Only accumulate times from the first particle.  Otherwise, you will get: t_total_actual * pcount
+            totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in data_dict.values() if data.pid == 0])
+            if len(particleids) != m.pcount or totaltime_sec != m.t_total.seconds:
+                raise Exception(f"Metadata did not match actual data!"
+                                f" pcount: metadata was {m.pcount}, actual was {len(particleids)}."
+                                f" t_total: metadata was {m.t_total.seconds}, actual was {totaltime_sec}.")
             
-            cursor.execute("INSERT INTO Trajectories (TIMESTAMP, PCOUNT, RUNTIME) VALUES (?, ?, ?)",
-                            (timestamp, len(particleids), totaltime_sec))
+            cursor.execute("INSERT INTO Trajectories (TIMESTAMP, DT_SEC, PCOUNT, SCALAR, RENDERTIME, RUNTIME) VALUES (?, ?, ?, ?, ?, ?)",
+                            (timestamp, m.dt.seconds, m.pcount, m.scalar, m.t_render.seconds, m.t_total.seconds))
             runid = cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0]
             
             cursor.execute(
@@ -213,7 +221,13 @@ class TrajectoryReader(ReaderInterface):
         cursor = connection.cursor()
         trajectories = cursor.execute("SELECT * FROM Trajectories").fetchall()
         for traj in trajectories:
-            runid, timestamp, pcount, runtime = traj[0], traj[1], traj[2], traj[3]
+            runid, timestamp, dt, pcount, scalar, rendertime, runtime = traj[0], traj[1], traj[2], traj[3], traj[4], traj[5], traj[6]
+            metadata = SimulationMetadata(scalar, 
+                                          timedelta(seconds=dt),
+                                          timedelta(seconds=rendertime), 
+                                          timedelta(seconds=runtime),
+                                          pcount)
+
             particle_states = cursor.execute("SELECT * FROM ParticleStates ps JOIN Particles p ON ps.pid = p.pid JOIN Trajectories t ON p.runid = t.runid WHERE t.runid = (?)", (runid,)).fetchall()
             data_dict: Dict[int, KinematicData] = {}
             for i, row in enumerate(particle_states):
@@ -223,7 +237,7 @@ class TrajectoryReader(ReaderInterface):
                 vx, vy = row[5], row[6]
                 ax, ay = row[7], row[8]
                 data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
-            self.trajectory[timestamp] = TrajectoryData(None, data_dict)  # TODO: Fix metadtata!
+            self.trajectory[timestamp] = TrajectoryData(metadata, data_dict)
 
 
 class DataAggregator:
@@ -249,7 +263,7 @@ class DataAggregator:
 
     def cache(self, metadata: SimulationMetadata) -> None:
         for reader in self.readers.values():
-            reader.cache(metadata)  # TODO: Only needed for stability reader
+            reader.cache(metadata)
 
 
     def write(self, dbfilename: str, overwrite_db: bool, reset_cache: bool) -> None:  # todo: replace with write_all, add write(DataType)

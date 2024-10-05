@@ -69,6 +69,8 @@ def test_read():
 
 
 def test_read_multiple_arrays():
+    metadata_2particles = SimulationMetadata(1, timedelta(seconds=1.0), timedelta(seconds=0), timedelta(seconds=1.0), 2)
+
     data_run1 = [
         KinematicData(0, timedelta(seconds=0.0), 0.0, 0.0, 1.0, 0.0, 0.0, 0.0),
         KinematicData(0, timedelta(seconds=1.0), 1.0, 0.0, 1.0, 0.0, 0.0, 0.0),
@@ -97,7 +99,7 @@ def test_read_multiple_arrays():
                 file.write(f"({data.vx}, {data.vy})\t")
                 file.write(f"({data.ax}, {data.ay})\n")
         
-        reader.cache(metadata, timestamp)
+        reader.cache(metadata_2particles, timestamp)
         for i, data in enumerate(data_arrays):
             assert reader.trajectory[timestamp].trajectories[i] == data
 
