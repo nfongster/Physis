@@ -6,7 +6,7 @@ from utility import *
 
 
 class ReaderInterface():
-    def cache() -> None:
+    def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
         pass
 
     def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
@@ -25,7 +25,7 @@ class StabilityReader(ReaderInterface):
             path (str): Expected (relative) filepath of the stability text file emitted by the Physis engine.
         """
         self.path: str = path
-        self.times: Dict[str, SimulationData] = {}
+        self.times: Dict[str, StabilityData] = {}
 
 
     def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
@@ -44,7 +44,7 @@ class StabilityReader(ReaderInterface):
             for line in file:
                 render_times.append(float(line))
         
-        self.times[timestamp] = SimulationData(metadata, np.array(render_times))
+        self.times[timestamp] = StabilityData(metadata, np.array(render_times))
 
     
     def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
@@ -106,7 +106,7 @@ class StabilityReader(ReaderInterface):
                                           pcount)
             # hack
             data = np.zeros(row[7])
-            self.times[timestamp] = SimulationData(metadata, np.frombuffer(row[6], dtype=data.dtype))
+            self.times[timestamp] = StabilityData(metadata, np.frombuffer(row[6], dtype=data.dtype))
 
 
 class TrajectoryReader(ReaderInterface):
@@ -121,7 +121,7 @@ class TrajectoryReader(ReaderInterface):
         self.trajectory: Dict[str, Dict[int, KinematicData]] = {}
 
 
-    def cache(self, timestamp: str) -> None:
+    def cache(self, metadata: SimulationMetadata, timestamp: str) -> None:
         """
         Caches data emitted by the Physis engine into the TrajectoryReader.
 

@@ -1,6 +1,7 @@
 import pytest, time
 from aggregator import *
 
+metadata = SimulationMetadata(1, timedelta(seconds=0), timedelta(seconds=0), timedelta(seconds=0), 1)
 filename, dbname = "trajectory.txt", "results.db"
 default_data = KinematicData(0, timedelta(seconds=0), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
@@ -13,7 +14,7 @@ def test_constructor():
 def test_cache_incomplete_filename():
     with pytest.raises(FileNotFoundError):
         reader = TrajectoryReader("badfilename.txt")
-        reader.cache(build_timestamp_str())
+        reader.cache(metadata, build_timestamp_str())
 
 
 def test_cache_valid_filename():
@@ -26,7 +27,7 @@ def test_cache_valid_filename():
         file.write(f"({default_data.rx}, {default_data.ry})\t")
         file.write(f"({default_data.vx}, {default_data.vy})\t")
         file.write(f"({default_data.ax}, {default_data.ay})\t")
-    reader.cache(timestamp)
+    reader.cache(metadata, timestamp)
 
 
 def test_write():
@@ -39,7 +40,7 @@ def test_write():
         file.write(f"({default_data.rx}, {default_data.ry})\t")
         file.write(f"({default_data.vx}, {default_data.vy})\t")
         file.write(f"({default_data.ax}, {default_data.ay})\t")
-    reader.cache(timestamp)
+    reader.cache(metadata, timestamp)
 
     with sqlite3.Connection(dbname) as connection:
         reader.write(connection, True, True)
@@ -55,7 +56,7 @@ def test_read():
         file.write(f"({default_data.rx}, {default_data.ry})\t")
         file.write(f"({default_data.vx}, {default_data.vy})\t")
         file.write(f"({default_data.ax}, {default_data.ay})\t")
-    reader.cache(timestamp)
+    reader.cache(metadata, timestamp)
     assert reader.trajectory[timestamp][0] == default_data
 
     with sqlite3.Connection(dbname) as connection:
@@ -96,11 +97,10 @@ def test_read_multiple_arrays():
                 file.write(f"({data.vx}, {data.vy})\t")
                 file.write(f"({data.ax}, {data.ay})\n")
         
-        reader.cache(timestamp)
+        reader.cache(metadata, timestamp)
         for i, data in enumerate(data_arrays):
             assert reader.trajectory[timestamp][i] == data
 
-    print(reader.trajectory)
     with sqlite3.Connection(dbname) as connection:
         if initial_iter:
             reader.write(connection, True, True)
@@ -111,7 +111,6 @@ def test_read_multiple_arrays():
 
     with sqlite3.Connection(dbname) as connection:
         reader.read(connection)
-    print(reader.trajectory)
 
     for expected, actual in zip([timestamp1, timestamp2], reader.trajectory.keys()):
         assert expected == actual

@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Dict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import numpy as np
@@ -26,9 +27,15 @@ class SimulationMetadata:
 
 
 @dataclass(frozen=True)
-class SimulationData:
+class StabilityData:
     metadata: SimulationMetadata
     times:    np.array
+
+
+@dataclass(frozen=True)
+class TrajectoryData:
+    metadata:       SimulationMetadata
+    trajectories:   Dict[int, KinematicData]
 
 
 class DataType(Enum):
