@@ -9,7 +9,7 @@ from utility import *
 
 
 db_name = "results.db"
-trajectory_params = KinematicData(0, timedelta(seconds=0), 0, 0, 10, 10, 0, -9.81)
+trajectory_params = KinematicData(0, timedelta(seconds=0), 0, 0, 10, 70, 0, -9.81)
 filepaths = { 
     DataType.STABILITY : os.path.join("stability.txt"), 
     DataType.TRAJECTORY : os.path.join("trajectory.txt") 
@@ -102,7 +102,7 @@ class Plotter:
                 first_iter = False
             
             ax[0].scatter(x, y, s=10, label=self._get_metadata_label(metadata), alpha=0.75, color=colormap[i], zorder=2)
-            ax[1].scatter(x, 100 * (y - polynomial(x)) / polynomial(x), label=self._get_metadata_label(metadata), color=colormap[i], zorder=2)
+            ax[1].plot(x, 100 * (y - polynomial(x)) / polynomial(x), label=self._get_metadata_label(metadata), color=colormap[i], zorder=2)
         ax[0].legend(), ax[1].legend()
         plt.show()
 
@@ -125,11 +125,12 @@ if __name__ == "__main__":
 
     if len(args) > 1 and args[1] == "run":
         print("Running benchmark engine...")
-        t_total, scalar, render_time = timedelta(seconds=2), 1, timedelta(seconds=0.001)
+        t_total, scalar, render_time = timedelta(seconds=12), 1, timedelta(seconds=0.001)
 
         first_iter = True
-        for dt in [timedelta(seconds=0.01), timedelta(seconds=0.008), timedelta(seconds=0.006), timedelta(seconds=0.004), timedelta(seconds=0.002), timedelta(seconds=0.001)]:
-            for pcount in [1, 10, 50, 100]:
+        for dt_sec in [0.0001, 0.001, 0.01]:
+            for pcount in [1]:
+                dt = timedelta(seconds=dt_sec)
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
                 metadata = SimulationMetadata(scalar, dt, render_time, t_total, pcount)
                 engine = EngineWrapper(metadata, outdir)
