@@ -43,7 +43,8 @@ def test_write():
     reader.cache(metadata, timestamp)
 
     with sqlite3.Connection(dbname) as connection:
-        reader.write(connection, True, True)
+        reader.delete(connection.cursor())
+        reader.write(connection, True)
 
 
 def test_read():
@@ -60,7 +61,8 @@ def test_read():
     assert reader.trajectory[timestamp].trajectories[0] == default_data
 
     with sqlite3.Connection(dbname) as connection:
-        reader.write(connection, True, True)
+        reader.delete(connection.cursor())
+        reader.write(connection, True)
     assert not reader.trajectory
 
     with sqlite3.Connection(dbname) as connection:
@@ -82,6 +84,7 @@ def test_read_multiple_arrays():
         KinematicData(0, timedelta(seconds=1.0), 1.5, 0.0, 1.5, 0.0, 0.0, 0.0),
         KinematicData(1, timedelta(seconds=0.0), 0.0, 0.0, 2.5, 0.0, 0.0, 0.0),
         KinematicData(1, timedelta(seconds=1.0), 2.5, 0.0, 2.5, 0.0, 0.0, 0.0)]
+
     timestamp1 = build_timestamp_str()
     time.sleep(0.02)
     timestamp2 = build_timestamp_str()
@@ -105,10 +108,11 @@ def test_read_multiple_arrays():
 
     with sqlite3.Connection(dbname) as connection:
         if initial_iter:
-            reader.write(connection, True, True)
+            reader.delete(connection.cursor())
+            reader.write(connection, True)
             initial_iter = False
         else:
-            reader.write(connection, False, True)
+            reader.write(connection, True)
     assert not reader.trajectory
 
     with sqlite3.Connection(dbname) as connection:
@@ -117,6 +121,9 @@ def test_read_multiple_arrays():
     for expected, actual in zip([timestamp1, timestamp2], reader.trajectory.keys()):
         assert expected == actual
     
+    # The reader iterates each particle ID so that it has a unique value in the table.  Therefore,
+    # we must update our results here.
+    list(map(lambda data : setattr(data, 'pid', data.pid + 2), data_run2))
     for expected_data_arr, actual_data_arr in zip([data_run1, data_run2], reader.trajectory.values()):
         for expected_data, actual_data in zip(expected_data_arr, actual_data_arr.trajectories.values()):
             assert expected_data == actual_data

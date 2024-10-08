@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import numpy as np
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class SimulationMetadata:
     scalar:   float      # Determines simulation speed.
     dt:       timedelta  # Simulation integration time step size.
@@ -14,7 +14,7 @@ class SimulationMetadata:
     pcount:   int        # Number of particles in the simulation.
 
 
-@dataclass(frozen=True)  # frozen because dict keys must be immutable
+@dataclass(frozen=False)
 class KinematicData:
     pid:  int        # Particle ID.
     time: timedelta  # Time relative to start of simulation.

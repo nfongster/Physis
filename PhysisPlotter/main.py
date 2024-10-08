@@ -3,6 +3,7 @@ from datetime import timedelta
 import os, sys
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from aggregator import *
 from utility import *
 
@@ -52,10 +53,10 @@ class Plotter:
 
     def _get_metadata_label(self, m: SimulationMetadata) -> str:
         return (f"r={m.scalar:.2f},"
-                f"dt={m.dt.microseconds / 1000:.2f},"
+                f"dt={m.dt.total_seconds():.3f},"
                 f"N={m.pcount},"
-                f"tr={m.t_render.microseconds / 1000:.2f},"
-                f"tt={m.t_total.microseconds / 1000:.2f}")
+                f"tr={m.t_render.total_seconds():.3f},"
+                f"tt={m.t_total.total_seconds():.3f}")
     
     def plot(self, type: DataType, initconditions: KinematicData):
         if type == DataType.STABILITY:
@@ -66,7 +67,8 @@ class Plotter:
     def plot_stability(self):
         # Clip the initial frame because it is fast
         fig, ax = plt.subplots()
-        for metadata, times in self.aggregator.readers[DataType.STABILITY].times.items():
+        for timestamp, stabilitydata in self.aggregator.readers[DataType.STABILITY].times.items():
+            metadata, times = stabilitydata.metadata, stabilitydata.times
             x = np.arange(len(times) - 1)
             y = times[1:]
             ax.scatter(x, y, vmin=0, vmax=100, label=self._get_metadata_label(metadata))
@@ -74,28 +76,34 @@ class Plotter:
         plt.show()
 
     def plot_trajectory(self, initconditions: KinematicData):
-        x, y = [], []
         fig, ax = plt.subplots(2)
+        polynomial = self._generate_polynomial(initconditions)
 
         # Trajectory plot
         ax[0].set_title("Particle Trajectory"), ax[0].set_xlabel("x (m)"), ax[0].set_ylabel("y (m)")
         ax[0].grid(True, zorder=1)
-        
-        for i, params in self.aggregator.readers[DataType.TRAJECTORY].trajectory.items():
-            x.append(params.rx)
-            y.append(params.ry)
-    
-        polynomial = self._generate_polynomial(initconditions)
-        quadvals = np.arange(min(x), max(x), 0.01)
-        ax[0].plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
-        ax[0].scatter(x, y, s=10, label='Raw data', color='Red', alpha=0.75, zorder=2)
-        ax[0].legend()
 
         # Error plot
         ax[1].set_title("Location errors"), ax[1].set_xlabel("x (m)"), ax[1].set_ylabel("Relative Error, %: $(y_{actual} - y_{analytic}) / y_{analytic}$")
         ax[1].grid(True, zorder=1)
-        ax[1].scatter(x, 100 * (y - polynomial(x)) / polynomial(x), label="Error %", zorder=2)
         
+        first_iter = True
+        colormap = cm.rainbow(np.linspace(0, 1, len(self.aggregator.readers[DataType.TRAJECTORY].trajectory.values())))
+        for i, trajdata in enumerate(self.aggregator.readers[DataType.TRAJECTORY].trajectory.values()):
+            x, y = [], []
+            metadata, trajectories = trajdata.metadata, trajdata.trajectories
+            for params in trajectories.values():  # TODO: account for multiple particles
+                x.append(params.rx)
+                y.append(params.ry)
+
+            if first_iter:
+                quadvals = np.arange(min(x), max(x), 0.01)
+                ax[0].plot(quadvals, polynomial(quadvals), label=f"Analytic solution: y(x) = {polynomial.coefficients[0]:.3f}$t^2$ + {polynomial.coefficients[1]:.3f}t + {polynomial.coefficients[2]:.3f}", color='Grey')
+                first_iter = False
+            
+            ax[0].scatter(x, y, s=10, label=self._get_metadata_label(metadata), alpha=0.75, color=colormap[i], zorder=2)
+            ax[1].scatter(x, 100 * (y - polynomial(x)) / polynomial(x), label=self._get_metadata_label(metadata), color=colormap[i], zorder=2)
+        ax[0].legend(), ax[1].legend()
         plt.show()
 
     def _generate_polynomial(self, params: KinematicData) -> np.poly1d:
@@ -119,19 +127,23 @@ if __name__ == "__main__":
         print("Running benchmark engine...")
         t_total, scalar, render_time = timedelta(seconds=2), 1, timedelta(seconds=0.001)
 
-        for dt in [timedelta(seconds=0.01), timedelta(seconds=0.02)]:
-            for pcount in [1]:
+        first_iter = True
+        for dt in [timedelta(seconds=0.01), timedelta(seconds=0.008), timedelta(seconds=0.006), timedelta(seconds=0.004), timedelta(seconds=0.002), timedelta(seconds=0.001)]:
+            for pcount in [1, 10, 50, 100]:
                 print(f"Executing run: dt={dt}, pcount={pcount}, t_total={t_total}, render_time={render_time}, scalar={scalar}")
                 metadata = SimulationMetadata(scalar, dt, render_time, t_total, pcount)
                 engine = EngineWrapper(metadata, outdir)
                 engine.initialize(trajectory_params.rx, trajectory_params.ry, trajectory_params.vx, trajectory_params.vy, trajectory_params.ax, trajectory_params.ay)
                 engine.run()
                 print("Run complete.  Collecting data...")
-                aggregator.cache(metadata)  # TODO: map datatype enum -> reqd object
+                aggregator.cache(metadata)
                 print("Data stored.")
-                aggregator.write(db_name, False, False)
+                if first_iter and len(args) > 2 and args[2] == "reset":
+                    aggregator.delete(db_name)
+                    first_iter = False
+                aggregator.write(db_name, True)  # You must reset the cache, otherwise you'll get duplicate entries in the database
                 print("Data saved to database.")
-
+    
     aggregator.read(db_name)
     plotter = Plotter(aggregator)
     plotter.plot(DataType.STABILITY, trajectory_params)

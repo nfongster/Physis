@@ -25,7 +25,7 @@ class ReaderInterface():
         """
         pass
 
-    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+    def write(self, connection: sqlite3.Connection, reset_cache: bool) -> None:
         """
         Instructs the Reader to write its cached data to the database.
 
@@ -42,6 +42,15 @@ class ReaderInterface():
 
         Args:
             connection (Connection): Connection to the database.
+        """
+        pass
+
+    def delete(self, cursor: sqlite3.Cursor) -> None:
+        """
+        Instructs the Reader to drop the table(s) for which it is responsible from the database, if it/they exist.
+
+        Args:
+            cursor (Cursor): Connection cursor to the database.
         """
         pass
 
@@ -64,10 +73,8 @@ class StabilityReader(ReaderInterface):
         self.times[timestamp] = StabilityData(metadata, np.array(render_times))
 
     
-    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+    def write(self, connection: sqlite3.Connection, reset_cache: bool) -> None:
         cursor = connection.cursor()
-        if overwrite_db: cursor.execute("DROP TABLE IF EXISTS stability")
-
         cursor.execute(("CREATE TABLE IF NOT EXISTS stability (datetime TEXT, "
                 "dt_sec FLOAT, "
                 "pcount INTEGER, "
@@ -80,9 +87,9 @@ class StabilityReader(ReaderInterface):
         for timestamp, simdata in self.times.items():
             m = simdata.metadata
             datablob = simdata.times.tobytes()
-            dt = m.dt.microseconds / 1000
-            t_render = m.t_render.microseconds / 1000
-            t_total = m.t_total.microseconds / 1000
+            dt = m.dt.total_seconds()
+            t_render = m.t_render.total_seconds()
+            t_total = m.t_total.total_seconds()
             pcount = m.pcount
             scalar = m.scalar
             cursor.execute("INSERT INTO stability VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
@@ -103,13 +110,17 @@ class StabilityReader(ReaderInterface):
             render_time = row[4]
             t_total = row[5]
             metadata = SimulationMetadata(scalar, 
-                                          timedelta(seconds=dt),
-                                          timedelta(seconds=render_time), 
-                                          timedelta(seconds=t_total),
+                                          timedelta(microseconds=dt),
+                                          timedelta(microseconds=render_time), 
+                                          timedelta(microseconds=t_total),
                                           pcount)
             # hack
             data = np.zeros(row[7])
             self.times[timestamp] = StabilityData(metadata, np.frombuffer(row[6], dtype=data.dtype))
+
+
+    def delete(self, cursor: sqlite3.Cursor) -> None:
+        cursor.execute("DROP TABLE IF EXISTS stability")
 
 
 class TrajectoryReader(ReaderInterface):
@@ -138,13 +149,8 @@ class TrajectoryReader(ReaderInterface):
         self.trajectory[timestamp] = TrajectoryData(metadata, data_dict)
 
 
-    def write(self, connection: sqlite3.Connection, overwrite_db: bool, reset_cache: bool) -> None:
+    def write(self, connection: sqlite3.Connection, reset_cache: bool) -> None:
         cursor = connection.cursor()
-        if overwrite_db:
-            cursor.execute("DROP TABLE IF EXISTS Trajectories")
-            cursor.execute("DROP TABLE IF EXISTS Particles")
-            cursor.execute("DROP TABLE IF EXISTS ParticleStates")
-
         cursor.execute(
             ("CREATE TABLE IF NOT EXISTS Trajectories ("
                 "RUNID	    INTEGER,"
@@ -162,13 +168,16 @@ class TrajectoryReader(ReaderInterface):
             particleids = set([data.pid for data in data_dict.values()])
             # Only accumulate times from the first particle.  Otherwise, you will get: t_total_actual * pcount
             totaltime_sec = reduce(lambda t1, t2: t1 + t2, [data.time.total_seconds() for data in data_dict.values() if data.pid == 0])
-            if len(particleids) != m.pcount or totaltime_sec != m.t_total.seconds:
+            # if len(particleids) != m.pcount or totaltime_sec != m.t_total.seconds:
+            #     raise Exception(f"Metadata did not match actual data!"
+            #                     f" pcount: metadata was {m.pcount}, actual was {len(particleids)}."
+            #                     f" t_total: metadata was {m.t_total.seconds}, actual was {totaltime_sec}.")
+            if len(particleids) != m.pcount:
                 raise Exception(f"Metadata did not match actual data!"
-                                f" pcount: metadata was {m.pcount}, actual was {len(particleids)}."
-                                f" t_total: metadata was {m.t_total.seconds}, actual was {totaltime_sec}.")
+                                f" pcount: metadata was {m.pcount}, actual was {len(particleids)}.")
             
             cursor.execute("INSERT INTO Trajectories (TIMESTAMP, DT_SEC, PCOUNT, SCALAR, RENDERTIME, RUNTIME) VALUES (?, ?, ?, ?, ?, ?)",
-                            (timestamp, m.dt.seconds, m.pcount, m.scalar, m.t_render.seconds, m.t_total.seconds))
+                            (timestamp, m.dt.total_seconds(), m.pcount, m.scalar, m.t_render.total_seconds(), m.t_total.total_seconds()))
             runid = cursor.execute("SELECT MAX(RUNID) FROM Trajectories").fetchall()[0][0]
             
             cursor.execute(
@@ -178,7 +187,7 @@ class TrajectoryReader(ReaderInterface):
                     "PRIMARY KEY(PID AUTOINCREMENT),"
                     "FOREIGN KEY(RUNID) REFERENCES Trajectories(RUNID) ON DELETE CASCADE"
                 ")"))
-
+            
             max_pid = cursor.execute("SELECT MAX(PID) FROM Particles").fetchall()[0][0]
             for pid in particleids:
                 if max_pid != None:
@@ -200,11 +209,11 @@ class TrajectoryReader(ReaderInterface):
                     "FOREIGN KEY(PID) REFERENCES Particles(PID) ON DELETE CASCADE"
                 ")"))
             
-            for _, data in data_dict.items():
+            if max_pid == None: max_pid = -1
+            for data in data_dict.values():
                 cursor.execute("INSERT INTO ParticleStates (PID, SIMTIME, RX, RY, VX, VY, AX, AY) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                            (data.pid, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
+                            (data.pid + max_pid + 1, data.time.total_seconds(), data.rx, data.ry, data.vx, data.vy, data.ax, data.ay))
                 connection.commit()
-
         if reset_cache: self.trajectory = {}
 
 
@@ -229,6 +238,12 @@ class TrajectoryReader(ReaderInterface):
                 ax, ay = row[7], row[8]
                 data_dict[i] = KinematicData(pid, time, rx, ry, vx, vy, ax, ay)
             self.trajectory[timestamp] = TrajectoryData(metadata, data_dict)
+
+    
+    def delete(self, cursor: sqlite3.Cursor) -> None:
+        cursor.execute("DROP TABLE IF EXISTS Trajectories")
+        cursor.execute("DROP TABLE IF EXISTS Particles")
+        cursor.execute("DROP TABLE IF EXISTS ParticleStates")
 
 
 class DataAggregator:
@@ -259,11 +274,11 @@ class DataAggregator:
             reader.cache(metadata, timestamp_str)
 
     # TODO: replace with write_all, add write(DataType)
-    def write(self, dbfilename: str, overwrite_db: bool, reset_cache: bool) -> None:
+    def write(self, dbfilename: str, reset_cache: bool) -> None:
         connection = sqlite3.connect(dbfilename)
 
         for reader in self.readers.values():
-            reader.write(connection, overwrite_db, reset_cache)
+            reader.write(connection, reset_cache)
         
         connection.close()
 
@@ -273,5 +288,15 @@ class DataAggregator:
 
         for reader in self.readers.values():
             reader.read(connection)
+        
+        connection.close()
+
+    
+    def delete(self, dbfilename: str) -> None:
+        connection = sqlite3.connect(dbfilename)
+        cursor = connection.cursor()
+
+        for reader in self.readers.values():
+            reader.delete(cursor)
         
         connection.close()

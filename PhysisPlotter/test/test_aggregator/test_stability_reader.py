@@ -36,7 +36,8 @@ def test_write():
     reader.cache(metadata, timestamp)
 
     with sqlite3.Connection(dbname) as connection:
-        reader.write(connection, True, True)
+        reader.delete(connection.cursor())
+        reader.write(connection, True)
 
 
 def test_read():
@@ -50,7 +51,8 @@ def test_read():
     assert reader.times[timestamp].times.tolist() == data_array
 
     with sqlite3.Connection(dbname) as connection:
-        reader.write(connection, True, True)
+        reader.delete(connection.cursor())
+        reader.write(connection, True)
     assert not reader.times
 
     with sqlite3.Connection(dbname) as connection:
@@ -77,10 +79,11 @@ def test_read_multiple_arrays():
 
         with sqlite3.Connection(dbname) as connection:
             if initial_iter:
-                reader.write(connection, True, True)
+                reader.delete(connection.cursor())
+                reader.write(connection, True)
                 initial_iter = False
             else:
-                reader.write(connection, False, True)
+                reader.write(connection, True)
         assert not reader.times
 
     
