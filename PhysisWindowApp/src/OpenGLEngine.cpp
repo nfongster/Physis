@@ -34,7 +34,7 @@ void OpenGLEngine::OnStartup()
 
 bool OpenGLEngine::ContinueLoop()
 {
-    return !glfwWindowShouldClose(m_pWindow);//&& m_current_time < m_config.total_time;
+    return EngineBase::ContinueLoop() && !glfwWindowShouldClose(m_pWindow);
 }
 
 void OpenGLEngine::OnCompletion()

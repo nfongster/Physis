@@ -5,7 +5,7 @@
 int main()
 {
     auto t_total = std::chrono::duration<double>(20);
-    auto dt = std::chrono::duration<double>(0.0001);
+    auto dt = std::chrono::duration<double>(0.0005);
     double scalar = 1;
     auto engine = OpenGLEngine::WithTriangles(TimeConfig(t_total, dt, scalar));
 
