@@ -19,4 +19,5 @@ public:
 	void Update(const unsigned int index, const KinematicParameters& parameters);
 
 	std::shared_ptr<Particle> operator[] (unsigned int index);
+	std::shared_ptr<Particle> GetParticleByIndex(unsigned int index);
 };

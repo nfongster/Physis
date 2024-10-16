@@ -68,10 +68,10 @@ void EngineBase::Update(const double& dt_sec)
 
 void EngineBase::Interpolate(const double& factor)
 {
-	for (auto pair : m_system_state->GetCurrent()->GetParticles())
+	for (auto& pair : m_system_state->GetCurrent()->GetParticles())
 	{
 		unsigned int i = pair.first;
 		std::shared_ptr<Particle> p = pair.second;
-		p->Interpolate((*m_system_state->GetPrevious())[i], factor);
+		p->Interpolate(m_system_state->GetPrevious()->GetParticleByIndex(i), factor);
 	}
 }

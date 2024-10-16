@@ -41,3 +41,11 @@ std::shared_ptr<Particle> ParticleSystem::operator[](const unsigned int index)
 	
 	return m_particles[index];
 }
+
+std::shared_ptr<Particle> ParticleSystem::GetParticleByIndex(unsigned int index)
+{
+	if (index < 0 || index >= m_particles.size())
+		throw std::out_of_range("Index out of range");
+
+	return m_particles[index];
+}
