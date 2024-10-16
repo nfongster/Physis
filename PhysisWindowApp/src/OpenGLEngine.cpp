@@ -1,5 +1,4 @@
 #include "OpenGLEngine.h"
-#include "TriangleManager.h"
 
 OpenGLEngine::OpenGLEngine(const TimeConfig& config, EntityManager* entity_manager) 
     : m_entity_manager(entity_manager), EngineBase(config)
@@ -13,6 +12,11 @@ OpenGLEngine::~OpenGLEngine()
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& config)
 {
     return std::make_unique<OpenGLEngine>(config, new TriangleManager());
+}
+
+std::unique_ptr<OpenGLEngine> OpenGLEngine::WithCircles(const TimeConfig& config)
+{
+    return std::make_unique<OpenGLEngine>(config, new CircleManager());
 }
 
 void OpenGLEngine::OnStartup()

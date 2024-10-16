@@ -7,6 +7,8 @@
 #include "Physis.h"
 #include "ShaderBuilder.h"
 #include "EntityManager.h"
+#include "TriangleManager.h"
+#include "CircleManager.h"
 
 class OpenGLEngine : public EngineBase
 {
@@ -26,6 +28,7 @@ public:
 	~OpenGLEngine();
 
 	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& config);
+	static std::unique_ptr<OpenGLEngine> WithCircles(const TimeConfig& config);
 
 	void AddParticle();
 	void AddParticle(const KinematicParameters& parameters);
