@@ -67,6 +67,7 @@ class Plotter:
     def plot_stability(self):
         # Clip the initial frame because it is fast
         fig, ax = plt.subplots()
+        ax.set_xlabel("Frame"), ax.set_ylabel("Time (ms)")
         for timestamp, stabilitydata in self.aggregator.readers[DataType.STABILITY].times.items():
             metadata, times = stabilitydata.metadata, stabilitydata.times
             x = np.arange(len(times) - 1)
