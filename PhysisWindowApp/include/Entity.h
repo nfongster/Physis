@@ -1,5 +1,5 @@
 #pragma once
-class EntityManager
+class Entity
 {
 public:
 	virtual void Render() = 0;

@@ -7,9 +7,9 @@
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
-#include "ParticleManager.h"
+#include "ParticleEntity.h"
 
-class TriangleManager : public ParticleManager
+class Triangle : public ParticleEntity
 {
 private:
 	unsigned int m_ibo;
@@ -21,8 +21,8 @@ private:
 	unsigned int NUM_TRIANGLE_CORNERS = 3;
 
 public:
-	TriangleManager();
-	~TriangleManager();
+	Triangle();
+	~Triangle();
 
 	void Initialize(std::shared_ptr<SystemState>& system_state);
 	void Render();

@@ -13,14 +13,14 @@ std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& conf
 {
     float height = 2.0f;
     float width = 2.0f;
-    return std::make_unique<OpenGLEngine>(config, new Environment(new TriangleManager(), new BoxManager(height, width)));
+    return std::make_unique<OpenGLEngine>(config, new Environment(new Triangle(), new Box(height, width)));
 }
 
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithCircles(const TimeConfig& config, const int& num_segments)
 {
     float height = 2.0f;
     float width = 2.0f;
-    return std::make_unique<OpenGLEngine>(config, new Environment(new CircleManager(num_segments), new BoxManager(height, width)));
+    return std::make_unique<OpenGLEngine>(config, new Environment(new Circle(num_segments), new Box(height, width)));
 }
 
 void OpenGLEngine::OnStartup()

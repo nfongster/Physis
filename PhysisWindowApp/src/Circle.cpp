@@ -1,15 +1,15 @@
-#include "CircleManager.h"
+#include "Circle.h"
 
-CircleManager::CircleManager(const unsigned int num_segments) : m_num_vertices(num_segments)
+Circle::Circle(const unsigned int num_segments) : m_num_vertices(num_segments)
 {
 }
 
-CircleManager::~CircleManager()
+Circle::~Circle()
 {
 	glDeleteProgram(m_shader_id);
 }
 
-void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
+void Circle::Initialize(std::shared_ptr<SystemState>& system_state)
 {
     // The first index is the center; the remaining indices form the perimeter points.
     std::vector<int> indices;
@@ -64,7 +64,7 @@ void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
     glGetUniformLocation(m_u_position_id, "u_Position");
 }
 
-void CircleManager::Render()
+void Circle::Render()
 {
     for (const auto& p : m_vao_map)
     {

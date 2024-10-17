@@ -133,23 +133,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\BoxManager.cpp" />
+    <ClCompile Include="src\Box.cpp" />
     <ClCompile Include="src\Environment.cpp" />
-    <ClCompile Include="src\CircleManager.cpp" />
+    <ClCompile Include="src\Circle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\ShaderBuilder.cpp" />
     <ClCompile Include="src\OpenGLEngine.cpp" />
-    <ClCompile Include="src\TriangleManager.cpp" />
+    <ClCompile Include="src\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BoxManager.h" />
+    <ClInclude Include="include\Box.h" />
     <ClInclude Include="include\Environment.h" />
-    <ClInclude Include="include\CircleManager.h" />
-    <ClInclude Include="include\EntityManager.h" />
+    <ClInclude Include="include\Circle.h" />
+    <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\OpenGLEngine.h" />
-    <ClInclude Include="include\ParticleManager.h" />
+    <ClInclude Include="include\ParticleEntity.h" />
     <ClInclude Include="include\ShaderBuilder.h" />
-    <ClInclude Include="include\TriangleManager.h" />
+    <ClInclude Include="include\Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Physis\Physis.vcxproj">

@@ -24,16 +24,16 @@
     <ClCompile Include="src\ShaderBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TriangleManager.cpp">
+    <ClCompile Include="src\Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CircleManager.cpp">
+    <ClCompile Include="src\Circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BoxManager.cpp">
+    <ClCompile Include="src\Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,22 +44,22 @@
     <ClInclude Include="include\ShaderBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\EntityManager.h">
+    <ClInclude Include="include\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TriangleManager.h">
+    <ClInclude Include="include\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CircleManager.h">
+    <ClInclude Include="include\Circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BoxManager.h">
+    <ClInclude Include="include\Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ParticleManager.h">
+    <ClInclude Include="include\ParticleEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

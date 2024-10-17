@@ -3,9 +3,9 @@
 #include <memory>
 
 #include "Physis.h"
-#include "EntityManager.h"
+#include "Entity.h"
 
-class ParticleManager : public EntityManager
+class ParticleEntity : public Entity
 {
 protected:
 	unsigned int POS_COORDS = 2;

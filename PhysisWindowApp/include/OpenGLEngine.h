@@ -6,11 +6,11 @@
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
-#include "EntityManager.h"
-#include "TriangleManager.h"
-#include "CircleManager.h"
+#include "Entity.h"
+#include "Triangle.h"
+#include "Circle.h"
 #include "Environment.h"
-#include "BoxManager.h"
+#include "Box.h"
 
 class OpenGLEngine : public EngineBase
 {
@@ -26,7 +26,7 @@ protected:
 	void Render();
 
 public:
-	OpenGLEngine(const TimeConfig& config, Environment* entity_manager);
+	OpenGLEngine(const TimeConfig& config, Environment* environment);
 	~OpenGLEngine();
 
 	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& config);

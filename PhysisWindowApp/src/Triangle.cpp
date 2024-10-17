@@ -1,15 +1,15 @@
-#include "TriangleManager.h"
+#include "Triangle.h"
 
-TriangleManager::TriangleManager()
+Triangle::Triangle()
 {
 }
 
-TriangleManager::~TriangleManager()
+Triangle::~Triangle()
 {
     glDeleteProgram(m_shader_id);
 }
 
-void TriangleManager::Initialize(std::shared_ptr<SystemState>& system_state)
+void Triangle::Initialize(std::shared_ptr<SystemState>& system_state)
 {
     unsigned int indices[] = {
         0, 1, 2
@@ -61,7 +61,7 @@ void TriangleManager::Initialize(std::shared_ptr<SystemState>& system_state)
     glGetUniformLocation(m_u_position_id, "u_Position");
 }
 
-void TriangleManager::Render()
+void Triangle::Render()
 {
     for (const auto& p : m_vao_map)
     {

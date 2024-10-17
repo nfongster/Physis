@@ -7,9 +7,9 @@
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
-#include "ParticleManager.h"
+#include "ParticleEntity.h"
 
-class CircleManager : public ParticleManager
+class Circle : public ParticleEntity
 {
 private:
 	unsigned int m_ibo;
@@ -19,8 +19,8 @@ private:
 	unsigned int m_u_position_id;
 
 public:
-	CircleManager(const unsigned int num_segments);
-	~CircleManager();
+	Circle(const unsigned int num_segments);
+	~Circle();
 
 	void Initialize(std::shared_ptr<SystemState>& system_state);
 	void Render();
