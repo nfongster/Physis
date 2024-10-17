@@ -12,12 +12,17 @@ CircleManager::~CircleManager()
 void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
 {
     std::vector<int> indices;
-    for (int i = 0; i <= m_num_segments; i++)
+    for (int i = 0; i <= m_num_segments + 1; i++)
         indices.push_back(i);
+
+    // TODO: Hack!
+    unsigned int indices_arr[10] = {
+        indices[0], indices[1], indices[2], indices[3], indices[4], indices[5], indices[6], indices[7], indices[8], indices[9]
+    };
 	
     glGenBuffers(1, &m_ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_num_segments * sizeof(int), &indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (m_num_segments + 2) * sizeof(int), &indices_arr, GL_STATIC_DRAW);
 
     float r = 0.015;  // radius
 
@@ -33,7 +38,7 @@ void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
         pos.push_back(center_y);
 
         // The fan always begins on the +x axis at 0 degrees.
-        for (int i = 0; i < m_num_segments; i++)
+        for (int i = 0; i <= m_num_segments; i++)
         {
             float radians = 2.0f * M_PI * (i * 1.0f / m_num_segments);
             float x_coord = r * std::cos(radians);
@@ -42,6 +47,12 @@ void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
             pos.push_back(center_y + y_coord);
         }
 
+        // TODO: Hack!
+        float pos_arr[(9+1)*2] = {
+            pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7], pos[8],
+            pos[9], pos[10], pos[11], pos[12], pos[13], pos[14], pos[15], pos[16], pos[17], pos[18], pos[19]
+        };
+
         unsigned int vao;
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -49,7 +60,7 @@ void CircleManager::Initialize(std::shared_ptr<SystemState>& system_state)
         unsigned int vbo;
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, m_num_segments * POS_COORDS * sizeof(float), &pos, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (m_num_segments + 2) * POS_COORDS * sizeof(float), pos_arr, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, POS_COORDS, GL_FLOAT, GL_FALSE, sizeof(float) * POS_COORDS, 0);
 
@@ -70,6 +81,6 @@ void CircleManager::Render()
         glUniform2f(m_u_position_id, pos.X, pos.Y);
         glBindVertexArray(p.first);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-        glDrawElements(GL_TRIANGLE_FAN, m_num_segments + 1, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLE_FAN, m_num_segments + 2, GL_UNSIGNED_INT, nullptr);
     }
 }
