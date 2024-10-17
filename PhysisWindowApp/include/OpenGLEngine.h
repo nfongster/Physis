@@ -28,7 +28,7 @@ public:
 	~OpenGLEngine();
 
 	static std::unique_ptr<OpenGLEngine> WithTriangles(const TimeConfig& config);
-	static std::unique_ptr<OpenGLEngine> WithCircles(const TimeConfig& config);
+	static std::unique_ptr<OpenGLEngine> WithCircles(const TimeConfig& config, const int& num_segments);
 
 	void AddParticle();
 	void AddParticle(const KinematicParameters& parameters);

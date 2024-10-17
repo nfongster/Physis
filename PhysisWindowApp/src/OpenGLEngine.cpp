@@ -14,9 +14,9 @@ std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& conf
     return std::make_unique<OpenGLEngine>(config, new TriangleManager());
 }
 
-std::unique_ptr<OpenGLEngine> OpenGLEngine::WithCircles(const TimeConfig& config)
+std::unique_ptr<OpenGLEngine> OpenGLEngine::WithCircles(const TimeConfig& config, const int& num_segments)
 {
-    return std::make_unique<OpenGLEngine>(config, new CircleManager());
+    return std::make_unique<OpenGLEngine>(config, new CircleManager(num_segments));
 }
 
 void OpenGLEngine::OnStartup()
