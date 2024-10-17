@@ -19,7 +19,6 @@ private:
 
 	unsigned int POS_COORDS = 2;
 	unsigned int NUM_VERTICES = 3;
-	unsigned int NUM_TRIANGLES = 1;
 	unsigned int NUM_TRIANGLE_CORNERS = 3;
 
 public:

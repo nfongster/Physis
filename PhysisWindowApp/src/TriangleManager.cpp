@@ -17,7 +17,7 @@ void TriangleManager::Initialize(std::shared_ptr<SystemState>& system_state)
 
     glGenBuffers(1, &m_ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, NUM_TRIANGLES * NUM_TRIANGLE_CORNERS * sizeof(int), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, NUM_TRIANGLE_CORNERS * sizeof(int), indices, GL_STATIC_DRAW);
 
     // get initial position
     float l = 0.03;  // side length of equilateral triangle
@@ -69,6 +69,6 @@ void TriangleManager::Render()
         glUniform2f(m_u_position_id, pos.X, pos.Y);
         glBindVertexArray(p.first);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-        glDrawElements(GL_TRIANGLES, NUM_TRIANGLES * NUM_TRIANGLE_CORNERS, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, NUM_TRIANGLE_CORNERS, GL_UNSIGNED_INT, nullptr);
     }
 }
