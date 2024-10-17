@@ -142,12 +142,12 @@
     <ClCompile Include="src\TriangleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BoundaryManager.h" />
     <ClInclude Include="include\BoxManager.h" />
     <ClInclude Include="include\Environment.h" />
     <ClInclude Include="include\CircleManager.h" />
     <ClInclude Include="include\EntityManager.h" />
     <ClInclude Include="include\OpenGLEngine.h" />
+    <ClInclude Include="include\ParticleManager.h" />
     <ClInclude Include="include\ShaderBuilder.h" />
     <ClInclude Include="include\TriangleManager.h" />
   </ItemGroup>

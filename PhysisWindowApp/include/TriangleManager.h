@@ -7,9 +7,9 @@
 
 #include "Physis.h"
 #include "ShaderBuilder.h"
-#include "EntityManager.h"
+#include "ParticleManager.h"
 
-class TriangleManager : public EntityManager
+class TriangleManager : public ParticleManager
 {
 private:
 	unsigned int m_ibo;

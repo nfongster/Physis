@@ -1,6 +1,6 @@
 #include "Environment.h"
 
-Environment::Environment(EntityManager* entity_manager, BoundaryManager* boundary_manager) 
+Environment::Environment(ParticleManager* entity_manager, BoxManager* boundary_manager)
 	: m_entity_manager(entity_manager), m_boundary_manager(boundary_manager)
 {
 }

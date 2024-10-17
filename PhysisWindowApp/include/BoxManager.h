@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BoundaryManager.h"
+#include "EntityManager.h"
 
-class BoxManager : public BoundaryManager
+class BoxManager : public EntityManager
 {
 public:
 	BoxManager(float& height, float& width);

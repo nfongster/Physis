@@ -56,10 +56,10 @@
     <ClInclude Include="include\Environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BoundaryManager.h">
+    <ClInclude Include="include\BoxManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BoxManager.h">
+    <ClInclude Include="include\ParticleManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
