@@ -1,7 +1,7 @@
 #include "OpenGLEngine.h"
 
-OpenGLEngine::OpenGLEngine(const TimeConfig& config, EntityManager* entity_manager) 
-    : m_entity_manager(entity_manager), EngineBase(config)
+OpenGLEngine::OpenGLEngine(const TimeConfig& config, Environment* environment) 
+    : m_environment(environment), EngineBase(config)
 {
 }
 
@@ -11,12 +11,12 @@ OpenGLEngine::~OpenGLEngine()
 
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithTriangles(const TimeConfig& config)
 {
-    return std::make_unique<OpenGLEngine>(config, new TriangleManager());
+    return std::make_unique<OpenGLEngine>(config, new Environment(new TriangleManager()));
 }
 
 std::unique_ptr<OpenGLEngine> OpenGLEngine::WithCircles(const TimeConfig& config, const int& num_segments)
 {
-    return std::make_unique<OpenGLEngine>(config, new CircleManager(num_segments));
+    return std::make_unique<OpenGLEngine>(config, new Environment(new CircleManager(num_segments)));
 }
 
 void OpenGLEngine::OnStartup()
@@ -33,7 +33,7 @@ void OpenGLEngine::OnStartup()
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
-    m_entity_manager->Initialize(m_system_state);
+    m_environment->Initialize(m_system_state);
 }
 
 bool OpenGLEngine::ContinueLoop()
@@ -43,14 +43,14 @@ bool OpenGLEngine::ContinueLoop()
 
 void OpenGLEngine::OnCompletion()
 {
-    delete m_entity_manager;
+    delete m_environment;
     glfwTerminate();
 }
 
 void OpenGLEngine::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    m_entity_manager->Render();
+    m_environment->Render();
     glfwSwapBuffers(m_pWindow);
     glfwPollEvents();
 }
