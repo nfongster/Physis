@@ -9,11 +9,11 @@
 class Environment
 {
 private:
-	ParticleEntity* m_entity_manager;
-	Box* m_boundary_manager;
+	ParticleEntity* m_particle;
+	Box* m_boundary;
 
 public:
-	Environment(ParticleEntity* entity_manager, Box* box_manager);
+	Environment(ParticleEntity* particle_entity, Box* box);
 	~Environment();
 
 	void Initialize(std::shared_ptr<SystemState>& system_state);

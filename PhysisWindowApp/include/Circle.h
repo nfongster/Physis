@@ -2,10 +2,8 @@
 #define _USE_MATH_DEFINES  // TODO: This is an old method for importing PI.  Considering upgrade to C++20 for std::numbers::pi.
 
 #include <glew.h>
-#include <memory>
 #include <math.h>
 
-#include "Physis.h"
 #include "ShaderBuilder.h"
 #include "ParticleEntity.h"
 

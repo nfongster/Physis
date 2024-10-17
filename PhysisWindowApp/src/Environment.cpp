@@ -1,23 +1,24 @@
 #include "Environment.h"
 
-Environment::Environment(ParticleEntity* entity_manager, Box* boundary_manager)
-	: m_entity_manager(entity_manager), m_boundary_manager(boundary_manager)
+Environment::Environment(ParticleEntity* particle_entity, Box* box)
+	: m_particle(particle_entity), m_boundary(box)
 {
 }
 
 Environment::~Environment()
 {
-	delete m_entity_manager;
-	delete m_boundary_manager;
+	delete m_particle;
+	delete m_boundary;
 }
 
 void Environment::Initialize(std::shared_ptr<SystemState>& system_state)
 {
-	m_entity_manager->Initialize(system_state);
+	m_boundary->Initialize();
+	m_particle->Initialize(system_state);
 }
 
 void Environment::Render()
 {
-	m_boundary_manager->Render();
-	m_entity_manager->Render();
+	m_boundary->Render();
+	m_particle->Render();
 }
