@@ -7,7 +7,7 @@ int main()
     auto t_total = std::chrono::duration<double>(20);
     auto dt = std::chrono::duration<double>(0.0005);
     double scalar = 1;
-    auto engine = OpenGLEngine::WithTriangles(TimeConfig(t_total, dt, scalar));
+    auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), 25);
 
     Vec2 r0 (-0.45, -0.45);
     for (int i = 0; i < 3; i++)
