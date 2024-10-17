@@ -10,6 +10,7 @@
 #include "TriangleManager.h"
 #include "CircleManager.h"
 #include "Environment.h"
+#include "BoxManager.h"
 
 class OpenGLEngine : public EngineBase
 {

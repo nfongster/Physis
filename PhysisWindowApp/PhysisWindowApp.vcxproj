@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BoxManager.cpp" />
     <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\CircleManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -141,6 +142,8 @@
     <ClCompile Include="src\TriangleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BoundaryManager.h" />
+    <ClInclude Include="include\BoxManager.h" />
     <ClInclude Include="include\Environment.h" />
     <ClInclude Include="include\CircleManager.h" />
     <ClInclude Include="include\EntityManager.h" />
