@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem() : m_particles(std::map<unsigned int, std::shared_ptr<Particle>>())
+ParticleSystem::ParticleSystem() :
+	m_particles(std::map<unsigned int, std::shared_ptr<Particle>>()),
+	m_boundary(std::make_shared<Boundary>())
 {
 }
 
@@ -20,10 +22,18 @@ void ParticleSystem::Add(const KinematicParameters& parameters)
 	m_particles.insert({ m_particles.size(), std::unique_ptr<Particle>(new Particle(parameters)) });
 }
 
+void ParticleSystem::AddBoundary(const Boundary& boundary)
+{
+	m_boundary = std::make_shared<Boundary>(boundary);
+}
+
 void ParticleSystem::Step(const double& dt)
 {
 	for (const auto& pair : m_particles)
+	{
 		pair.second->Step(dt);
+		m_boundary->CheckCollision(pair.second);
+	}
 }
 
 void ParticleSystem::Update(const unsigned int index, const KinematicParameters& parameters)

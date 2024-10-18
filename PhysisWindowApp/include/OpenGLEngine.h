@@ -34,4 +34,5 @@ public:
 	
 	void AddParticle();
 	void AddParticle(const KinematicParameters& parameters);
+	void AddBoundary(const Boundary& boundary);
 };

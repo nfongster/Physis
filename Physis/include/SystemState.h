@@ -11,6 +11,7 @@ private:
 public:
 	SystemState();
 	void AddParticle(const KinematicParameters& parameters);
+	void AddBoundary(const Boundary& boundary);
 	std::shared_ptr<ParticleSystem> GetCurrent();
 	std::shared_ptr<ParticleSystem> GetPrevious();
 };

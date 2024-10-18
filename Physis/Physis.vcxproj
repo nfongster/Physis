@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Boundary.cpp" />
     <ClCompile Include="src\BenchmarkEngine.cpp" />
     <ClCompile Include="bindings\physis-python.cpp" />
     <ClCompile Include="src\SampleEngine.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="src\SystemState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\BenchmarkEngine.h" />
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\SampleEngine.h" />
