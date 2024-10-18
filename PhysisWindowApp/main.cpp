@@ -9,7 +9,7 @@ int main()
     auto dt = std::chrono::duration<double>(0.0005);
     double scalar = 1;
     std::vector<Vec2> polygon;
-    double len = 1.99 / 2;
+    double len = 0.995;
     polygon.push_back(Vec2(-len, -len));
     polygon.push_back(Vec2(-len, len));
     polygon.push_back(Vec2(len, len));
@@ -17,8 +17,7 @@ int main()
     // TODO: Clean up builder pattern
     auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), 25);
     engine->AddBoundary(Boundary(polygon));
-
-    Vec2 r0 (-0.45, -0.45);
+    Vec2 r0(-len / 2, -len / 2);
     for (int i = 0; i < 3; i++)
     {
         Vec2 v0(0.1 + (i * 0.05), 0.3);

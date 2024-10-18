@@ -25,7 +25,13 @@ std::vector<float> Boundary::GetBoundaryPoints()
 
 void Boundary::CheckCollision(std::shared_ptr<Particle> particle)
 {
-	// After stepping, check if particle has encountered a boundary
-	// If so, either: stop it (perfectly inelastic), or reverse its velocity (elastic), or change its speed (inelastic)
+	// Either: stop it (perfectly inelastic), or reverse its velocity (elastic), or change its speed (inelastic)
 	// Thus, later on, should specify an elasticity parameter, and give the particle mass, and the wall infinite mass.
+
+	Vec2 pos = particle->GetPosition();
+	// TODO: make implementation not dependent on polygon point locations, add support for non-box shapes. etc.
+	if (pos.Y <= m_polygon[0].Y / 2 || pos.X >= m_polygon[2].X / 2 || pos.X <= m_polygon[0].X / 2 || pos.Y >= m_polygon[1].Y / 2)
+	{
+		particle->Stop();
+	}
 }

@@ -34,6 +34,12 @@ KinematicParameters Particle::GetKinematicParameters()
 	return KinematicParameters(m_pos, m_vel, m_acc);
 }
 
+void Particle::Stop()
+{
+	m_vel = Vec2();
+	m_acc = Vec2();
+}
+
 void Particle::Step(const double& dt)
 {
 	if (dt < 0)
