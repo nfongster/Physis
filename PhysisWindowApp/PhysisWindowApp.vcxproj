@@ -157,8 +157,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\shaders\FragmentShader.shader" />
-    <None Include="resource\shaders\VertexShader.shader" />
+    <None Include="resource\shaders\box\FragmentShader.shader" />
+    <None Include="resource\shaders\box\VertexShader.shader" />
+    <None Include="resource\shaders\particle\FragmentShader.shader" />
+    <None Include="resource\shaders\particle\VertexShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

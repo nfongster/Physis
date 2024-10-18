@@ -40,13 +40,17 @@ void Box::Initialize()
 	unsigned int vbo;
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, NUM_CORNERS * 2 * POS_COORDS * sizeof(float), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, NUM_CORNERS * 2 * POS_COORDS * sizeof(float), &vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, POS_COORDS, GL_FLOAT, GL_FALSE, sizeof(float) * POS_COORDS, 0);
+
+	auto builder = ShaderBuilder("C:\\Code\\Physis\\PhysisWindowApp\\resource\\shaders\\box\\");
+	m_shader = builder.Build();
 }
 
 void Box::Render()
 {
+	glUseProgram(m_shader);
 	glBindVertexArray(m_vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 	glDrawElements(GL_LINES, NUM_CORNERS * 2, GL_UNSIGNED_INT, nullptr);

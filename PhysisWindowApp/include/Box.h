@@ -2,6 +2,7 @@
 
 #include <glew.h>
 
+#include "ShaderBuilder.h"
 #include "Entity.h"
 
 class Box : public Entity
@@ -13,6 +14,7 @@ private:
 
 	unsigned int m_ibo;
 	unsigned int m_vao;
+	unsigned int m_shader;
 
 public:
 	Box(float& height, float& width);

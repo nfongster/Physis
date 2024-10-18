@@ -6,7 +6,7 @@ Triangle::Triangle()
 
 Triangle::~Triangle()
 {
-    glDeleteProgram(m_shader_id);
+    glDeleteProgram(m_shader);
 }
 
 void Triangle::Initialize(std::shared_ptr<SystemState>& system_state)
@@ -55,14 +55,14 @@ void Triangle::Initialize(std::shared_ptr<SystemState>& system_state)
         m_vao_map.emplace(vao, p);
     }
 
-    auto builder = ShaderBuilder("C:\\Code\\Physis\\PhysisWindowApp\\resource\\shaders\\");
-    m_shader_id = builder.Build();
-    glUseProgram(m_shader_id);
+    auto builder = ShaderBuilder("C:\\Code\\Physis\\PhysisWindowApp\\resource\\shaders\\particle\\");
+    m_shader = builder.Build();
     glGetUniformLocation(m_u_position_id, "u_Position");
 }
 
 void Triangle::Render()
 {
+    glUseProgram(m_shader);
     for (const auto& p : m_vao_map)
     {
         Vec2 pos = p.second->GetPosition();
