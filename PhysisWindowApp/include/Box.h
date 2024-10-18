@@ -9,8 +9,6 @@
 class Box : public Entity
 {
 private:
-	float m_height;
-	float m_width;
 	unsigned int NUM_CORNERS = 4;
 
 	unsigned int m_ibo;
@@ -18,7 +16,7 @@ private:
 	unsigned int m_shader;
 
 public:
-	Box(float& height, float& width);
+	Box();
 	~Box();
 
 	void Initialize(std::shared_ptr<SystemState>& system_state);

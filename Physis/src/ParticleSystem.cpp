@@ -59,3 +59,8 @@ std::shared_ptr<Particle> ParticleSystem::GetParticleByIndex(unsigned int index)
 
 	return m_particles[index];
 }
+
+std::vector<float> ParticleSystem::GetBoundaryPoints()
+{
+	return m_boundary->GetBoundaryPoints();
+}

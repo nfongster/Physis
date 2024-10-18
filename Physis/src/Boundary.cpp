@@ -12,6 +12,17 @@ Boundary::~Boundary()
 {
 }
 
+std::vector<float> Boundary::GetBoundaryPoints()
+{
+	std::vector<float> vertices;
+	for (auto p : m_polygon)
+	{
+		vertices.push_back(p.X);
+		vertices.push_back(p.Y);
+	}
+	return vertices;
+}
+
 void Boundary::CheckCollision(std::shared_ptr<Particle> particle)
 {
 	// After stepping, check if particle has encountered a boundary
