@@ -2,6 +2,7 @@
 
 #include <glew.h>
 
+#include "Physis.h"
 #include "ShaderBuilder.h"
 #include "Entity.h"
 
@@ -20,6 +21,6 @@ public:
 	Box(float& height, float& width);
 	~Box();
 
-	void Initialize();
+	void Initialize(std::shared_ptr<SystemState>& system_state);
 	void Render();
 };

@@ -13,7 +13,7 @@ Environment::~Environment()
 
 void Environment::Initialize(std::shared_ptr<SystemState>& system_state)
 {
-	m_boundary->Initialize();
+	m_boundary->Initialize(system_state);
 	m_particle->Initialize(system_state);
 }
 

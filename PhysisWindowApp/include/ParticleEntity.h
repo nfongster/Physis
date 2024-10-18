@@ -7,6 +7,5 @@
 
 class ParticleEntity : public Entity
 {
-public:
-	virtual void Initialize(std::shared_ptr<SystemState>& system_state) = 0;
+	// TODO: Get rid of this?
 };
