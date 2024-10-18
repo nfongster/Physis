@@ -24,6 +24,8 @@ public:
 	KinematicParameters GetKinematicParameters();
 
 	void Stop();
+	void SwitchX(const float& elasticity);
+	void SwitchY(const float& elasticity);
 	void Step(const double& dt);
 	void Interpolate(const std::shared_ptr<Particle> previousState, const double& factor);
 };

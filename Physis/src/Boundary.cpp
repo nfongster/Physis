@@ -1,10 +1,11 @@
 #include "Boundary.h"
 
-Boundary::Boundary() : m_polygon(std::vector<Vec2>())
+Boundary::Boundary() : m_polygon(std::vector<Vec2>()), m_elasticity(0)
 {
 }
 
-Boundary::Boundary(const std::vector<Vec2>& polygon) : m_polygon(polygon)
+Boundary::Boundary(const std::vector<Vec2>& polygon, const float& elasticity) :
+	m_polygon(polygon), m_elasticity(elasticity)
 {
 }
 
@@ -25,13 +26,30 @@ std::vector<float> Boundary::GetBoundaryPoints()
 
 void Boundary::CheckCollision(std::shared_ptr<Particle> particle)
 {
-	// Either: stop it (perfectly inelastic), or reverse its velocity (elastic), or change its speed (inelastic)
 	// Thus, later on, should specify an elasticity parameter, and give the particle mass, and the wall infinite mass.
 
 	Vec2 pos = particle->GetPosition();
 	// TODO: make implementation not dependent on polygon point locations, add support for non-box shapes. etc.
-	if (pos.Y <= m_polygon[0].Y / 2 || pos.X >= m_polygon[2].X / 2 || pos.X <= m_polygon[0].X / 2 || pos.Y >= m_polygon[1].Y / 2)
+	// TODO: add support for radius of particle (or if different shape, use polygon)
+
+	// Perfectly Inelastic Collision (stop particle)
+	if (m_elasticity == 0)
 	{
-		particle->Stop();
+		if (pos.Y <= m_polygon[0].Y / 2 || pos.X >= m_polygon[2].X * 1.5 || pos.X <= m_polygon[0].X / 2 || pos.Y >= m_polygon[1].Y * 1.5)
+		{
+			particle->Stop();
+		}
+	}
+	
+
+	// Inelastic (<1) or Elastic (=1) Collision (reverse particle's velocity)
+	// eventually, should replace elastic/inelastic collisions with a forcing function
+	else
+	{
+		if (pos.Y <= m_polygon[0].Y / 2 || pos.Y >= m_polygon[1].Y * 1.5)
+			particle->SwitchY(m_elasticity);
+
+		if (pos.X >= m_polygon[2].X * 1.5 || pos.X <= m_polygon[0].X / 2)
+			particle->SwitchX(m_elasticity);
 	}
 }

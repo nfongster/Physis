@@ -40,6 +40,16 @@ void Particle::Stop()
 	m_acc = Vec2();
 }
 
+void Particle::SwitchX(const float& elasticity)
+{
+	m_vel = Vec2(-m_vel.X * elasticity, m_vel.Y);
+}
+
+void Particle::SwitchY(const float& elasticity)
+{
+	m_vel = Vec2(m_vel.X, -m_vel.Y * elasticity);
+}
+
 void Particle::Step(const double& dt)
 {
 	if (dt < 0)
