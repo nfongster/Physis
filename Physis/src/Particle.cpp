@@ -40,13 +40,15 @@ void Particle::Stop()
 	m_acc = Vec2();
 }
 
-void Particle::SwitchX(const float& elasticity)
+void Particle::SwitchX(const float& elasticity, const float& x_reset)
 {
+	m_pos = Vec2(x_reset, m_pos.Y);
 	m_vel = Vec2(-m_vel.X * elasticity, m_vel.Y);
 }
 
-void Particle::SwitchY(const float& elasticity)
+void Particle::SwitchY(const float& elasticity, const float& y_reset)
 {
+	m_pos = Vec2(m_pos.X, y_reset);
 	m_vel = Vec2(m_vel.X, -m_vel.Y * elasticity);
 }
 

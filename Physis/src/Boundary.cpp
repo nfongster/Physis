@@ -26,30 +26,34 @@ std::vector<float> Boundary::GetBoundaryPoints()
 
 void Boundary::CheckCollision(std::shared_ptr<Particle> particle)
 {
-	// Thus, later on, should specify an elasticity parameter, and give the particle mass, and the wall infinite mass.
-
 	Vec2 pos = particle->GetPosition();
+	// TODO: Should give the particle mass, and the wall infinite mass.
 	// TODO: make implementation not dependent on polygon point locations, add support for non-box shapes. etc.
 	// TODO: add support for radius of particle (or if different shape, use polygon)
 
 	// Perfectly Inelastic Collision (stop particle)
-	if (m_elasticity == 0)
+	if (m_elasticity == 0 &&  (pos.Y <= m_polygon[0].Y / 2 
+							|| pos.X >= m_polygon[2].X * 1.5 
+							|| pos.X <= m_polygon[0].X / 2 
+							|| pos.Y >= m_polygon[1].Y * 1.5))
 	{
-		if (pos.Y <= m_polygon[0].Y / 2 || pos.X >= m_polygon[2].X * 1.5 || pos.X <= m_polygon[0].X / 2 || pos.Y >= m_polygon[1].Y * 1.5)
-		{
-			particle->Stop();
-		}
+		particle->Stop();
 	}
 	
-
 	// Inelastic (<1) or Elastic (=1) Collision (reverse particle's velocity)
 	// eventually, should replace elastic/inelastic collisions with a forcing function
 	else
 	{
-		if (pos.Y <= m_polygon[0].Y / 2 || pos.Y >= m_polygon[1].Y * 1.5)
-			particle->SwitchY(m_elasticity);
+		if (pos.Y < m_polygon[0].Y / 2)
+			particle->SwitchY(m_elasticity, m_polygon[0].Y / 2);
 
-		if (pos.X >= m_polygon[2].X * 1.5 || pos.X <= m_polygon[0].X / 2)
-			particle->SwitchX(m_elasticity);
+		else if (pos.Y > m_polygon[1].Y * 1.5)
+			particle->SwitchY(m_elasticity, m_polygon[1].Y * 1.5);
+
+		if (pos.X > m_polygon[2].X * 1.5)
+			particle->SwitchX(m_elasticity, m_polygon[2].X * 1.5);
+
+		else if (pos.X < m_polygon[0].X / 2)
+			particle->SwitchX(m_elasticity, m_polygon[0].X / 2);
 	}
 }
