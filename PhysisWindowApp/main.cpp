@@ -7,7 +7,7 @@ int main()
 {
     auto t_total = std::chrono::duration<double>(50);
     auto dt = std::chrono::duration<double>(0.0005);
-    double scalar = 1;
+    double scalar = 3;
     std::vector<Vec2> polygon;
     double len = 0.995;
     polygon.push_back(Vec2(-len, -len));
@@ -18,7 +18,7 @@ int main()
     int segments = 25;
     float radius = 0.015;
     auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), 25);
-    engine->AddBoundary(Boundary(polygon, 0.7));
+    engine->AddBoundary(Boundary(polygon, 0.9));
     Vec2 r0(-len / 2, -len / 2);
     for (int i = 0; i < 3; i++)
     {
