@@ -108,10 +108,12 @@ void BenchmarkEngine::Interpolate(const double& factor)
 
 void BenchmarkEngine::AddParticle()
 {
-	m_system_state->AddParticle(KinematicParameters());
+	// TODO: radius must be a variable
+	m_system_state->AddParticle(KinematicParameters(), 0.015f);
 }
 
 void BenchmarkEngine::AddParticle(const KinematicParameters& parameters)
 {
-	m_system_state->AddParticle(parameters);
+	// TODO: radius must be a variable
+	m_system_state->AddParticle(parameters, 0.015f);
 }

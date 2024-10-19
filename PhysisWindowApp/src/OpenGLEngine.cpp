@@ -57,7 +57,7 @@ void OpenGLEngine::Render()
 
 void OpenGLEngine::AddParticle()
 {
-    m_system_state->AddParticle(KinematicParameters());
+    m_system_state->AddParticle(KinematicParameters(), 0.015);
 }
 
 void OpenGLEngine::AddBoundary(const Boundary& boundary)
@@ -65,7 +65,7 @@ void OpenGLEngine::AddBoundary(const Boundary& boundary)
     m_system_state->AddBoundary(boundary);
 }
 
-void OpenGLEngine::AddParticle(const KinematicParameters& parameters)
+void OpenGLEngine::AddParticle(const KinematicParameters& parameters, const float& radius)
 {
-    m_system_state->AddParticle(parameters);
+    m_system_state->AddParticle(parameters, radius);
 }

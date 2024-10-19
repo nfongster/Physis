@@ -1,12 +1,12 @@
 #include "Particle.h"
 
 Particle::Particle() 
-	: m_pos(Vec2(0, 0)), m_vel(Vec2(0, 0)), m_acc(Vec2(0, 0))
+	: m_pos(Vec2(0, 0)), m_vel(Vec2(0, 0)), m_acc(Vec2(0, 0)), m_radius(0.0f)
 {
 }
 
-Particle::Particle(KinematicParameters parameters)
-	: m_pos(parameters.r), m_vel(parameters.v), m_acc(parameters.a)
+Particle::Particle(const KinematicParameters& parameters, const float& radius)
+	: m_pos(parameters.r), m_vel(parameters.v), m_acc(parameters.a), m_radius(radius)
 {
 }
 
@@ -32,6 +32,11 @@ Vec2 Particle::GetAcceleration()
 KinematicParameters Particle::GetKinematicParameters()
 {
 	return KinematicParameters(m_pos, m_vel, m_acc);
+}
+
+float Particle::GetRadius()
+{
+	return m_radius;
 }
 
 void Particle::Stop()

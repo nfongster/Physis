@@ -6,10 +6,10 @@ SystemState::SystemState()
 {
 }
 
-void SystemState::AddParticle(const KinematicParameters& parameters)
+void SystemState::AddParticle(const KinematicParameters& parameters, const float& radius)
 {
-    m_system_curr_state->Add(parameters);
-    m_system_prev_state->Add(parameters);
+    m_system_curr_state->Add(parameters, radius);
+    m_system_prev_state->Add(parameters, radius);
 }
 
 void SystemState::AddBoundary(const Boundary& boundary)

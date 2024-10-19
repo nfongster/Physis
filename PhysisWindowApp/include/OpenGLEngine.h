@@ -33,6 +33,6 @@ public:
 	static std::unique_ptr<OpenGLEngine> WithCircles(const TimeConfig& config, const int& num_segments);
 	
 	void AddParticle();
-	void AddParticle(const KinematicParameters& parameters);
+	void AddParticle(const KinematicParameters& parameters, const float& radius);
 	void AddBoundary(const Boundary& boundary);
 };

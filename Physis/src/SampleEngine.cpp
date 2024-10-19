@@ -20,12 +20,14 @@ void SampleEngine::Interpolate(const double& factor)
 
 void SampleEngine::AddParticle()
 {
-	m_system_state->AddParticle(KinematicParameters());
+	// TODO: radius must be a variable
+	m_system_state->AddParticle(KinematicParameters(), 0.015f);
 }
 
 void SampleEngine::AddParticle(const KinematicParameters& parameters)
 {
-	m_system_state->AddParticle(parameters);
+	// TODO: radius must be a variable
+	m_system_state->AddParticle(parameters, 0.015f);
 }
 
 std::map<unsigned int, std::shared_ptr<Particle>> SampleEngine::Sample()

@@ -14,7 +14,7 @@ TEST_CASE("Particle system can be iterated with multiple particles")
 	int count = 5;
 
 	for (int i = 0; i < count; i++)
-		ps.Add(KinematicParameters());
+		ps.Add(KinematicParameters(), 0.0f);
 
 	REQUIRE(ps.GetParticles().size() == count);
 	for (const auto& pair : ps.GetParticles())
@@ -39,8 +39,8 @@ TEST_CASE("Particle system reliably stores particles' states in order of additio
 	auto a02 = Vec2(6, -7);
 	auto kp2 = KinematicParameters(r02, v02, a02);
 
-	ps.Add(kp1);
-	ps.Add(kp2);
+	ps.Add(kp1, 0.0f);
+	ps.Add(kp2, 0.0f);
 
 	REQUIRE(ps.GetParticles().size() == 2);
 	auto particles = ps.GetParticles();
@@ -62,7 +62,7 @@ TEST_CASE("Particle system can step 1 particle")
 	auto r0 = Vec2();
 	auto v0 = Vec2(1, 1);
 	auto a0 = Vec2(-1, 1);
-	ps.Add(KinematicParameters(r0, v0, a0));
+	ps.Add(KinematicParameters(r0, v0, a0), 0.0f);
 
 	double dt = 0.1;
 	ps.Step(dt);
@@ -82,12 +82,12 @@ TEST_CASE("Particle system can step multiple particles")
 	auto r01 = Vec2();
 	auto v01 = Vec2(1, 1);
 	auto a01 = Vec2(-1, 1);
-	ps.Add(KinematicParameters(r01, v01, a01));
+	ps.Add(KinematicParameters(r01, v01, a01), 0.0f);
 
 	auto r02 = Vec2(2, -3);
 	auto v02 = Vec2(9, 3);
 	auto a02 = Vec2(-7, 16);
-	ps.Add(KinematicParameters(r02, v02, a02));
+	ps.Add(KinematicParameters(r02, v02, a02), 0.0f);
 
 	double dt = 0.1;
 	ps.Step(dt);

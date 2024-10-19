@@ -12,16 +12,18 @@ private:
 	Vec2 m_pos;
 	Vec2 m_vel;
 	Vec2 m_acc;
+	float m_radius;
 
 public:
 	Particle();
-	Particle(KinematicParameters parameters);
+	Particle(const KinematicParameters& parameters, const float& radius);
 	~Particle();
 
 	Vec2 GetPosition();
 	Vec2 GetVelocity();
 	Vec2 GetAcceleration();
 	KinematicParameters GetKinematicParameters();
+	float GetRadius();
 
 	void Stop();
 	void SwitchX(const float& elasticity, const float& x_reset);

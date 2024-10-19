@@ -62,7 +62,7 @@ PYBIND11_MODULE(physis, m) {
     // This provides consistency when accessing the particle map in ParticleSystem.
     py::class_<Particle, std::shared_ptr<Particle>>(m, "Particle")
         .def(py::init())
-        .def(py::init<KinematicParameters>())
+        .def(py::init<KinematicParameters, float>())
         .def("position", &Particle::GetPosition, "returns the particle's position")
         .def("velocity", &Particle::GetVelocity, "returns the particle's velocity")
         .def("acceleration", &Particle::GetAcceleration, "returns the particle's acceleration")
@@ -73,7 +73,8 @@ PYBIND11_MODULE(physis, m) {
         .def(py::init())
         .def("particles", &ParticleSystem::GetParticles, "gets all particles in the system")
         .def("add", &ParticleSystem::Add, "add a new particle to the system",
-            py::arg("ic"))
+            py::arg("kp"),
+            py::arg("radius"))
         .def("step", &ParticleSystem::Step, "steps all particles in the system")
         .def("update", &ParticleSystem::Update, "updates the particle at the specified location",
             py::arg("index"),
@@ -82,7 +83,8 @@ PYBIND11_MODULE(physis, m) {
     py::class_<SystemState, std::shared_ptr<SystemState>>(m, "SystemState")
         .def(py::init())
         .def("add", &SystemState::AddParticle, "add a new particle to the system",
-            py::arg("ic"))
+            py::arg("kp"),
+            py::arg("radius"))
         .def("current", &SystemState::GetCurrent, "gets the current state of the system")
         .def("previous", &SystemState::GetPrevious, "gets the previous state of the system");
 

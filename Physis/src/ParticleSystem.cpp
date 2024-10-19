@@ -17,9 +17,9 @@ std::map<unsigned int, std::shared_ptr<Particle>> ParticleSystem::GetParticles()
 	return m_particles;
 }
 
-void ParticleSystem::Add(const KinematicParameters& parameters)
+void ParticleSystem::Add(const KinematicParameters& parameters, const float& radius)
 {
-	m_particles.insert({ m_particles.size(), std::unique_ptr<Particle>(new Particle(parameters)) });
+	m_particles.insert({ m_particles.size(), std::make_shared<Particle>(parameters, radius) });
 }
 
 void ParticleSystem::AddBoundary(const Boundary& boundary)
@@ -41,7 +41,7 @@ void ParticleSystem::Update(const unsigned int index, const KinematicParameters&
 	if (index < 0 || index >= m_particles.size())
 		throw std::out_of_range("Index out of range");
 
-	m_particles[index] = std::make_shared<Particle>(parameters);
+	m_particles[index] = std::make_shared<Particle>(parameters, m_particles[index]->GetRadius());
 }
 
 std::shared_ptr<Particle> ParticleSystem::operator[](const unsigned int index)
