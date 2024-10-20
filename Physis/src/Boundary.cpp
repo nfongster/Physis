@@ -28,10 +28,10 @@ void Boundary::CheckCollision(std::shared_ptr<Particle> particle)
 {
 	Vec2 pos = particle->GetPosition();
 	float r = particle->GetRadius();
-	float top = m_polygon[1].Y * 1.5 - r;
-	float bottom = m_polygon[0].Y / 2 + r;
-	float left = m_polygon[0].X / 2 + r;
-	float right = m_polygon[2].X * 1.5 - r;
+	float top = m_polygon[1].Y - r;
+	float bottom = m_polygon[0].Y + r;
+	float left = m_polygon[0].X + r;
+	float right = m_polygon[2].X - r;
 	// TODO: Should give the particle mass, and the wall infinite mass.
 	// TODO: make implementation not dependent on polygon point locations, add support for non-box shapes. etc.
 	// TODO: add support for radius of particle (or if different shape, use polygon)

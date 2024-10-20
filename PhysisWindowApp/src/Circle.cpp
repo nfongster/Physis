@@ -25,14 +25,11 @@ void Circle::Initialize(std::shared_ptr<SystemState>& system_state)
 
     for (const auto& pair : system_state->GetCurrent()->GetParticles())
     {
-        std::shared_ptr<Particle> p = pair.second;
         std::vector<float> pos;
-        float center_x = p->GetPosition().X;
-        float center_y = p->GetPosition().Y;
 
         // First position is the center of the fan
-        pos.push_back(center_x);
-        pos.push_back(center_y);
+        pos.push_back(0);
+        pos.push_back(0);
 
         // The fan always begins on the +x axis at 0 degrees.
         for (int i = 0; i <= m_num_vertices; i++)
@@ -40,8 +37,8 @@ void Circle::Initialize(std::shared_ptr<SystemState>& system_state)
             float radians = 2.0f * M_PI * (i * 1.0f / m_num_vertices);
             float x_coord = r * std::cos(radians);
             float y_coord = r * std::sin(radians);
-            pos.push_back(center_x + x_coord);
-            pos.push_back(center_y + y_coord);
+            pos.push_back(x_coord);
+            pos.push_back(y_coord);
         }
 
         unsigned int vao;
@@ -55,7 +52,7 @@ void Circle::Initialize(std::shared_ptr<SystemState>& system_state)
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, POS_COORDS, GL_FLOAT, GL_FALSE, sizeof(float) * POS_COORDS, 0);
 
-        m_vao_map.emplace(vao, p);
+        m_vao_map.emplace(vao, pair.second);
     }
 
     auto builder = ShaderBuilder("C:\\Code\\Physis\\PhysisWindowApp\\resource\\shaders\\particle\\");
