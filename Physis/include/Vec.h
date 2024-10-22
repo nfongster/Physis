@@ -32,6 +32,8 @@ public:
 	Vec2(double x, double y) : X(x), Y(y) {};
 
 	bool Equals(const Vec2& other, const double& tolerance = DEFAULT_TOLERANCE) const;
+	double Dot(const Vec2& other);
+	double Magnitude2();
 	Vec2 operator+ (const Vec2& other) const;
 	Vec2 operator- (const Vec2& other) const;
 	Vec2 operator* (const double& scalar) const;
@@ -49,6 +51,8 @@ public:
 	Vec3(double x, double y, double z) : X(x), Y(y), Z(z) {};
 
 	bool Equals(const Vec3& other, const double& tolerance = DEFAULT_TOLERANCE) const;
+	double Dot(const Vec3& other);
+	double Magnitude2();
 	Vec3 operator+ (const Vec3& other) const;
 	Vec3 operator- (const Vec3& other) const;
 	Vec3 operator* (const double& scalar) const;

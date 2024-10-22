@@ -33,7 +33,7 @@ void ParticleSystem::Step(const double& dt)
 	for (const auto& pair : m_particles)
 	{
 		pair.second->Step(dt);
-		m_boundary->CheckCollision(pair.second);  // rename to CheckBoundaryCollision
+		m_boundary->CheckCollision(pair.second);
 		q.push(pair.second);
 	}
 	
@@ -54,17 +54,22 @@ void ParticleSystem::Step(const double& dt)
 
 void ParticleSystem::CheckParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1)
 {
-	Vec2 r0 = p0->GetPosition();
-	Vec2 r1 = p1->GetPosition();
+	Vec2 dr = p0->GetPosition() - p1->GetPosition();
 	float radius0 = p0->GetRadius();
 	float radius1 = p1->GetRadius();
-	float distanceX = r0.X - r1.X;
-	float distanceY = r0.Y - r1.Y;
-	if ((distanceX * distanceX) + (distanceY * distanceY) <= (radius0 + radius1) * (radius0 + radius1))
-	{
-		p0->Stop();
-		p1->Stop();
-	}
+	if (dr.Magnitude2() < (radius0 + radius1) * (radius0 + radius1))
+		this->ResolveParticleCollisions(p0, p1);
+}
+
+void ParticleSystem::ResolveParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1)
+{
+	Vec2 dr = p0->GetPosition() - p1->GetPosition();
+	Vec2 v0 = p0->GetVelocity();
+	Vec2 v1 = p1->GetVelocity();
+	Vec2 dv = v1 - v0;
+	double C = dv.Dot(dr) / dr.Magnitude2();
+	p0->SetVelocity(v0 + (dr * C));
+	p1->SetVelocity(v1 - (dr * C));
 }
 
 void ParticleSystem::Update(const unsigned int index, const KinematicParameters& parameters)

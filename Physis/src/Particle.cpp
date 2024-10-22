@@ -81,3 +81,8 @@ void Particle::Interpolate(const std::shared_ptr<Particle> previousState, const 
 	m_vel = v;
 	m_acc = a;
 }
+
+void Particle::SetVelocity(Vec2 vf)
+{
+	m_vel = vf;
+}

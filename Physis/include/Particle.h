@@ -30,4 +30,6 @@ public:
 	void SwitchY(const float& elasticity, const float& y_reset);
 	void Step(const double& dt);
 	void Interpolate(const std::shared_ptr<Particle> previousState, const double& factor);
+
+	void SetVelocity(Vec2 vf);
 };

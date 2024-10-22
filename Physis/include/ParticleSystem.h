@@ -13,6 +13,7 @@ private:
 	std::map<unsigned int, std::shared_ptr<Particle>> m_particles;
 	std::shared_ptr<Boundary> m_boundary;
 	void CheckParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1);
+	void ResolveParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1);
 
 public:
 	ParticleSystem();
