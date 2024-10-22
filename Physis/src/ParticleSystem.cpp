@@ -29,10 +29,41 @@ void ParticleSystem::AddBoundary(const Boundary& boundary)
 
 void ParticleSystem::Step(const double& dt)
 {
+	std::queue<std::shared_ptr<Particle>> q;
 	for (const auto& pair : m_particles)
 	{
 		pair.second->Step(dt);
-		m_boundary->CheckCollision(pair.second);
+		m_boundary->CheckCollision(pair.second);  // rename to CheckBoundaryCollision
+		q.push(pair.second);
+	}
+	
+	while (!q.empty())
+	{
+		std::shared_ptr<Particle> p0 = q.front();
+		q.pop();
+		
+		for (int i = 0; i < q.size(); i++)
+		{
+			std::shared_ptr<Particle> p1 = q.front();
+			q.pop();
+			this->CheckParticleCollisions(p0, p1);
+			q.push(p1);
+		}
+	}
+}
+
+void ParticleSystem::CheckParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1)
+{
+	Vec2 r0 = p0->GetPosition();
+	Vec2 r1 = p1->GetPosition();
+	float radius0 = p0->GetRadius();
+	float radius1 = p1->GetRadius();
+	float distanceX = r0.X - r1.X;
+	float distanceY = r0.Y - r1.Y;
+	if ((distanceX * distanceX) + (distanceY * distanceY) <= (radius0 + radius1) * (radius0 + radius1))
+	{
+		p0->Stop();
+		p1->Stop();
 	}
 }
 

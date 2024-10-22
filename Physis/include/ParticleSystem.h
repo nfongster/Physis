@@ -4,6 +4,7 @@
 
 #include <map>
 #include <memory>
+#include <queue>
 #include <utility>
 
 class PHYSIS_API ParticleSystem
@@ -11,6 +12,7 @@ class PHYSIS_API ParticleSystem
 private:
 	std::map<unsigned int, std::shared_ptr<Particle>> m_particles;
 	std::shared_ptr<Boundary> m_boundary;
+	void CheckParticleCollisions(std::shared_ptr<Particle> p0, std::shared_ptr<Particle> p1);
 
 public:
 	ParticleSystem();

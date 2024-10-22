@@ -21,9 +21,9 @@ int main()
     engine->AddBoundary(Boundary(polygon, 0.9));
 
     // Projectile motion
-    Vec2 r0(-0.1, 0);
     for (int i = 0; i < 3; i++)
     {
+        Vec2 r0(-0.1, 0.1 * i);
         Vec2 v0(0.1 + (i * 0.05), 0.6);
         Vec2 a0(0, -0.07 * (i + 1));
         engine->AddParticle(KinematicParameters(r0, v0, a0), radius);
