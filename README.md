@@ -1,5 +1,5 @@
 # Physis
-A general-purpose physics simulator.
+Physis is a general-purpose physics simulator that comes with its own physics and rendering engines.
 
 ## Setup
 Currently, you will need Visual Studio (I have developed using VS 2022) and/or msbuild to compile this source code.  There are also some external dependencies not committed to source control that must be added.
