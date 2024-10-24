@@ -43,3 +43,14 @@ Pybind11 provides Python bindings to C++ code, enabling Python clients (such as 
 
 ## Running the Application
 Once you've installed all the dependencies, load the solution in Visual Studio (or your IDE of choice), set `PhysisWindowApp` as your startup project and run!  You should see balls bouncing around a 2D box.  You can edit the main method if you’d like to experiment with different numbers of balls, different kinematic parameters, etc.
+
+Note that there is ongoing work to optimize the physics and rendering.
+
+https://github.com/user-attachments/assets/3aad8aab-1c2b-4b60-a75f-15b9de457f74
+
+## PhysisPlotter
+PhysisPlotter is a Python application that runs the Physis engine and collects various benchmarking or scientific data from the simulation.  It is currently under construction and may not work out of the box.
+
+Below is a sample plot of a projectile's trajectory, as rendered by Physis under different rendering conditions, compared with the analytic solution.  The bottom plot shows the error in the actual position of the particle compared with the expected position from the analytic solution.
+
+![no interpolation semiimpliciteuler](https://github.com/user-attachments/assets/c0515b9d-bed0-420f-9837-e3c66d1c2ff6)
