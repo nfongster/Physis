@@ -28,15 +28,15 @@ You need GLEW to link the OpenGL API calls in Physis to the actual implementatio
 1. Go to https://glew.sourceforge.net/ and download the binaries.  As of this writing, `glew-2.1.0-win32` was used.
 2. Extract the files, rename the folder to `GLEW`, and paste it inside your `OpenGL` folder.
 
-#### catch2
-Catch2 is the C++ unit testing framework used by Physis.
+#### Catch2
+Catch2 is the C++ unit testing framework used by Physis.  Note that this section is technically optional - if you'd like to skip it, be sure to remove `Physis.Test` from your build process.
 1. Create a subdirectory inside “extern” called “catch2”.
 2. This project currently uses the previous (as of this writing) release of catch2, catch2 2.x, in which the entire dependency is contained in a single header file.  Go to https://github.com/catchorg/Catch2/blob/v2.x/docs/tutorial.md#top, download the catch.hpp header file (there should be a link in the tutorial), and place it inside your “catch2” subdirectory.
 
 If you’d like to download directly from Powershell, navigate into your “catch2” subdirectory, and simply type `Invoke-WebRequest https://raw.githubusercontent.com/catchorg/Catch2/v2.x/single_include/catch2/catch.hpp -OutFile catch.hpp`
 
 #### pybind11
-Pybind11 provides C++-to-Python bindings, so that Python code (such as Physis Plotter) can configure and run the Physis engine.
+Pybind11 provides Python bindings to C++ code, enabling Python clients (such as `PhysisPlotter`) to configure and run the Physis engine.
 1. Create a subdirectory inside “extern” called “pybind11”.
 2. Go to https://pybind11.readthedocs.io/en/latest/installing.html and follow the instructions for including pybind11 as a submodule.  If that doesn’t work (and it didn’t work for me), try the next step.
 3. Go to https://github.com/pybind/pybind11 and clone the pybind11 source code into “extern”.  You should now have a “pybind11” folder inside “extern”.
