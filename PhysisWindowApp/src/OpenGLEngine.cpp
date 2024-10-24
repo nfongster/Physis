@@ -23,6 +23,7 @@ void OpenGLEngine::OnStartup()
 {    
     glfwInit();
     m_pWindow = glfwCreateWindow(1200, 1000, "Physis Engine", NULL, NULL);
+    glfwSetWindowPos(m_pWindow, 0, 40);
 
     if (!m_pWindow)
         glfwTerminate();
