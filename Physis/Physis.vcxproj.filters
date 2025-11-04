@@ -36,9 +36,6 @@
     <ClCompile Include="src\BenchmarkEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bindings\physis-python.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Boundary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
