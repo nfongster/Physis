@@ -62,9 +62,6 @@
     <ClInclude Include="include\Kinematics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SampleEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\SystemState.h">
       <Filter>Header Files</Filter>
     </ClInclude>

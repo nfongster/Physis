@@ -29,7 +29,6 @@
   <ItemGroup>
     <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\Core.h" />
-    <ClInclude Include="include\SampleEngine.h" />
     <ClInclude Include="include\EngineBase.h" />
     <ClInclude Include="include\KinematicParameters.h" />
     <ClInclude Include="include\Kinematics.h" />

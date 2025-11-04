@@ -5,12 +5,13 @@
 #include <map>
 
 #include "Physis.h"
-#include "ShaderBuilder.h"
-#include "Entity.h"
-#include "Triangle.h"
-#include "Circle.h"
-#include "Environment.h"
+
 #include "Box.h"
+#include "Circle.h"
+#include "Entity.h"
+#include "Environment.h"
+#include "ShaderBuilder.h"
+#include "Triangle.h"
 
 class OpenGLEngine : public EngineBase
 {
