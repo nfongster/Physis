@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Boundary.cpp" />
-    <ClCompile Include="src\BenchmarkEngine.cpp" />
     <ClCompile Include="src\SampleEngine.cpp" />
     <ClCompile Include="src\EngineBase.cpp" />
     <ClCompile Include="src\Vec.cpp" />
@@ -30,7 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Boundary.h" />
-    <ClInclude Include="include\BenchmarkEngine.h" />
     <ClInclude Include="include\Core.h" />
     <ClInclude Include="include\SampleEngine.h" />
     <ClInclude Include="include\EngineBase.h" />

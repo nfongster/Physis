@@ -33,9 +33,6 @@
     <ClCompile Include="src\SystemState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BenchmarkEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Boundary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SystemState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BenchmarkEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Boundary.h">
