@@ -27,9 +27,6 @@
     <ClCompile Include="src\EngineBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SampleEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\SystemState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

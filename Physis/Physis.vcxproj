@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Boundary.cpp" />
-    <ClCompile Include="src\SampleEngine.cpp" />
     <ClCompile Include="src\EngineBase.cpp" />
     <ClCompile Include="src\Vec.cpp" />
     <ClCompile Include="src\Particle.cpp" />
