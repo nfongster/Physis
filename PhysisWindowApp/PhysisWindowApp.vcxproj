@@ -24,6 +24,7 @@
     <ProjectGuid>{ab4c9979-3abd-417b-8332-a545b5f24895}</ProjectGuid>
     <RootNamespace>PhysisWindowApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PhysisApp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
