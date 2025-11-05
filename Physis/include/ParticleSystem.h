@@ -19,7 +19,7 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	std::map<unsigned int, std::shared_ptr<Particle>> GetParticles();
+	const std::map<unsigned int, std::shared_ptr<Particle>>& GetParticles() const;
 	void Add(const KinematicParameters& parameters, const float& radius);
 	void AddBoundary(const Boundary& boundary);
 	void Step(const double& dt);

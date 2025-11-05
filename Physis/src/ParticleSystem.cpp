@@ -8,11 +8,9 @@ ParticleSystem::ParticleSystem() :
 
 ParticleSystem::~ParticleSystem()
 {
-	/*for (const auto& pair : m_particles)
-		delete pair.second;*/
 }
 
-std::map<unsigned int, std::shared_ptr<Particle>> ParticleSystem::GetParticles()
+const std::map<unsigned int, std::shared_ptr<Particle>>& ParticleSystem::GetParticles() const
 {
 	return m_particles;
 }

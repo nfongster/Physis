@@ -9,10 +9,6 @@ Boundary::Boundary(const std::vector<Vec2>& polygon, const float& elasticity) :
 {
 }
 
-Boundary::~Boundary()
-{
-}
-
 std::vector<float> Boundary::GetBoundaryPoints()
 {
 	std::vector<float> vertices;

@@ -15,7 +15,6 @@ private:
 public:
 	Boundary();
 	Boundary(const std::vector<Vec2>& polygon, const float& elasticity = 0);
-	~Boundary();
 
 	std::vector<float> GetBoundaryPoints();
 	void CheckCollision(std::shared_ptr<Particle> particle);

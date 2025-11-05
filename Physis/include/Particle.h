@@ -16,20 +16,19 @@ private:
 
 public:
 	Particle();
-	Particle(const KinematicParameters& parameters, const float& radius);
-	~Particle();
+	Particle(const KinematicParameters& parameters, float radius);
 
-	Vec2 GetPosition();
-	Vec2 GetVelocity();
-	Vec2 GetAcceleration();
+	const Vec2& GetPosition() const;
+	const Vec2& GetVelocity() const;
+	const Vec2& GetAcceleration() const;
 	KinematicParameters GetKinematicParameters();
-	float GetRadius();
+	const float GetRadius() const;
 
 	void Stop();
-	void SwitchX(const float& elasticity, const float& x_reset);
-	void SwitchY(const float& elasticity, const float& y_reset);
-	void Step(const double& dt);
-	void Interpolate(const std::shared_ptr<Particle> previousState, const double& factor);
+	void SwitchX(float elasticity, float x_reset);
+	void SwitchY(float elasticity, float y_reset);
+	void Step(double dt);
+	void Interpolate(const std::shared_ptr<Particle> previousState, double factor);
 
 	void SetVelocity(Vec2 vf);
 };

@@ -5,26 +5,22 @@ Particle::Particle()
 {
 }
 
-Particle::Particle(const KinematicParameters& parameters, const float& radius)
+Particle::Particle(const KinematicParameters& parameters, float radius)
 	: m_pos(parameters.r), m_vel(parameters.v), m_acc(parameters.a), m_radius(radius)
 {
 }
 
-Particle::~Particle()
-{
-}
-
-Vec2 Particle::GetPosition()
+const Vec2& Particle::GetPosition() const
 {
 	return m_pos;
 }
 
-Vec2 Particle::GetVelocity()
+const Vec2& Particle::GetVelocity() const
 {
 	return m_vel;
 }
 
-Vec2 Particle::GetAcceleration()
+const Vec2& Particle::GetAcceleration() const
 {
 	return m_acc;
 }
@@ -34,7 +30,7 @@ KinematicParameters Particle::GetKinematicParameters()
 	return KinematicParameters(m_pos, m_vel, m_acc);
 }
 
-float Particle::GetRadius()
+const float Particle::GetRadius() const
 {
 	return m_radius;
 }
@@ -45,19 +41,19 @@ void Particle::Stop()
 	m_acc = Vec2();
 }
 
-void Particle::SwitchX(const float& elasticity, const float& x_reset)
+void Particle::SwitchX(float elasticity, float x_reset)
 {
 	m_pos = Vec2(x_reset, m_pos.Y);
 	m_vel = Vec2(-m_vel.X * elasticity, m_vel.Y);
 }
 
-void Particle::SwitchY(const float& elasticity, const float& y_reset)
+void Particle::SwitchY(float elasticity, float y_reset)
 {
 	m_pos = Vec2(m_pos.X, y_reset);
 	m_vel = Vec2(m_vel.X, -m_vel.Y * elasticity);
 }
 
-void Particle::Step(const double& dt)
+void Particle::Step(double dt)
 {
 	if (dt < 0)
 		throw std::invalid_argument("Input value was negative!");
@@ -66,7 +62,7 @@ void Particle::Step(const double& dt)
 	m_pos = Kinematics::UpdatePosition(m_pos, m_vel, m_acc, dt);
 }
 
-void Particle::Interpolate(const std::shared_ptr<Particle> previousState, const double& factor)
+void Particle::Interpolate(const std::shared_ptr<Particle> previousState, double factor)
 {
 	auto r_prev = previousState->GetPosition();
 	auto v_prev = previousState->GetVelocity();
