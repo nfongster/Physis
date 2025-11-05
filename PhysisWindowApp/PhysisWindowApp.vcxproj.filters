@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenGLEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,6 +33,7 @@
     <ClCompile Include="src\Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenGLEngine.h">
