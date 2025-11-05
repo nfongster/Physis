@@ -1,31 +1,5 @@
 #include "Vec.h"
 
-bool Vec1::Equals(const Vec1& other, const double& tolerance) const
-{
-    return fabs(this->X - other.X) <= tolerance;
-}
-
-Vec1 Vec1::operator+(const Vec1& other) const
-{
-    return Vec1(this->X + other.X);
-}
-
-Vec1 Vec1::operator-(const Vec1& other) const
-{
-    return Vec1(this->X - other.X);
-}
-
-Vec1 Vec1::operator*(const double& scalar) const
-{
-    return Vec1(this->X * scalar);
-}
-
-std::ostream& operator<<(std::ostream& output, const Vec1& v)
-{
-    output << "(" << v.X << ")";
-    return output;
-}
-
 bool Vec2::Equals(const Vec2& other, const double& tolerance) const
 {
     return fabs(this->X - other.X) <= tolerance 

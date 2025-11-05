@@ -21,7 +21,7 @@ int main()
     engine->AddBoundary(Boundary(polygon, 0.9));
 
     // Projectile motion
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 30; i++)
     {
         Vec2 r0(-0.1, 0.1 * i);
         Vec2 v0(0.1 + (i * 0.05), 0.6);

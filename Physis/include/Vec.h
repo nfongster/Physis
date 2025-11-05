@@ -7,21 +7,6 @@
 
 const static double DEFAULT_TOLERANCE = 1e-10;
 
-struct PHYSIS_API Vec1
-{
-public:
-	double X;
-
-	Vec1() : X(0) {};
-	Vec1(double x) : X(x) {};
-
-	bool Equals(const Vec1& other, const double& tolerance = DEFAULT_TOLERANCE) const;
-	Vec1 operator+ (const Vec1& other) const;
-	Vec1 operator- (const Vec1& other) const;
-	Vec1 operator* (const double& scalar) const;
-	PHYSIS_API friend std::ostream& operator<<(std::ostream& output, const Vec1& v);
-};
-
 struct PHYSIS_API Vec2
 {
 public:
