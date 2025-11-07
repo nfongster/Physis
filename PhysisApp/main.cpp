@@ -4,6 +4,20 @@
 
 #include "OpenGLEngine.h"
 
+// ISSUES:
+// - Frame rate drastically reduces when there are more than ~50 particles
+// - Frame rate reduces when you hover over X (exit) button in top-right of window
+// - Particles sometimes get stuck along the boundary
+// - Particles often end up sticking to each other
+
+// FEATURES:
+// - Create a randomizer class
+// - Add ImGui to allow user to specify initial conditions
+
+// REFACTOR:
+// - Clean up builder pattern for engine
+// - Improve access of shader programs
+
 // Boundary
 const double BOUNDARY_HALF_LENGTH = 0.995;
 
@@ -43,7 +57,6 @@ int main()
     polygon.push_back(Vec2(BOUNDARY_HALF_LENGTH, BOUNDARY_HALF_LENGTH));
     polygon.push_back(Vec2(BOUNDARY_HALF_LENGTH, -BOUNDARY_HALF_LENGTH));
 
-    // TODO: Clean up builder pattern
     auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), NUM_CIRCLE_SEGMENTS);
     engine->AddBoundary(Boundary(polygon, 0.9));
     RandomizeParticles(engine);
