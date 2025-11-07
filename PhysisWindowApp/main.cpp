@@ -1,7 +1,36 @@
 #include <glew.h>
 #include <glfw3.h>
+#include <random>
 
 #include "OpenGLEngine.h"
+
+// Boundary
+const double BOUNDARY_HALF_LENGTH = 0.995;
+
+// Particle Geometry
+const int NUM_CIRCLE_SEGMENTS = 10;
+const float CIRCLE_RADIUS = 0.0001;//TODO: This does not change the rendered size, need to investigate
+const int NUM_PARTICLES = 50;
+
+// Particle Kinematics
+const double MAX_INITIAL_SPEED = 20;
+const Vec2 ACCELERATION = Vec2(0, -1.5);
+
+static void RandomizeParticles(std::unique_ptr<OpenGLEngine>& engine)
+{
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::uniform_real_distribution<double> position_dist(-BOUNDARY_HALF_LENGTH, BOUNDARY_HALF_LENGTH);
+    std::uniform_real_distribution<double> velocity_dist(-MAX_INITIAL_SPEED, MAX_INITIAL_SPEED);
+
+    for (int i = 0; i < NUM_PARTICLES; i++)
+    {
+        Vec2 r0(position_dist(generator), position_dist(generator));
+        Vec2 v0(velocity_dist(generator), velocity_dist(generator));
+        engine->AddParticle(KinematicParameters(r0, v0, ACCELERATION), CIRCLE_RADIUS);
+    }
+}
 
 int main()
 {
@@ -9,37 +38,15 @@ int main()
     auto dt = std::chrono::duration<double>(0.0005);
     double scalar = 1;
     std::vector<Vec2> polygon;
-    double len = 0.995;
-    polygon.push_back(Vec2(-len, -len));
-    polygon.push_back(Vec2(-len, len));
-    polygon.push_back(Vec2(len, len));
-    polygon.push_back(Vec2(len, -len));
+    polygon.push_back(Vec2(-BOUNDARY_HALF_LENGTH, -BOUNDARY_HALF_LENGTH));
+    polygon.push_back(Vec2(-BOUNDARY_HALF_LENGTH, BOUNDARY_HALF_LENGTH));
+    polygon.push_back(Vec2(BOUNDARY_HALF_LENGTH, BOUNDARY_HALF_LENGTH));
+    polygon.push_back(Vec2(BOUNDARY_HALF_LENGTH, -BOUNDARY_HALF_LENGTH));
+
     // TODO: Clean up builder pattern
-    int segments = 10;
-    float radius = 0.015;
-    auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), segments);
+    auto engine = OpenGLEngine::WithCircles(TimeConfig(t_total, dt, scalar), NUM_CIRCLE_SEGMENTS);
     engine->AddBoundary(Boundary(polygon, 0.9));
-
-    // Projectile motion
-    for (int i = 0; i < 30; i++)
-    {
-        Vec2 r0(-0.1, 0.1 * i);
-        Vec2 v0(0.1 + (i * 0.05), 0.6);
-        Vec2 a0(0, -1.5);
-        engine->AddParticle(KinematicParameters(r0, v0, a0), radius);
-    }
-
-    // Particle collisions
-    /*Vec2 r0_p0(-len + radius, 0);
-    Vec2 v0_p0(0.1, 0);
-    Vec2 a0_p0;
-    engine->AddParticle(KinematicParameters(r0_p0, v0_p0, a0_p0), radius);
-
-    Vec2 r0_p1(len - radius, 0);
-    Vec2 v0_p1(-0.2, 0);
-    Vec2 a0_p1;
-    engine->AddParticle(KinematicParameters(r0_p1, v0_p1, a0_p1), radius);*/
-
+    RandomizeParticles(engine);
     engine->Run();
     return 0;
 }

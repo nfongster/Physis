@@ -72,7 +72,7 @@ void ParticleSystem::ResolveParticleCollisions(std::shared_ptr<Particle> p0, std
 
 void ParticleSystem::Update(const unsigned int index, const KinematicParameters& parameters)
 {
-	if (index < 0 || index >= m_particles.size())
+	if (index >= m_particles.size())
 		throw std::out_of_range("Index out of range");
 
 	m_particles[index] = std::make_shared<Particle>(parameters, m_particles[index]->GetRadius());
