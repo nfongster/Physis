@@ -1,7 +1,9 @@
 #include "ShaderBuilder.h"
 
-ShaderBuilder::ShaderBuilder(const std::string& directory)
-	: m_shader_folder(directory)
+const std::string SHADER_FOLDER = "C:\\projects\\Physis\\PhysisApp\\resource\\shaders\\";
+
+ShaderBuilder::ShaderBuilder(const std::string& subdirectory)
+	: m_shader_folder(SHADER_FOLDER + subdirectory + "\\")
 {
 }
 

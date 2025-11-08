@@ -42,7 +42,7 @@ void Box::Initialize(std::shared_ptr<SystemState>& system_state)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, POS_COORDS, GL_FLOAT, GL_FALSE, sizeof(float) * POS_COORDS, 0);
 
-	auto builder = ShaderBuilder("C:\\projects\\Physis\\PhysisWindowApp\\resource\\shaders\\box\\");
+	auto builder = ShaderBuilder("box");
 	m_shader = builder.Build();
 }
 

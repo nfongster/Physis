@@ -55,7 +55,7 @@ void Circle::Initialize(std::shared_ptr<SystemState>& system_state)
         m_vao_map.emplace(vao, pair.second);
     }
 
-    auto builder = ShaderBuilder("C:\\projects\\Physis\\PhysisWindowApp\\resource\\shaders\\particle\\");
+    auto builder = ShaderBuilder("particle");
     m_shader = builder.Build();
     glGetUniformLocation(m_u_position_id, "u_Position");
 }
